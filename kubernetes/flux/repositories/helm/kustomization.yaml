@@ -8,6 +8,7 @@ resources:
   - ./jetstack.yaml
   - ./metrics-server.yaml
   - ./openebs.yaml
+  - ./external-secrets.yaml
   - ./postfinance.yaml
   - ./prometheus-community.yaml
   - ./spegel.yaml
