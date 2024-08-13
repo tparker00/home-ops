@@ -1,0 +1,3 @@
+---
+providerRegex: ^(control01|control02|control03)$
+bypassDnsResolution: true
