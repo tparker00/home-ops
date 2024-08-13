@@ -1,0 +1,29 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: qb-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: qb-rw
+    volumeAttributes:
+      mfsSubDir: "/qbittorrent"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: qb-rw
+  namespace: downloads
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: qb-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Ti

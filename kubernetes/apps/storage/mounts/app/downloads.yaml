@@ -1,0 +1,59 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: downloads-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 100Ti
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: downloads-rw
+    volumeAttributes:
+      mfsSubDir: "/"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: downloads-ro
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 100Ti
+  accessModes:
+    - ReadOnlyMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: downloads-ro
+    volumeAttributes:
+      mfsSubDir: "/"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: downloads-rw
+  namespace: downloads
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: downloads-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Ti
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: downloads-ro
+  namespace: storage
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: downloads-ro
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 100Ti

@@ -1,0 +1,60 @@
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: movies-ro
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadOnlyMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: movies
+    volumeAttributes:
+      mfsSubDir: "/movies"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: movies-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: movies
+    volumeAttributes:
+      mfsSubDir: "/movies"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: movies-ro
+  namespace: media
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: movies-ro
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: movies-rw
+  namespace: downloads
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: movies-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

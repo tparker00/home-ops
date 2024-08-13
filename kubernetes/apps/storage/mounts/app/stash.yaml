@@ -1,0 +1,30 @@
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: stash-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: stash
+    volumeAttributes:
+      mfsSubDir: "/stash"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: stash-rw
+  namespace: media
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: stash-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

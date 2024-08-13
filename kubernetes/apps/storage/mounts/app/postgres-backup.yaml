@@ -1,0 +1,29 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-backups-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: postgres-backups-rw
+    volumeAttributes:
+      mfsSubDir: "/postgres-backups"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-backups-rw
+  namespace: database
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: postgres-backups-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti

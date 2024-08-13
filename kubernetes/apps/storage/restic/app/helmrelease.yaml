@@ -1,0 +1,83 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app restic
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.0.4
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      restic:
+        type: cronjob
+        annotations:
+          reloader.stakater.com/auto: "true"
+        cronjob:
+          schedule: 0 */6 * * *
+          successfulJobsHistory: 4
+        containers:
+          app:
+            nameOverride: backup
+            image:
+              repository: ghcr.io/lobaro/restic-backup-docker
+              tag: v1.3.2
+            command:
+            - /bin/sh
+            args:
+            - -c
+            - sed -i 's|/var/log/|/config/|g' /bin/backup && /bin/backup
+            env:
+              TZ: ${TIMEZONE}
+            envFrom:
+              - secretRef:
+                  name: *app
+      check:
+        type: cronjob
+        annotations:
+          reloader.stakater.com/auto: "true"
+        cronjob:
+          schedule: 0 23 * * 3
+          successfulJobsHistory: 4
+        containers:
+          app:
+            nameOverride: check
+            image:
+              repository: ghcr.io/lobaro/restic-backup-docker
+              tag: v1.3.2
+            command:
+            - /bin/sh
+            args:
+            - -c
+            - sed -i 's|/var/log/|/config/|g' /bin/check && /bin/check
+            env:
+              TZ: ${TIMEZONE}
+            envFrom:
+              - secretRef:
+                  name: *app
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+      data:
+        enabled: true
+        existingClaim: downloads-ro
+        globalMounts:
+          - path: /data

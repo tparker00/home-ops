@@ -1,0 +1,60 @@
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: books-ro
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadOnlyMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: books
+    volumeAttributes:
+      mfsSubDir: "/books"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: books-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: books
+    volumeAttributes:
+      mfsSubDir: "/books"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: books-ro
+  namespace: media
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: books-ro
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: books-rw
+  namespace: downloads
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: books-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

@@ -1,0 +1,30 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: minio-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: minio-rw
+    volumeAttributes:
+      mfsSubDir: "/minio"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: minio-rw
+  namespace: storage
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: minio-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi

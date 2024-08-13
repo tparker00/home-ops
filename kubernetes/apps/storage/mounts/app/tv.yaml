@@ -1,0 +1,59 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: tv-ro
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadOnlyMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: tv
+    volumeAttributes:
+      mfsSubDir: "/tv"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: tv-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: tv
+    volumeAttributes:
+      mfsSubDir: "/tv"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: tv-ro
+  namespace: media
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: tv-ro
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: tv-rw
+  namespace: downloads
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: tv-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

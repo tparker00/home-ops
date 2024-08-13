@@ -1,0 +1,29 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: sabnzbd-downloads-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: sabnzbd-downloads-rw
+    volumeAttributes:
+      mfsSubDir: "/sabnzb"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sabnzbd-downloads-rw
+  namespace: downloads
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: sabnzbd-downloads-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Ti

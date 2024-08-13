@@ -1,0 +1,60 @@
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: music-ro
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadOnlyMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: music
+    volumeAttributes:
+      mfsSubDir: "/mp3/Full\ Albums"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: music-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: music
+    volumeAttributes:
+      mfsSubDir: "/mp3/Full\ Albums"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: music-ro
+  namespace: media
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: music-ro
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: music-rw
+  namespace: downloads
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: music-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
