@@ -69,10 +69,10 @@ spec:
               requests:
                 cpu: 1000m
                 memory: 8G
-                gpu.intel.com/i915: 1
+                #gpu.intel.com/i915: 1
               limits:
                 memory: 16G
-                gpu.intel.com/i915: 1
+                #gpu.intel.com/i915: 1
     service:
       app:
         controller: *app
