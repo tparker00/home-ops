@@ -1,0 +1,43 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: moosefs
+spec:
+  ingressClassName: internal
+  rules:
+    - host: &host moosefs.${SECRET_DOMAIN}
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: moosefs
+                port:
+                  number: 9425
+  tls:
+    - hosts:
+        - *host
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: moosefs
+subsets:
+  - addresses:
+      - ip: ${NAS_IP}
+    ports:
+      - name: http
+        port: 9425
+        protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moosefs
+spec:
+  ports:
+    - name: http
+      port: 9425
+  type: ClusterIP
