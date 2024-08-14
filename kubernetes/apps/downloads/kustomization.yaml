@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./bazarr/ks.yaml
+  #- ./bitmagnet/ks.yaml
+  - ./namespace.yaml
+  #- ./flaresolverr/ks.yaml
+  #- ./kapowarr/ks.yaml
+  #- ./lidarr/ks.yaml
+  #- ./lidatube/ks.yaml
+  #- ./metube/ks.yaml
+  #- ./mylar/ks.yaml
+  #- ./prowlarr/ks.yaml
+  #- ./qbittorrent/ks.yaml
+  #- ./sabnzbd/ks.yaml
+  #- ./sonarr/ks.yaml
+  #- ./radarr/ks.yaml

@@ -1,0 +1,150 @@
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app prowlarr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.0.4
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      prowlarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "monitoring"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/tparker00/postgres-init
+              tag: 16.3@sha256:eeb8cfe3a6ee73f8733bd80e405492a5348b83f7c70e5aa1df9b8ac13856c45d
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: prowlarr-secret
+        containers:
+          main:
+            nameOverride: *app
+            image:
+              repository: ghcr.io/tparker00/prowlarr-develop
+              tag: 1.21.2.4649@sha256:ef16fed3d87e991a05856ebf7d9a89d180c40e9cb137bb448393e7a02c47d3e3
+            env:
+              TZ: ${TIMEZONE}
+              PROWLARR__INSTANCE_NAME: Prowlarr
+              PROWLARR__PORT: &port 80
+              PROWLARR__LOG_LEVEL: info
+              PROWLARR__AUTHENTICATION_METHOD: External
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+          metrics:
+            image:
+              repository: ghcr.io/onedr0p/exportarr
+              tag: v2.0.1
+              pullPolicy: IfNotPresent
+            env:
+              - name: PORT
+                value: &metricsPort 9794
+            envFrom: *envFrom
+            args: ["prowlarr"]
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+    service:
+      main:
+        controller: *app
+        primary: true
+        ports:
+          http:
+            port: *port
+      metrics:
+        nameOverride: metrics
+        controller: *app
+        ports:
+          metrics:
+            port: *metricsPort
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 20s
+        serviceName: prowlarr-metrics
+    ingress:
+      main:
+        enabled: true
+        className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Downloads
+          gethomepage.dev/name: Prowlarr
+          gethomepage.dev/icon: prowlarr.png
+          gethomepage.dev/description: Torrent/NZB Indexer Management
+          gethomepage.dev/widget.type: prowlarr
+          gethomepage.dev/widget.url: http://prowlarr.downloads
+          gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PROWLARR_TOKEN}}"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/prowlarr/nord.css"></body>';
+            sub_filter_once on;
+        hosts:
+        - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: main
+              port: http
+          - path: /metrics
+            service:
+              identifier: metrics
+              port: metrics
+        tls:
+        - hosts:
+          - *host
+    persistence:
+      config:
+        enabled: true
+        type: emptyDir
+      tmp:
+        type: emptyDir

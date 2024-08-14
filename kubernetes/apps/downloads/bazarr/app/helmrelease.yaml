@@ -1,0 +1,149 @@
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app bazarr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.0.4
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      bazarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "monitoring"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/tparker00/postgres-init
+              tag: 16.3@sha256:eeb8cfe3a6ee73f8733bd80e405492a5348b83f7c70e5aa1df9b8ac13856c45d
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: bazarr-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/tparker00/bazarr
+              tag: 1.4.3@sha256:8161fd8f4cb7361ce440e0718768597facdec11f9ded10ef13910759526dbe34
+            env:
+              TZ: ${TIMEZONE}
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 10m
+                memory: 1Gi
+          metrics:
+            image:
+              repository: ghcr.io/onedr0p/exportarr
+              tag: v2.0.1
+              pullPolicy: IfNotPresent
+            env:
+              - name: PORT
+                value: &metricsPort 9794
+            envFrom: *envFrom
+            args: ["bazarr"]
+          subcleaner:
+            image:
+              repository: registry.k8s.io/git-sync/git-sync
+              tag: v4.2.4
+            args:
+            - --repo=https://github.com/KBlixt/subcleaner
+            - --branch=master
+            - --wait=86400 # 1 day
+            - --root=/add-ons
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10M
+              limits:
+                memory: 128M
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+    service:
+      main:
+        controller: *app
+        primary: true
+        ports:
+          http:
+            port: 6767
+      metrics:
+        nameOverride: metrics
+        controller: *app
+        ports:
+          metrics:
+            port: *metricsPort
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 20s
+        serviceName: bazarr-metrics
+    ingress:
+      main:
+        enabled: true
+        className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Downloads
+          gethomepage.dev/name: Bazarr
+          gethomepage.dev/icon: bazarr.png
+          gethomepage.dev/description: Subtitle Downloads
+          gethomepage.dev/widget.type: bazarr
+          gethomepage.dev/widget.url: http://bazarr.downloads:6767
+          gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_BAZARR_TOKEN}}"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.${SECRET_DOMAIN}/css/base/bazarr/nord.css"></head>';
+            sub_filter_once on;
+        hosts:
+        - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          paths:
+          - path: /
+            service:
+              identifier: main
+              port: http
+          - path: /metrics
+            service:
+              identifier: metrics
+              port: metrics
+        tls:
+        - hosts:
+          - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+      data:
+        enabled: true
+        existingClaim: downloads-rw
+        globalMounts:
+          - path: /data
+      add-ons:
+        type: emptyDir
