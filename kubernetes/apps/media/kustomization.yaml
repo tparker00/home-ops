@@ -6,10 +6,10 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  #- ./jellyseerr/ks.yaml
+  - ./jellyseerr/ks.yaml
   #- ./kavita/ks.yaml
   #- ./komga/ks.yaml
-  # - ./navidrome/ks.yaml
+  - ./navidrome/ks.yaml
   - ./plex/ks.yaml
   - ./stash/ks.yaml
   - ./tautulli/ks.yaml
