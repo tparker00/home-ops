@@ -1,0 +1,97 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app rxresume
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.0.4
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      rxresume:
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/tparker00/postgres-init
+              tag: 16.3@sha256:eeb8cfe3a6ee73f8733bd80e405492a5348b83f7c70e5aa1df9b8ac13856c45d
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: rxresume-secret
+        containers:
+          main:
+            image:
+              repository: ghcr.io/amruthpillai/reactive-resume
+              tag: v4.1.8
+              pullPolicy: IfNotPresent
+            env:
+              PORT: 4000
+              NODE_ENV: production
+              PUBLIC_URL: https://rxresume.${SECRET_DOMAIN}
+              STORAGE_URL: https://s3.${SECRET_DOMAIN}/rxresume
+              CHROME_TOKEN: chrome_token
+              CHROME_URL: ws://localhost:3000
+              ACCESS_TOKEN_SECRET: access_token_secret
+              REFRESH_TOKEN_SECRET: refresh_token_secret
+              MAIL_FROM: noreply@localhost
+              REDIS_URL: redis://dragonfly.database.svc.cluster.local
+            envFrom: *envFrom
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+          chrome:
+            image:
+              repository: ghcr.io/browserless/chromium
+              tag: v2.16.1
+              pullPolicy: IfNotPresent
+            env:
+              TIMEOUT: 10000
+              CONCURRENT: 10
+              TOKEN: chrome_token
+              EXIT_ON_HEALTH_FAILURE: true
+              PRE_REQUEST_HEALTH_CHECK: true
+    service:
+      main:
+        controller: *app
+        ports:
+          http:
+            port: 4000
+    ingress:
+      main:
+        enabled: true
+        className: internal
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
