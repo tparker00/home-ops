@@ -12,6 +12,7 @@ resources:
   - ./fairwinds-charts.yaml
   - ./grafana.yaml
   - ./jetstack.yaml
+  - ./kyverno.yaml
   - ./metrics-server.yaml
   - ./openebs.yaml
   - ./external-secrets.yaml
