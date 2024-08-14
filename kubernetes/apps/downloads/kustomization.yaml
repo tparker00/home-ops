@@ -6,9 +6,9 @@ resources:
   - ./bazarr/ks.yaml
   - ./bitmagnet/ks.yaml
   - ./namespace.yaml
-  #- ./flaresolverr/ks.yaml
+  - ./flaresolverr/ks.yaml
   #- ./kapowarr/ks.yaml
-  #- ./lidarr/ks.yaml
+  - ./lidarr/ks.yaml
   #- ./lidatube/ks.yaml
   - ./metube/ks.yaml
   - ./mylar/ks.yaml
