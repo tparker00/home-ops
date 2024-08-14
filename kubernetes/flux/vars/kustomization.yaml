@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - ./cluster-settings.yaml
   - ./cluster-secrets.sops.yaml
-  - ./cluster-secrets-user.sops.yaml
+  - ./cluster-user-secrets.sops.yaml
