@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master-standalone-strict/cronjob-batch-v1.json
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cloudnative-pg-backup
+spec:
+  schedule: "0 17 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          securityContext:
+            runAsUser: 1031
+            runAsGroup: 1031
+            fsGroup: 1031
+            supplementalGroups:
+              - 65541
+          containers:
+            - name: postgres-backup
+              image: docker.io/prodrigestivill/postgres-backup-local:16@sha256:f873bbfb406db633ab879628b11ef8092279639c467a2ea5f5bfa08b776252fb
+              imagePullPolicy: IfNotPresent
+              command:
+                - "/backup.sh"
+              env:
+                - name: POSTGRES_HOST
+                  value: postgres-ro.database.svc.cluster.local
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudnative-pg-secret
+                      key: username
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudnative-pg-secret
+                      key: password
+                - name: POSTGRES_DB
+                  value: "authentik,gatus,grafana,radarr_log,radarr_main,teslamate,sonarr_log,sonarr_main,lidarr_main,lidarr_log,bazarr,prowlarr_main,prowlarr_log,readarr_main,readarr_log,whisparr_main,whisparr_log"
+              volumeMounts:
+                - name: nas-backups
+                  mountPath: /backups
+          restartPolicy: OnFailure
+          volumes:
+            - name: nas-backups
+              persistentVolumeClaim:
+                claimName: postgres-backups-rw
