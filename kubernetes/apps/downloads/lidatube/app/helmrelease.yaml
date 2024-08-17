@@ -36,7 +36,7 @@ spec:
             nameOverride: *app
             image:
               repository: thewicklowwolf/lidatube
-              tag: latest@sha256:14cb0762919dd4c01c034928e4c1d9183d59075c1c8668326778d638a034b7da
+              tag: latest@sha256:0bcbd7ecc488b462fb05289a5db5a8b8f4a989fd7bafd946e43fc461d37d529f
             env:
               TZ: ${TIMEZONE}
             envFrom:
