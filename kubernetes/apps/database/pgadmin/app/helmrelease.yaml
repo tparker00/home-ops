@@ -41,7 +41,7 @@ spec:
         containers:
           app:
             image:
-              repository: registry.samipsolutions.fi/docker/dpage/pgadmin4
+              repository: dpage/pgadmin4
               tag: 8.9
             envFrom:
               - secretRef:
