@@ -10,6 +10,9 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: external-secrets-bitwarden
+    - name: cloudnative-pg
   path: ./kubernetes/apps/default/rxresume/app
   prune: true
   sourceRef:
