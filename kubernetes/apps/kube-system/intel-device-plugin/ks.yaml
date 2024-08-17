@@ -10,6 +10,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: cluster-apps-node-feature-discovery
   path: ./kubernetes/apps/kube-system/intel-device-plugin/app
   prune: true
   sourceRef:
@@ -31,6 +33,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: cluster-apps-node-feature-discovery
   path: ./kubernetes/apps/kube-system/intel-device-plugin/gpu
   prune: true
   sourceRef:

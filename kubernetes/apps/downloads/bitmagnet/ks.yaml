@@ -10,6 +10,9 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: external-secrets-bitwarden
+    - name: cloudnative-pg
   interval: 10m
   path: ./kubernetes/apps/downloads/bitmagnet/app
   prune: true
