@@ -11,6 +11,9 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+  dependsOn:
+    - name: external-secrets-bitwarden
+    - name: cloudnative-pg
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2beta1
       kind: HelmRelease
