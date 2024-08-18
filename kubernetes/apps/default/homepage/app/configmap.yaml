@@ -75,13 +75,6 @@ data:
               username: {{HOMEPAGE_VAR_OPNSENSE_USER}}
               password: {{HOMEPAGE_VAR_OPNSENSE_PASS}}
     - Media:
-        - Tdarr:
-            href: &url https://tdarr.${SECRET_DOMAIN}
-            icon: tdarr.png
-            description: Media Transcoding
-            widget:
-              type: tdarr
-              url: *url
     - Storage:
         - moosefs:
           - icon: truenas.png
