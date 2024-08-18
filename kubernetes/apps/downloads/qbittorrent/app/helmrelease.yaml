@@ -31,6 +31,9 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
         containers:
@@ -72,7 +75,7 @@ spec:
               requests:
                 cpu: 100m
               limits:
-                memory: 8Gi
+                memory: 3Gi
           gluetun:
             image:
               repository: ghcr.io/qdm12/gluetun
