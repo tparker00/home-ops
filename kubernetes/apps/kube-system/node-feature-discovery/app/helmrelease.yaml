@@ -47,29 +47,6 @@ spec:
             deviceLabelFields: ["class", "vendor", "device"]
           pci:
             deviceClassWhitelist: ["0300"]
-          custom:
-                - name: "intel.gpu"
-                  labels:
-                    "intel.feature.node.kubernetes.io/gpu": "true"
-                  matchFeatures:
-                    - feature: pci.device
-                      matchExpressions:
-                        vendor: {op: In, value: ["8086"]}
-                        class: {op: In, value: ["0300", "0380"]}
-                    - feature: kernel.loadedmodule
-                      matchExpressions:
-                        i915: {op: Exists}
-                - name: "coral.tpu"
-                  labels:
-                    "feature.node.kubernetes.io/coral-tpu": "true"
-                  matchFeatures:
-                    - feature: pci.device
-                      matchExpressions:
-                        vendor: {op: In, value: ["1ac1"]}
-                        class: {op: In, value: ["0880"]}
-                    - feature: kernel.loadedmodule
-                      matchExpressions:
-                        apex: {op: Exists}
     tolerations:
       - key: "kubernetes.io/arch"
         operator: "Equal"
