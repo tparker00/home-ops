@@ -1,412 +1,160 @@
-# ⛵ Cluster Template
-
-Welcome to my opinionated and extensible template for deploying a single Kubernetes cluster. The goal of this project is to make it easier for people interested in using Kubernetes to deploy a cluster at home on bare-metal or VMs.
-
-At a high level this project makes use of [makejinja](https://github.com/mirkolenz/makejinja) to read in a [configuration file](./config.sample.yaml) which renders out templates that will allow you to install and manage your Kubernetes cluster with.
-
-## ✨ Features
-
-The features included will depend on the type of configuration you want to use. There are currently **2 different types** of **configurations** available with this template.
-
-1. **"Flux cluster"** - a Kubernetes cluster deployed on-top of [Talos Linux](https://github.com/siderolabs/talos) with an opinionated implementation of [Flux](https://github.com/fluxcd/flux2) using [GitHub](https://github.com/) as the Git provider and [sops](https://github.com/getsops/sops) to manage secrets.
-
-    - **Required:** Some knowledge of [Containers](https://opencontainers.org/), [YAML](https://yaml.org/), and [Git](https://git-scm.com/).
-    - **Components:** [flux](https://github.com/fluxcd/flux2), [Cilium](https://github.com/cilium/cilium),[cert-manager](https://github.com/cert-manager/cert-manager), [spegel](https://github.com/spegel-org/spegel), [reloader](https://github.com/stakater/Reloader), and [openebs](https://github.com/openebs/openebs).
-
-2. **"Flux cluster with Cloudflare"** - An addition to "**Flux cluster**" that provides DNS and SSL with [Cloudflare](https://www.cloudflare.com/). [Cloudflare Tunnel](https://www.cloudflare.com/products/tunnel/) is also included to provide external access to certain applications deployed in your cluster.
-
-    - **Required:** A Cloudflare account with a domain managed in your Cloudflare account.
-    - **Components:** [ingress-nginx](https://github.com/kubernetes/ingress-nginx/), [external-dns](https://github.com/kubernetes-sigs/external-dns) and [cloudflared](https://github.com/cloudflare/cloudflared).
-
-**Other features include:**
-
-- A [Renovate](https://www.mend.io/renovate)-ready repository with pull request diffs provided by [flux-local](https://github.com/allenporter/flux-local)
-- Integrated [GitHub Actions](https://github.com/features/actions) with helpful workflows.
-
-## 💻 Machine Preparation
-
-### System requirements
-
-> [!NOTE]
-> 1. The included behaviour of Talos is that all nodes are able to run workloads, **including** the controller nodes. **Worker nodes** are therefore **optional**.
-> 2. Do you have 3 or more nodes? It is highly recommended to make 3 of them controller nodes for a highly available control plane.
-> 3. Running the cluster on Proxmox VE? My thoughts and recommendations about that are documented [here](https://onedr0p.github.io/home-ops/notes/proxmox-considerations.html).
-
-| Role    | Cores    | Memory        | System Disk               |
-|---------|----------|---------------|---------------------------|
-| Control | 4 _(6*)_ | 8GB _(24GB*)_ | 120GB _(500GB*)_ SSD/NVMe |
-| Worker  | 4 _(6*)_ | 8GB _(24GB*)_ | 120GB _(500GB*)_ SSD/NVMe |
-| _\* recommended_ |
-
-1. Head over to <https://factory.talos.dev> and follow the instructions which will eventually lead you to download a Talos Linux iso file (or for SBCs the `.raw.xz`). Make sure to note the schematic ID you will need this later on.
-
-2. Flash the iso or raw file to a USB drive and boot to Talos on your nodes with it.
-
-3. Continue on to 🚀 [**Getting Started**](#-getting-started)
-
-## 🚀 Getting Started
-
-Once you have installed Talos on your nodes, there are six stages to getting a Flux-managed cluster up and runnning.
-
-> [!NOTE]
-> For all stages below the commands **MUST** be ran on your personal workstation within your repository directory
-
-### 🎉 Stage 1: Create a Git repository
-
-1. Create a new **public** repository by clicking the big green "Use this template" button at the top of this page.
-
-2. Clone **your new repo** to you local workstation and `cd` into it.
-
-3. Continue on to 🌱 [**Stage 2**](#-stage-2-setup-your-local-workstation-environment)
-
-### 🌱 Stage 2: Setup your local workstation
-
-You have two different options for setting up your local workstation.
-
-- First option is using a `devcontainer` which requires you to have Docker and VSCode installed. This method is the fastest to get going because all the required CLI tools are provided for you in my [devcontainer](https://github.com/onedr0p/cluster-template/pkgs/container/cluster-template%2Fdevcontainer) image.
-- The second option is setting up the CLI tools directly on your workstation.
-
-#### Devcontainer method
-
-1. Start Docker and open your repository in VSCode. There will be a pop-up asking you to use the `devcontainer`, click the button to start using it.
-
-2. Continue on to 🔧 [**Stage 3**](#-stage-3-bootstrap-configuration)
-
-#### Non-devcontainer method
-
-1. Install the most recent version of [task](https://taskfile.dev/), see the [installation docs](https://taskfile.dev/installation/) for other supported platforms.
-
-    ```sh
-    # Homebrew
-    brew install go-task
-    # or, Arch
-    pacman -S --noconfirm go-task && ln -sf /usr/bin/go-task /usr/local/bin/task
-    ```
-
-2. Install the most recent version of [direnv](https://direnv.net/), see the [installation docs](https://direnv.net/docs/installation.html) for other supported platforms.
-
-    ```sh
-    # Homebrew
-    brew install direnv
-    # or, Arch
-    pacman -S --noconfirm direnv
-    ```
-
-3. [Hook `direnv` into your preferred shell](https://direnv.net/docs/hook.html), then run:
-
-    ```sh
-    task workstation:direnv
-    ```
-
-    📍 _**Verify** that `direnv` is setup properly by opening a new terminal and `cd`ing into your repository. You should see something like:_
-
-    ```sh
-    cd /path/to/repo
-    direnv: loading /path/to/repo/.envrc
-    direnv: export +ANSIBLE_COLLECTIONS_PATH ...  +VIRTUAL_ENV ~PATH
-    ```
-
-4. Install the additional **required** CLI tools
-
-   📍 _**Not using Homebrew or ArchLinux?** Try using the generic Linux task below, if that fails check out the [Brewfile](.taskfiles/Workstation/Brewfile)/[Archfile](.taskfiles/Workstation/Archfile) for what CLI tools needed and install them._
-
-    ```sh
-    # Homebrew
-    task workstation:brew
-    # or, Arch with yay/paru
-    task workstation:arch
-    # or, Generic Linux (YMMV, this pulls binaires in to ./bin)
-    task workstation:generic-linux
-    ```
-
-5. Setup a Python virual environment by running the following task command.
-
-    📍 _This commands requires Python 3.11+ to be installed._
-
-    ```sh
-    task workstation:venv
-    ```
-
-6. Continue on to 🔧 [**Stage 3**](#-stage-3-bootstrap-configuration)
-
-### 🔧 Stage 3: Bootstrap configuration
-
-> [!NOTE]
-> The [config.sample.yaml](./config.sample.yaml) file contains config that is **vital** to the bootstrap process.
-
-1. Generate the `config.yaml` from the [config.sample.yaml](./config.sample.yaml) configuration file.
-
-    ```sh
-    task init
-    ```
-
-2. Fill out the `config.yaml` configuration file using the comments in that file as a guide.
-
-3. Run the following command which will generate all the files needed to continue.
-
-    ```sh
-    task configure
-    ```
-
-4. Push you changes to git
-
-   📍 _**Verify** all the `./kubernetes/**/*.sops.*` files are **encrypted** with SOPS_
-
-    ```sh
-    git add -A
-    git commit -m "Initial commit :rocket:"
-    git push
-    ```
-
-### ⛵ Stage 4: Install Kubernetes
-
-1. Deploy your cluster and bootstrap it. This generates secrets, generates the config files for your nodes and applies them. It bootstraps the cluster afterwards, fetches the kubeconfig file and installs Cilium and kubelet-csr-approver. It finishes with some health checks.
-
-    ```sh
-    task talos:bootstrap
-    ```
-
-2. ⚠️ It might take a while for the cluster to be setup (10+ minutes is normal), during which time you will see a variety of error messages like: "couldn't get current server API group list," "error: no matching resources found", etc. This is a normal. If this step gets interrupted, e.g. by pressing <kbd>Ctrl</kbd> + <kbd>C</kbd>, you likely will need to [nuke the cluster](#-Nuke) before trying again.
-
-#### Cluster validation
-
-1. The `kubeconfig` for interacting with your cluster should have been created in the root of your repository.
-
-2. Verify the nodes are online
-
-    📍 _If this command **fails** you likely haven't configured `direnv` as [mentioned previously](#non-devcontainer-method) in the guide._
-
-    ```sh
-    kubectl get nodes -o wide
-    # NAME           STATUS   ROLES                       AGE     VERSION
-    # k8s-0          Ready    control-plane,etcd,master   1h      v1.30.1
-    # k8s-1          Ready    worker                      1h      v1.30.1
-    ```
-
-3. Continue on to 🔹 [**Stage 6**](#-stage-6-install-flux-in-your-cluster)
-
-### 🔹 Stage 6: Install Flux in your cluster
-
-1. Verify Flux can be installed
-
-    ```sh
-    flux check --pre
-    # ► checking prerequisites
-    # ✔ kubectl 1.30.1 >=1.18.0-0
-    # ✔ Kubernetes 1.30.1 >=1.16.0-0
-    # ✔ prerequisites checks passed
-    ```
-
-2. Install Flux and sync the cluster to the Git repository
-
-    📍 _Run `task flux:github-deploy-key` first if using a private repository._
-
-    ```sh
-    task flux:bootstrap
-    # namespace/flux-system configured
-    # customresourcedefinition.apiextensions.k8s.io/alerts.notification.toolkit.fluxcd.io created
-    # ...
-    ```
-
-1. Verify Flux components are running in the cluster
-
-    ```sh
-    kubectl -n flux-system get pods -o wide
-    # NAME                                       READY   STATUS    RESTARTS   AGE
-    # helm-controller-5bbd94c75-89sb4            1/1     Running   0          1h
-    # kustomize-controller-7b67b6b77d-nqc67      1/1     Running   0          1h
-    # notification-controller-7c46575844-k4bvr   1/1     Running   0          1h
-    # source-controller-7d6875bcb4-zqw9f         1/1     Running   0          1h
-    ```
-
-### 🎤 Verification Steps
-
-_Mic check, 1, 2_ - In a few moments applications should be lighting up like Christmas in July 🎄
-
-1. Output all the common resources in your cluster.
-
-    📍 _Feel free to use the provided [kubernetes tasks](.taskfiles/Kubernetes/Taskfile.yaml) for validation of cluster resources or continue to get familiar with the `kubectl` and `flux` CLI tools._
-
-    ```sh
-    task kubernetes:resources
-    ```
-
-2. ⚠️ It might take `cert-manager` awhile to generate certificates, this is normal so be patient.
-
-3. 🏆 **Congratulations** if all goes smooth you will have a Kubernetes cluster managed by Flux and your Git repository is driving the state of your cluster.
-
-4. 🧠 Now it's time to pause and go get some motel motor oil ☕ and admire you made it this far!
-
-## 📣 Flux w/ Cloudflare post installation
-
-#### 🌐 Public DNS
-
-The `external-dns` application created in the `networking` namespace will handle creating public DNS records. By default, `echo-server` and the `flux-webhook` are the only subdomains reachable from the public internet. In order to make additional applications public you must set set the correct ingress class name and ingress annotations like in the HelmRelease for `echo-server`.
-
-#### 🏠 Home DNS
-
-`k8s_gateway` will provide DNS resolution to external Kubernetes resources (i.e. points of entry to the cluster) from any device that uses your home DNS server. For this to work, your home DNS server must be configured to forward DNS queries for `${bootstrap_cloudflare.domain}` to `${bootstrap_cloudflare.gateway_vip}` instead of the upstream DNS server(s) it normally uses. This is a form of **split DNS** (aka split-horizon DNS / conditional forwarding).
-
-> [!TIP]
-> Below is how to configure a Pi-hole for split DNS. Other platforms should be similar.
-> 1. Apply this file on the Pihole server while substituting the variables
-> ```sh
-> # /etc/dnsmasq.d/99-k8s-gateway-forward.conf
-> server=/${bootstrap_cloudflare.domain}/${bootstrap_cloudflare.gateway_vip}
-> ```
-> 2. Restart dnsmasq on the server.
-> 3. Query an internal-only subdomain from your workstation (any `internal` class ingresses): `dig @${home-dns-server-ip} echo-server-internal.${bootstrap_cloudflare.domain}`. It should resolve to `${bootstrap_cloudflare.ingress_vip}`.
-
-If you're having trouble with DNS be sure to check out these two GitHub discussions: [Internal DNS](https://github.com/onedr0p/cluster-template/discussions/719) and [Pod DNS resolution broken](https://github.com/onedr0p/cluster-template/discussions/635).
-
-... Nothing working? That is expected, this is DNS after all!
-
-#### 📜 Certificates
-
-By default this template will deploy a wildcard certificate using the Let's Encrypt **staging environment**, which prevents you from getting rate-limited by the Let's Encrypt production servers if your cluster doesn't deploy properly (for example due to a misconfiguration). Once you are sure you will keep the cluster up for more than a few hours be sure to switch to the production servers as outlined in `config.yaml`.
-
-📍 _You will need a production certificate to reach internet-exposed applications through `cloudflared`._
-
-#### 🪝 Github Webhook
-
-By default Flux will periodically check your git repository for changes. In order to have Flux reconcile on `git push` you must configure Github to send `push` events to Flux.
-
-> [!NOTE]
-> This will only work after you have switched over certificates to the Let's Encrypt Production servers.
-
-1. Obtain the webhook path
-
-    📍 _Hook id and path should look like `/hook/12ebd1e363c641dc3c2e430ecf3cee2b3c7a5ac9e1234506f6f5f3ce1230e123`_
-
-    ```sh
-    kubectl -n flux-system get receiver github-receiver -o jsonpath='{.status.webhookPath}'
-    ```
-
-2. Piece together the full URL with the webhook path appended
-
-    ```text
-    https://flux-webhook.${bootstrap_cloudflare.domain}/hook/12ebd1e363c641dc3c2e430ecf3cee2b3c7a5ac9e1234506f6f5f3ce1230e123
-    ```
-
-3. Navigate to the settings of your repository on Github, under "Settings/Webhooks" press the "Add webhook" button. Fill in the webhook URL and your `bootstrap_github_webhook_token` secret in `config.yaml`, Content type: `application/json`, Events: Choose Just the push event, and save.
-
-## 💥 Nuke
-
-There might be a situation where you want to destroy your Kubernetes cluster. The following command will reset your nodes back to maintenance mode, append `--force` to completely format your the Talos installation. Either way the nodes should reboot after the command has run.
-
-```sh
-task talos:nuke
-```
-
-## 🤖 Renovate
-
-[Renovate](https://www.mend.io/renovate) is a tool that automates dependency management. It is designed to scan your repository around the clock and open PRs for out-of-date dependencies it finds. Common dependencies it can discover are Helm charts, container images, GitHub Actions, Ansible roles... even Flux itself! Merging a PR will cause Flux to apply the update to your cluster.
-
-To enable Renovate, click the 'Configure' button over at their [Github app page](https://github.com/apps/renovate) and select your repository. Renovate creates a "Dependency Dashboard" as an issue in your repository, giving an overview of the status of all updates. The dashboard has interactive checkboxes that let you do things like advance scheduling or reattempt update PRs you closed without merging.
-
-The base Renovate configuration in your repository can be viewed at [.github/renovate.json5](./.github/renovate.json5). By default it is scheduled to be active with PRs every weekend, but you can [change the schedule to anything you want](https://docs.renovatebot.com/presets-schedule), or remove it if you want Renovate to open PRs right away.
-
-## 🐛 Debugging
-
-Below is a general guide on trying to debug an issue with an resource or application. For example, if a workload/resource is not showing up or a pod has started but in a `CrashLoopBackOff` or `Pending` state.
-
-1. Start by checking all Flux Kustomizations & Git Repository & OCI Repository and verify they are healthy.
-
-    ```sh
-    flux get sources oci -A
-    flux get sources git -A
-    flux get ks -A
-    ```
-
-2. Then check all the Flux Helm Releases and verify they are healthy.
-
-    ```sh
-    flux get hr -A
-    ```
-
-3. Then check the if the pod is present.
-
-    ```sh
-    kubectl -n <namespace> get pods -o wide
-    ```
-
-4. Then check the logs of the pod if its there.
-
-    ```sh
-    kubectl -n <namespace> logs <pod-name> -f
-    # or
-    stern -n <namespace> <fuzzy-name>
-    ```
-
-5. If a resource exists try to describe it to see what problems it might have.
-
-    ```sh
-    kubectl -n <namespace> describe <resource> <name>
-    ```
-
-6. Check the namespace events
-
-    ```sh
-    kubectl -n <namespace> get events --sort-by='.metadata.creationTimestamp'
-    ```
-
-Resolving problems that you have could take some tweaking of your YAML manifests in order to get things working, other times it could be a external factor like permissions on NFS. If you are unable to figure out your problem see the help section below.
-
-## ⬆️ Upgrading Talos and Kubernetes
-
-### Manual
-
-```sh
-# Upgrade Talos to a newer version
-# NOTE: This needs to be run once on every node
-task talos:upgrade node=? image=?
-# e.g.
-# task talos:upgrade node=192.168.42.10 image=factory.talos.dev/installer/${schematic_id}:v1.7.4
-```
-
-```sh
-# Upgrade Kubernetes to a newer version
-# NOTE: This only needs to be run once against a controller node
-task talos:upgrade-k8s controller=? to=?
-# e.g.
-# task talos:upgrade-k8s controller=192.168.42.10 to=1.30.1
-```
-
-## 👉 Help
-
-- Make a post in this repository's Github [Discussions](https://github.com/onedr0p/cluster-template/discussions).
-- Start a thread in the `#support` or `#cluster-template` channels in the [Home Operations](https://discord.gg/home-operations) Discord server.
-
-## ❔ What's next
-
-The cluster is your oyster (or something like that). Below are some optional considerations you might want to review.
-
-### Ship it
-
-To browse or get ideas on applications people are running, community member [@whazor](https://github.com/whazor) created [Kubesearch](https://kubesearch.dev) as a creative way to search Flux HelmReleases across Github and Gitlab.
-
-### Storage
-
-The included CSI (openebs in local-hostpath mode) is a great start for storage but soon you might find you need more features like replicated block storage, or to connect to a NFS/SMB/iSCSI server. If you need any of those features be sure to check out the projects like [rook-ceph](https://github.com/rook/rook), [longhorn](https://github.com/longhorn/longhorn), [openebs](https://github.com/openebs/openebs), [democratic-csi](https://github.com/democratic-csi/democratic-csi), [csi-driver-nfs](https://github.com/kubernetes-csi/csi-driver-nfs),
-and [synology-csi](https://github.com/SynologyOpenSource/synology-csi).
-
-## 🙌 Related Projects
-
-If this repo is too hot to handle or too cold to hold check out these following projects.
-
-- [khuedoan/homelab](https://github.com/khuedoan/homelab) - _Modern self-hosting framework, fully automated from empty disk to operating services with a single command._
-- [danmanners/aws-argo-cluster-template](https://github.com/danmanners/aws-argo-cluster-template) - _A community opinionated template for deploying Kubernetes clusters on-prem and in AWS using Pulumi, SOPS, Sealed Secrets, GitHub Actions, Renovate, Cilium and more!_
-- [ricsanfre/pi-cluster](https://github.com/ricsanfre/pi-cluster) - _Pi Kubernetes Cluster. Homelab kubernetes cluster automated with Ansible and ArgoCD_
-- [techno-tim/k3s-ansible](https://github.com/techno-tim/k3s-ansible) - _The easiest way to bootstrap a self-hosted High Availability Kubernetes cluster. A fully automated HA k3s etcd install with kube-vip, MetalLB, and more_
-
-## ⭐ Stargazers
-
 <div align="center">
 
-[![Star History Chart](https://api.star-history.com/svg?repos=onedr0p/cluster-template&type=Date)](https://star-history.com/#onedr0p/cluster-template&Date)
+<img src="https://raw.githubusercontent.com/onedr0p/home-ops/main/docs/src/assets/logo.png" align="center" width="144px" height="144px"/>
+
+### My Home Operations Repository :octocat:
+
+_... managed with Flux, Renovate, and GitHub Actions_ 🤖
 
 </div>
 
-## 🤝 Thanks
+<div align="center">
 
-Big shout out to all the contributors, sponsors and everyone else who has helped on this project.
+[![Kubernetes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hamcloud.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dkubernetes_version&style=for-the-badge&logo=kubernetes&logoColor=white&color=blue&label=%20)](https://www.talos.dev/)&nbsp;&nbsp;
+[![Renovate](https://img.shields.io/github/actions/workflow/status/tparker00/k3s-home/renovate.yaml?branch=main&label=&logo=renovatebot&style=for-the-badge&color=blue)](https://github.com/tparker00/k3s-home/actions/workflows/renovate.yaml)
+
+</div>
+
+<div align="center">
+
+[![Home-Internet](https://img.shields.io/uptimerobot/status/m796721413-c87bf72b4967be2aa2c720ae?color=brightgreeen&label=Home%20Internet&style=for-the-badge&logo=v&logoColor=white)](https://status.hamcloud.io)&nbsp;&nbsp;
+[![Status-Page](https://img.shields.io/endpoint?url=https%3A%2F%2Fstatus.hamcloud.io%2Fapi%2Fv1%2Fendpoints%2Fexternal_gatus%2Fhealth%2Fbadge.shields&style=for-the-badge&logo=statuspage&logoColor=white&label=Status%20Page)](https://status.hamcloud.io/endpoints/external_gatus)&nbsp;&nbsp;
+[![Plex](https://img.shields.io/endpoint?url=https%3A%2F%2Fstatus.hamcloud.io%2Fapi%2Fv1%2Fendpoints%2Fexternal_plex%2Fhealth%2Fbadge.shields&style=for-the-badge&logo=plex&logoColor=white&label=Plex)](https://status.hamcloud.io/endpoints/external_plex)
+
+</div>
+
+<div align="center">
+
+[![Age-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hamcloud.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_age_days&style=flat-square&label=Age)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Uptime-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hamcloud.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_uptime_days&style=flat-square&label=Uptime)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Node-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hamcloud.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_node_count&style=flat-square&label=Nodes)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Pod-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hamcloud.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_pod_count&style=flat-square&label=Pods)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![CPU-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hamcloud.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_cpu_usage&style=flat-square&label=CPU)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Memory-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.hamcloud.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_memory_usage&style=flat-square&label=Memory)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+
+</div>
+
+---
+
+## 📖 Overview
+
+This is a mono repository for my home infrastructure and Kubernetes cluster. I try to adhere to Infrastructure as Code (IaC) and GitOps practices using tools like [Ansible](https://www.ansible.com/), [Terraform](https://www.terraform.io/), [Kubernetes](https://kubernetes.io/), [Flux](https://github.com/fluxcd/flux2), [Renovate](https://github.com/renovatebot/renovate), and [GitHub Actions](https://github.com/features/actions).
+
+---
+
+## ⛵ Kubernetes
+
+There is a template over at [onedr0p/cluster-template](https://github.com/onedr0p/cluster-template) if you want to try and follow along with some of the practices I use here.
+
+### Core Components
+
+- [cert-manager](https://github.com/cert-manager/cert-manager): Creates SSL certificates for services in my cluster.
+- [cilium](https://github.com/cilium/cilium): Internal Kubernetes container networking interface.
+- [cloudflared](https://github.com/cloudflare/cloudflared): Enables Cloudflare secure access to certain ingresses.
+- [external-dns](https://github.com/kubernetes-sigs/external-dns): Automatically syncs ingress DNS records to a DNS provider.
+- [external-secrets](https://github.com/external-secrets/external-secrets/): managed Kubernetes secrets using [Bitwarden](https://bitwarden.com/).
+- [ingress-nginx](https://github.com/kubernetes/ingress-nginx): Kubernetes ingress controller using NGINX as a reverse proxy and load balancer.
+- [sops](https://github.com/getsops/sops): Managed secrets for Kubernetes and Terraform which are commited to Git.
+- [tf-controller](https://github.com/weaveworks/tf-controller): Additional Flux component used to run Terraform from within a Kubernetes cluster.
+
+### GitOps
+
+[Flux](https://github.com/fluxcd/flux2) watches the clusters in my [kubernetes](./kubernetes/) folder (see Directories below) and makes the changes to my clusters based on the state of my Git repository.
+
+The way Flux works for me here is it will recursively search the `kubernetes/apps` folder until it finds the most top level `kustomization.yaml` per directory and then apply all the resources listed in it. That aforementioned `kustomization.yaml` will generally only have a namespace resource and one or many Flux kustomizations (`ks.yaml`). Under the control of those Flux kustomizations there will be a `HelmRelease` or other resources related to the application which will be applied.
+
+[Renovate](https://github.com/renovatebot/renovate) watches my **entire** repository looking for dependency updates, when they are found a PR is automatically created. When some PRs are merged Flux applies the changes to my cluster.
+
+### Directories
+
+This Git repository contains the following directories under [Kubernetes](./kubernetes/).
+
+```sh
+📁 kubernetes
+  ├── 📁 apps           # applications
+  ├── 📁 bootstrap      # bootstrap procedures
+  ├── 📁 flux           # core flux configuration
+  └── 📁 templates      # re-useable components
+```
+
+### Flux Workflow
+
+This is a high-level look how Flux deploys my applications with dependencies. Below there are 3 apps `postgres`, `authentik` and `weave-gitops`. `postgres` is the first app that needs to be running and healthy before `authentik` and `weave-gitops`. Once `postgres` is healthy `authentik` will be deployed and after that is healthy `weave-gitops` will be deployed.
+
+```mermaid
+graph TD;
+  id1>Kustomization: cluster] -->|Creates| id2>Kustomization: cluster-apps];
+  id2>Kustomization: cluster-apps] -->|Creates| id3>Kustomization: postgres];
+  id2>Kustomization: cluster-apps] -->|Creates| id6>Kustomization: authentik]
+  id2>Kustomization: cluster-apps] -->|Creates| id8>Kustomization: weave-gitops]
+  id2>Kustomization: cluster-apps] -->|Creates| id5>Kustomization: postgres-cluster]
+  id3>Kustomization: postgres] -->|Creates| id4[HelmRelease: postgres];
+  id5>Kustomization: postgres-cluster] -->|Depends on| id3>Kustomization: postgres];
+  id5>Kustomization: postgres-cluster] -->|Creates| id10[Postgres Cluster];
+  id6>Kustomization: authentik] -->|Creates| id7(HelmRelease: authentik);
+  id6>Kustomization: authentik] -->|Depends on| id5>Kustomization: postgres-cluster];
+  id8>Kustomization: weave-gitops] -->|Creates| id9(HelmRelease: weave-gitops);
+  id8>Kustomization: weave-gitops] -->|Depends on| id5>Kustomization: postgres-cluster];
+  id9(HelmRelease: weave-gitops) -->|Depends on| id7(HelmRelease: authentik);
+```
+
+### Networking
+
+<details>
+  <summary>TODO</summary>
+</details>
+
+---
+
+## ☁️ Cloud Dependencies
+
+While most of my infrastructure and workloads are self-hosted I do rely upon the cloud for certain key parts of my setup. This saves me from having to worry about two things. (1) Dealing with chicken/egg scenarios and (2) services I critically need whether my cluster is online or not.
+
+The alternative solution to these two problems would be to host a Kubernetes cluster in the cloud and deploy applications like [HCVault](https://www.vaultproject.io/), [Vaultwarden](https://github.com/dani-garcia/vaultwarden), [ntfy](https://ntfy.sh/), and [Gatus](https://gatus.io/). However, maintaining another cluster and monitoring another group of workloads is a lot more time and effort than I am willing to put in.
+
+| Service                                         | Use                                                               | Cost           |
+|-------------------------------------------------|-------------------------------------------------------------------|----------------|
+| [Bitwarden](https://bitwarden.com/)             | Secrets with [External Secrets](https://external-secrets.io/)     | Free           |
+| [Cloudflare](https://cloudflare.com/)           | DNS and Tunnel hosting                                            | Free           |
+| [GitHub](https://github.com/)                   | Hosting this repository and continuous integration/deployments    | Free           |
+| [Namecheap](https://namecheap.com/)             | Domain registration                                               | $45/yr         |
+| [Proton](https://proton.com/)                   | Email hosting                                                     | $120/yr        |
+| [Pushover](https://pushover.net/)               | Kubernetes Alerts and application notifications                   | $5 OTP         |
+| [Slack](https://slack.com/)                     | Chat                                                              | Free           |
+|                                                 |                                                                   | Total: ~$15/mo |
+
+---
+
+## 🌐 DNS
+
+### Home DNS
+
+On my Opnsense router I have [unbound](https://nlnetlabs.nl/projects/unbound). In my cluster `external-dns` is deployed with the `RFC2136` provider which syncs DNS records to `unbound`.
+
+### Public DNS
+
+Outside the `external-dns` instance mentioned above another instance is deployed in my cluster and configured to sync DNS records to [Cloudflare](https://www.cloudflare.com/). The only ingress this `external-dns` instance looks at to gather DNS records to put in `Cloudflare` are ones that have an ingress class name of `external` and contain an ingress annotation `external-dns.alpha.kubernetes.io/target`.
+
+---
+
+## 🔧 Hardware
+
+| Device                      | Count | OS Disk Size | Data Disk Size               | Ram   | Operating System | Purpose                |
+|-----------------------------|-------|--------------|------------------------------|-------|------------------|------------------------|
+| Dell 7070 Micro             | 1     | 256GB SSD    |                              | 32GB  | Ubuntu LTS       | Kubernetes Controllers |
+| HP ELITEDESK 800 G5 MINI    | 3     | 256GB SSD    |                              | 16GB  | Ubuntu LTS       | Kubernetes Workers     |
+| VM                          | 2     | 100GB SSD    |                              | 32GB  | Ubuntu LTS       | Kubernetes Controller  |
+| SMC Microtower Intel Atom   | 1     | 16Gb         | 47TB HDD Moosefs             | 16GB  | Ubuntu LTS       | Storage Server         |
+| SMC MicroTower AMD Epyc     | 1     | 16Gb         | 2TB SSD                      | 32GB  | Proxmox          | VM Host
+| Synology DS1821+            | 1     | -            | 4TB NVME, 98TB HDD Moosefs   | 32GB  | DSM 7.2          | VM Host/Storage Server |
+| SMC 36 Bay Chass            | 1     | 64Gb         | 4TB NVME, 115TB HDD Moosefs  | 192GB | Proxmox          | VM Host/Storage        |
+| Qotom Q355G4                | 1     | 256GB NVMe   | -                            | 8GB   | Opnsense         | Router                 |
+| Mikrotik CSS610-8G-2S+IN    | 1     | -            | -                            | -     | -                | 10Gb Switch            |
+| Aruba S2500                 | 1     | -            | -                            | -     | -                | 1Gb PoE Switch         |
+| Cyberpower CP1500AVRLCD3    | 2     | -            | -                            | -     | -                | UPS                    |
+
+---
+
+## 🤝 Gratitude and Thanks
+
+Thanks to all the people who donate their time to the [Home Operations](https://discord.gg/home-operations) Discord community. Be sure to check out [kubesearch.dev](https://kubesearch.dev/) for ideas on how to deploy applications or get ideas on what you may deploy.
