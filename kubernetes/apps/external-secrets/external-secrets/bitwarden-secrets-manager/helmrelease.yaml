@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/tparker00/bws-cache
-              tag: v0.1.5.9-devel
+              tag: v0.1.7-devel
             env:
               BWS_CACHE_SECRET_TTL: 30m
               BWS_CACHE_LOG_LEVEL: "DEBUG"
@@ -55,6 +55,16 @@ spec:
         ports:
           http:
             port: 8080
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 20s
+        serviceName: bws-cache-metrics
     ingress:
       app:
         className: internal
