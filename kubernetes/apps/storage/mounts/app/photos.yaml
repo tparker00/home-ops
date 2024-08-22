@@ -1,0 +1,59 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: photos-ro
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadOnlyMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: photos
+    volumeAttributes:
+      mfsSubDir: "/photos"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: photos-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: photos
+    volumeAttributes:
+      mfsSubDir: "/photos"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: photos-ro
+  namespace: media
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: photos-ro
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 1Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: photos-rw
+  namespace: media
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: photos-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

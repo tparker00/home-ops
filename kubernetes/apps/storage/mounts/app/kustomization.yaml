@@ -8,6 +8,7 @@ resources:
   - ./minio.yaml
   - ./movies.yaml
   - ./music.yaml
+  - ./photos.yaml
   - ./postgres-backup.yaml
   - ./qb.yaml
   - ./sabnzbd.yaml
