@@ -6,15 +6,17 @@ metadata:
   name: postgres
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:16.3-4
+  imageName: ghcr.io/ahinko/postgres-extended:16.3.9
   primaryUpdateStrategy: unsupervised
   storage:
-    size: 30Gi
+    size: 50Gi
     storageClass: local-hostpath
   superuserSecret:
     name: cloudnative-pg-secret
   enableSuperuserAccess: true
   postgresql:
+    shared_preload_libraries:
+      - "vectors.so"
     parameters:
       max_connections: "1000"
       max_slot_wal_keep_size: 5GB
