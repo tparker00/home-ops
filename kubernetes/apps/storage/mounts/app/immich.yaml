@@ -1,0 +1,29 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: immich-rw
+spec:
+  storageClassName: "moosefs-storage"
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: immich
+    volumeAttributes:
+      mfsSubDir: "/immich"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: immich-rw
+  namespace: media
+spec:
+  storageClassName: "moosefs-storage"
+  volumeName: immich-rw
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

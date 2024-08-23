@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./books.yaml
   - ./downloads.yaml
+  - ./immich.yaml
   - ./minio.yaml
   - ./movies.yaml
   - ./music.yaml

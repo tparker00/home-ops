@@ -128,6 +128,11 @@ spec:
     persistence:
       library:
         type: persistentVolumeClaim
-        existingClaim: photos-rw
+        existingClaim: immich-rw
         globalMounts:
           - path: *mediaLocation
+      external:
+        type: persistentVolumeClaim
+        existingClaim: photos-rw
+        globalMounts:
+          - path: /data/external
