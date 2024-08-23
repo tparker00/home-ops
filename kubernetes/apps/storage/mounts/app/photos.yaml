@@ -12,7 +12,7 @@ spec:
     driver: csi.moosefs.com
     volumeHandle: photos
     volumeAttributes:
-      mfsSubDir: "/photos"
+      mfsSubDir: "/pictures"
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -28,7 +28,7 @@ spec:
     driver: csi.moosefs.com
     volumeHandle: photos
     volumeAttributes:
-      mfsSubDir: "/photos"
+      mfsSubDir: "/pictures"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
