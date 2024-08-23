@@ -39,6 +39,8 @@ spec:
 
         pod:
           enableServiceLinks: false
+          nodeSelector:
+                  feature.node.kubernetes.io/coral-tpu: "true"
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname
