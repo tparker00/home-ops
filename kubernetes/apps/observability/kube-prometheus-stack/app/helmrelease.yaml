@@ -205,8 +205,9 @@ spec:
             metrics_path: /snmp
             params:
               auth:
-                - ${SNMP_AUTH}
-              module: [if_mib]
+                - public_v2
+              module:
+                - if_mib
             relabel_configs:
               - source_labels: [__address__]
                 target_label: __param_target
