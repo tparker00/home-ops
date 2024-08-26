@@ -9,6 +9,7 @@ resources:
   - ./cloudnative-pg.yaml
   - ./coredns.yaml
   - ./democratic-csi.yaml
+  - ./descheduler.yaml
   - ./dragonfly-charts.yaml
   - ./fairwinds-charts.yaml
   - ./grafana.yaml
