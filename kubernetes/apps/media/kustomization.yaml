@@ -9,7 +9,7 @@ resources:
   - ./immich/ks.yaml
   - ./jellyseerr/ks.yaml
   #- ./kavita/ks.yaml
-  #- ./komga/ks.yaml
+  - ./komga/ks.yaml
   - ./navidrome/ks.yaml
   - ./plex/ks.yaml
   - ./stash/ks.yaml
