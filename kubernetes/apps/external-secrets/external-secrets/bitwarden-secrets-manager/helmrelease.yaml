@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/tparker00/bws-cache
-              tag: v0.1.7.3-devel
+              tag: v0.1.7.4-devel
             env:
               BWS_CACHE_SECRET_TTL: 30m
               BWS_CACHE_LOG_LEVEL: "DEBUG"
