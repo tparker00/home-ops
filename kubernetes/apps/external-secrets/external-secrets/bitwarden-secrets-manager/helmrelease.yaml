@@ -30,20 +30,39 @@ spec:
           app:
             image:
               repository: ghcr.io/tparker00/bws-cache
-              tag: v0.1.7.4-devel
+              tag: v0.1.7.5
             env:
-              BWS_CACHE_SECRET_TTL: 30m
-              BWS_CACHE_LOG_LEVEL: "DEBUG"
+              BWS_CACHE_SECRET_TTL: 15m
+              BWS_CACHE_LOG_LEVEL: "INFO"
               BWS_CACHE_ORG_ID:
                 valueFrom:
                   secretKeyRef:
                     name: bws-secret
                     key: ORG_ID
-            securityContext: &securityContext
+            securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: {drop: ["ALL"]}
-            resources: &resources
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: &port 8080
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
               requests:
                 cpu: 10m
                 memory: 10Mi
@@ -54,7 +73,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: 8080
+            port: *port
     serviceMonitor:
       main:
         enabled: true
