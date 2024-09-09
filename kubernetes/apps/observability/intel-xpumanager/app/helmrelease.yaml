@@ -114,14 +114,14 @@ spec:
         type: hostPath
         hostPath: /var/lib/kubelet/pod-resources
         advancedMounts:
-          xpumanager:
+          intel-xpumanager:
             xpumanager:
               - path: /var/lib/kubelet/pod-resources
       devdri:
         type: hostPath
         hostPath: /dev/dri
         advancedMounts:
-          xpumanager:
+          intel-xpumanager:
             exporter:
               - path: /dev/dri
                 readOnly: true
