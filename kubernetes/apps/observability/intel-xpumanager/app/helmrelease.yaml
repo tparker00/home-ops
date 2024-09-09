@@ -31,7 +31,7 @@ spec:
       intel-xpumanager:
         type: daemonset
         containers:
-          xpumanager:
+          intel-xpumanager:
             image:
               repository: intel/xpumanager
               tag: v1.2.27
@@ -115,7 +115,7 @@ spec:
         hostPath: /var/lib/kubelet/pod-resources
         advancedMounts:
           intel-xpumanager:
-            xpumanager:
+            intel-xpumanager:
               - path: /var/lib/kubelet/pod-resources
       devdri:
         type: hostPath
