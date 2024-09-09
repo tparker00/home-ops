@@ -6,6 +6,7 @@ resources:
   - ./exporters
   - ./gatus/ks.yaml
   - ./grafana/ks.yaml
+  - ./intel-xpumanager/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./kromgo/ks.yaml
   - ./prometheus-operator-crds/ks.yaml
