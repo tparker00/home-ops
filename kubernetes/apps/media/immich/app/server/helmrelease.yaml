@@ -117,7 +117,7 @@ spec:
         nameOverride: microservices-metrics
         controller: *app
         ports:
-          micro-metrics:
+          microservices-metrics:
             port: 8082
 
 
