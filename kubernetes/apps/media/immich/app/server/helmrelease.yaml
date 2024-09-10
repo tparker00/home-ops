@@ -124,7 +124,7 @@ spec:
     serviceMonitor:
       main:
         enabled: true
-        serviceName: immich-metrics
+        serviceName: immich-server-metrics
         endpoints:
           - port: metrics
             scheme: http
@@ -133,7 +133,7 @@ spec:
             scrapeTimeout: 20s
       micro-metrics:
         enabled: true
-        serviceName: immich-microservices-metrics
+        serviceName: immich-server-microservices-metrics
         endpoints:
           - port: microservices-metrics
             scheme: http
