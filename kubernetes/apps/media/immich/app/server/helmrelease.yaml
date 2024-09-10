@@ -131,6 +131,10 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 20s
+      micro-metrics:
+        enabled: true
+        serviceName: immich-microservices-metrics
+        endpoints:
           - port: microservices-metrics
             scheme: http
             path: /metrics
