@@ -128,12 +128,12 @@ spec:
         endpoints:
           - port: metrics
             scheme: http
-            path: /
+            path: /metrics
             interval: 1m
             scrapeTimeout: 20s
           - port: microservices-metrics
             scheme: http
-            path: /
+            path: /metrics
             interval: 1m
             scrapeTimeout: 20s
     ingress:
