@@ -31,7 +31,7 @@ spec:
           main:
             image:
               repository: ghcr.io/tparker00/kapowarr
-              tag: de9f73aff774a1c667298fa8e7fcebc448cc5d8d
+              tag: V1.0.0@sha256:4b2a50427a03fde9ad071b336a900c630e5eafcfff07bc98f4d53fe8136f4bcd
             env:
               TZ: ${TIMEZONE}
             resources:
