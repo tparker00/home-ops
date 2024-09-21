@@ -34,8 +34,7 @@ spec:
             image:
               repository: ghcr.io/lobaro/restic-backup-docker
               tag: v1.3.2
-            command:
-              - /bin/sh
+            command: [ "/bin/sh", "-c", "while true; do sleep 36000; done" ]
             env:
               TZ: ${TIMEZONE}
             envFrom:
