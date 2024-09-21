@@ -26,6 +26,21 @@ spec:
     keepHistory: false
   values:
     controllers:
+      restic-shell:
+        type: deployment
+        replicas: 0
+        containers:
+          app:
+            image:
+              repository: ghcr.io/lobaro/restic-backup-docker
+              tag: v1.3.2
+            command:
+              - /bin/sh
+            env:
+              TZ: ${TIMEZONE}
+            envFrom:
+              - secretRef:
+                  name: *app
       restic:
         type: cronjob
         annotations:
