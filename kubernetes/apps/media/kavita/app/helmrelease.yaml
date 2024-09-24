@@ -89,7 +89,7 @@ spec:
         existingClaim: *app
         advancedMounts:
           kavita:
-            app:
+            main:
               - path: /kavita/config
       media:
         enabled: true
