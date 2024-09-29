@@ -98,7 +98,7 @@ spec:
           reannounce:
             image:
               repository: ghcr.io/buroa/qbtools
-              tag: v0.16.10
+              tag: v0.17.0
             args: ["reannounce", "-s", "localhost", "-p", "8080"]
     pod:
       affinity:
