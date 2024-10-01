@@ -78,5 +78,5 @@ spec:
         existingClaim: *app
         advancedMounts:
           wizarr:
-            app:
+            main:
               - path: /data/database
