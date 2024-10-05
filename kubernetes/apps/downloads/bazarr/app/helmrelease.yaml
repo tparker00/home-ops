@@ -43,7 +43,7 @@ spec:
           main:
             image:
               repository: ghcr.io/tparker00/bazarr
-              tag: 1.4.4@sha256:d6301a22e502190687ddf699515548d82d9eebd760c43309875336ffd181fc2d
+              tag: 1.4.5@sha256:a1690d6263cfa1683915a58ceb5ec6bd021a1b148f70372f87631a66c5e5c3d5
             env:
               TZ: ${TIMEZONE}
             envFrom: *envFrom
