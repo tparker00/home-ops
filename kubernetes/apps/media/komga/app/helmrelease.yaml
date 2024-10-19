@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/gotson/komga
-              tag: "1.14.0"
+              tag: "1.14.1"
             env:
               TZ: ${TIMEZONE}
               SERVER_PORT: &port 8080
