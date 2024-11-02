@@ -64,7 +64,7 @@ spec:
               LOG_LEVEL: verbose
               IMMICH_MEDIA_LOCATION: &mediaLocation /usr/src/app/upload
               # Ports
-              SERVER_PORT: &port 3001
+              IMMICH_PORT: &port 3001
               IMMICH_METRICS: true
             envFrom: *envFrom
             resources:
@@ -87,7 +87,7 @@ spec:
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
-                  failureThreshold: 3
+                  failureThreshold: 30
               readiness: *probes
               startup:
                 enabled: true
