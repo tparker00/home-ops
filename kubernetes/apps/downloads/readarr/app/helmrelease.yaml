@@ -45,7 +45,7 @@ spec:
             nameOverride: *app
             image:
               repository: ghcr.io/tparker00/readarr-develop
-              tag: 0.4.2.2653@sha256:c1b54db7347fedde56bfb9a9874156b5952408c3a8e49c3ae5e75594855837c6
+              tag: 0.4.3.2665@sha256:8197f03fdf6968ec62c0f73b197497cf076af4e7d5ef2a7d4cc613d6808024e7
             env:
               TZ: ${TIMEZONE}
               READARR__INSTANCE_NAME: Readarr
