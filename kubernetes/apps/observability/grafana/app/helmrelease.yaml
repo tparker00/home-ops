@@ -30,7 +30,7 @@ spec:
   values:
     extraInitContainers:
       - name: init-db
-        image: ghcr.io/tparker00/postgres-init:16.4
+        image: ghcr.io/tparker00/postgres-init:16.6
         imagePullPolicy: IfNotPresent
         envFrom:
           - secretRef:
