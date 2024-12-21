@@ -35,7 +35,7 @@ spec:
             dependsOn: gluetun
             image:
               repository: ghcr.io/tparker00/qbittorrent
-              tag: 5.0.2@sha256:4d6bc5ac7e8d062aaf816a82c88b21e3da8c4acb5fe4698266dc853e85176bb3
+              tag: 5.0.3@sha256:2e19e15ddd89c448e8628e58c80571e540dfb2a40576299c4f06d2f8d384df23
             env:
               TZ: ${TIMEZONE}
               QBITTORRENT__PORT: &port 8080
