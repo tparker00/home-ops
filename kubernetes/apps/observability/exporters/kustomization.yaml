@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./blackbox-exporter/ks.yaml
   - ./speedtest-exporter/ks.yaml
+  - ./node-exporter/ks.yaml
