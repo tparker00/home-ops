@@ -35,7 +35,7 @@ subsets:
 apiVersion: v1
 kind: Service
 metadata:
-  name: moosefs
+  name: tenchi
 spec:
   ports:
     - name: https
