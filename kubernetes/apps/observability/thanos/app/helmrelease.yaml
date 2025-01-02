@@ -87,8 +87,8 @@ spec:
       replicaCount: 2
     compactor:
       enabled: true
+      concurrency: 4
       extraFlags:
-        - --compact.concurrency=4
         - --delete-delay=30m
       resources:
         requests:
