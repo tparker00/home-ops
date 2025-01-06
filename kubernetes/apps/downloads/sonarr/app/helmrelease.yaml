@@ -51,7 +51,6 @@ spec:
               SONARR__AUTHENTICATION_METHOD: External
               SONARR__AUTHENTICATION_REQUIRED: DisabledForLocalAddresses
               SONARR__INSTANCE_NAME: Sonarr
-              SONARR__PORT: &port 80
               SONARR__LOG_LEVEL: info
             envFrom: *envFrom
             resources:
@@ -67,7 +66,7 @@ spec:
                 spec:
                   httpGet:
                     path: /ping
-                    port: *port
+                    port: 8989
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -97,7 +96,7 @@ spec:
         primary: true
         ports:
           http:
-            port: *port
+            port: 8989
       metrics:
         nameOverride: metrics
         controller: *app
