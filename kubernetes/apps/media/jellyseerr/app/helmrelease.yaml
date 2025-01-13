@@ -57,17 +57,15 @@ spec:
     ingress:
       main:
         enabled: true
-        className: external
+        className: internal
         annotations:
-          external-dns/is-public: "true"
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Jellyseerr"
           gethomepage.dev/group: "Media Management"
           gethomepage.dev/icon: "jellyseerr"
           gethomepage.dev/description: "Request management and media discovery tool."
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
         hosts:
-          - host: &host "requests.${SECRET_DOMAIN}"
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
