@@ -224,7 +224,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: registry.moosefs.com:443/moosefs-csi-plugin:0.9.6-3.0.117
+          image: registry.moosefs.com:443/moosefs-csi-plugin:0.9.7-4.56.6
           args:
             - "--mode=controller"
             - "--csi-endpoint=$(CSI_ENDPOINT)"
@@ -233,6 +233,7 @@ spec:
             - "--root-dir=$(ROOT_DIR)"
             - "--plugin-data-dir=$(WORKING_DIR)"
             - "--mfs-logging=$(MFS_LOGGING)"
+            - "--mfs-mount-options=$(MFS_MOUNT_OPTIONS)"
           env:
             - name: CSI_ENDPOINT
               value: unix:///var/lib/csi/sockets/pluginproxy/csi.sock
@@ -261,6 +262,11 @@ spec:
                 secretKeyRef:
                   name: csi-moosefs-config
                   key: mfs_logging
+            - name: MFS_MOUNT_OPTIONS
+              valueFrom:
+                secretKeyRef:
+                  name: csi-moosefs-config
+                  key: mfs_mount_options
           imagePullPolicy: "Always"
           volumeMounts:
             - name: socket-dir
@@ -316,7 +322,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: registry.moosefs.com:443/moosefs-csi-plugin:0.9.6-3.0.117
+          image: registry.moosefs.com:443/moosefs-csi-plugin:0.9.7-4.56.6
           args:
             - "--mode=node"
             - "--csi-endpoint=$(CSI_ENDPOINT)"
@@ -327,6 +333,7 @@ spec:
             - "--plugin-data-dir=$(WORKING_DIR)"
             - "--mount-points-count=$(MOUNT_COUNT)"
             - "--mfs-logging=$(MFS_LOGGING)"
+            - "--mfs-mount-options=$(MFS_MOUNT_OPTIONS)"
           env:
             - name: CSI_ENDPOINT
               value: unix:///csi/csi.sock
@@ -364,6 +371,11 @@ spec:
                 secretKeyRef:
                   name: csi-moosefs-config
                   key: mfs_logging
+            - name: MFS_MOUNT_OPTIONS
+              valueFrom:
+                secretKeyRef:
+                  name: csi-moosefs-config
+                  key: mfs_mount_options
           imagePullPolicy: "Always"
           volumeMounts:
             - name: plugin-dir
