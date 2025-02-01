@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/tparker00/sabnzbd
-              tag: 4.4.1@sha256:2341b863137d7dd17e37ab77b910ba99df07f0fdab921edeff4ec6da618988f6
+              tag: 4.4.1@sha256:802409141d54b5bf9a9413ba6c251d3ce0a5042e816fa3cd25fa12e5e4124713
             env:
               TZ: ${TIMEZONE}
               SABNZBD__PORT: &port 8080
