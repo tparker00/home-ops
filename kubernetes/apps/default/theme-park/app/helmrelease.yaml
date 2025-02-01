@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: ghcr.io/tparker00/theme-park
-              tag: 1.19.1@sha256:f68b03a839a6b2f1a49cd0fa5e52fb942ea17585d49aca8ae79c129e2e56843b
+              tag: 1.19.1@sha256:c3c54635597acda8a5cb9772c077f29052eb9d2f57ca9eafd44e881600aa0d43
             resources:
               requests:
                 cpu: 15m
