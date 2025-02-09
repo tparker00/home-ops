@@ -89,4 +89,4 @@ spec:
               port: http
         tls:
         - hosts:
-          - *hosts
+          - *host
