@@ -35,7 +35,7 @@ spec:
               repository: stashapp/stash
               tag: v0.27.2
               pullPolicy: IfNotPresent
-            command: /bin/sh -c 'apk --no-cache add intel-media-driver && stash'
+            command: ['/bin/sh', '-c', 'apk --no-cache add intel-media-driver && stash']
             env:
               TZ: ${TIMEZONE}
               STASH_STASH: /data
