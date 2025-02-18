@@ -29,6 +29,9 @@ spec:
       stash:
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            supplementalGroups: [44, 105, 109, 226, 10000]
         containers:
           main:
             image:
