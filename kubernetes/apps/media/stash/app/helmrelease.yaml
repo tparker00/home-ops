@@ -42,7 +42,7 @@ spec:
               STASH_CACHE: /root/.stash/cache
             resources:
               requests:
-                cpu: 15m
+                cpu: 500m
                 memory: 512Mi
                 gpu.intel.com/i915: 1
               limits:
