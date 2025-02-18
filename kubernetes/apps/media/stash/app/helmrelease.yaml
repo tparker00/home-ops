@@ -32,8 +32,8 @@ spec:
         containers:
           main:
             image:
-              repository: stashapp/stash
-              tag: v0.27.2
+              repository: ghcr.io/nerethos/stash
+              tag: lite-v0.27.2-de7596d
               pullPolicy: IfNotPresent
             command: ['/bin/sh', '-c', 'apk --no-cache add intel-media-driver && stash']
             env:
