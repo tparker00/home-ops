@@ -41,7 +41,7 @@ spec:
           main:
             image:
               repository: ghcr.io/bitmagnet-io/bitmagnet
-              tag: v0.9.5
+              tag: v0.10.0
             args:
             - worker
             - run
