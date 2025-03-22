@@ -43,7 +43,7 @@ spec:
             nameOverride: *app
             image:
               repository: ghcr.io/tparker00/radarr
-              tag: 5.19.3.9730@sha256:59103227016b38c9b43d0edd6711a9969278ff94101f0afa6a8c6e484ae2f81d
+              tag: 5.20.2.9777@sha256:7cb9aade23b3ca26761ffb6dbab1d6e250e034e8bae0bc6ef54e8598cbddb869
             env:
               TZ: ${TIMEZONE}
               RADARR__AUTHENTICATION_METHOD: External
