@@ -35,10 +35,9 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/nerethos/stash
-              tag: lite-v0.27.2-de7596d
+              repository: ghcr.io/feederbox826/stash-s6
+              tag: hwaccel@sha256:c265c03edb8ca658ca495ba74798f769ab02836d7672361601bfbab298b77055
               pullPolicy: IfNotPresent
-            command: ['/bin/sh', '-c', 'apk --no-cache add intel-media-driver && stash']
             env:
               TZ: ${TIMEZONE}
               STASH_STASH: /data
