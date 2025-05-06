@@ -39,7 +39,7 @@ spec:
               repository: ghcr.io/squat/generic-device-plugin
               tag: 6475ff5d0927c0f25b3a39a661aa657ca190d0ef
             args:
-              - device
+              - --device
               - |
                 name: tun
                 groups:
