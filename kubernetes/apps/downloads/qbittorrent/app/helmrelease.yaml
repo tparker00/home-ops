@@ -70,7 +70,6 @@ spec:
                 cpu: 100m
               limits:
                 memory: 8Gi
-                squat.ai/tun: 1
           gluetun:
             image:
               repository: ghcr.io/qdm12/gluetun
@@ -87,6 +86,9 @@ spec:
               capabilities:
                 add:
                   - NET_ADMIN
+            resources:
+              limits:
+                squat.ai/tun: 1
           port-forward:
             dependsOn: gluetun
             image:
