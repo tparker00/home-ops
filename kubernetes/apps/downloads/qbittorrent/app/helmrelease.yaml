@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.0.4
+      version: 3.7.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -26,13 +26,44 @@ spec:
       qbittorrent:
         annotations:
           reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: qbittorrent,qbittorrent-gluetun
         pod:
           securityContext:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+        initContainers:
+          dnsdist:
+            image:
+              repository: docker.io/powerdns/dnsdist-19
+              tag: 1.9.9@sha256:3c50b8cf114b61f06a5b66319ab9c74c227072123c4e5871b7acbd21af5d097c
+            restartPolicy: Always
+          gluetun:
+            dependsOn:
+              - dnsdist
+            image:
+              repository: ghcr.io/qdm12/gluetun
+              tag: v3.40.0@sha256:2b42bfa046757145a5155acece417b65b4443c8033fb88661a8e9dcf7fda5a00
+            restartPolicy: Always
+            env:
+              VPN_SERVICE_PROVIDER: protonvpn
+              VPN_PORT_FORWARDING_PROVIDER: protonvpn
+              VPN_PORT_FORWARDING: "on"
+              FIREWALL_INPUT_PORTS: *port
+              DOT: "off"
+              DNS_ADDRESS: 127.0.0.2
+              HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
+            envFrom:
+              - secretRef:
+                  name: gluetun-secret
+            securityContext:
+              capabilities: { add: ["NET_ADMIN"] }
+              allowPrivilegeEscalation: false
+            resources:
+              limits:
+                squat.ai/tun: "1"
         containers:
-          main:
-            dependsOn: gluetun
+          app:
+            nameOverride: *app
             image:
               repository: ghcr.io/tparker00/qbittorrent
               tag: 5.1.0@sha256:3b9e53979861ea48f13644f5e75f60a1e940b4553e74e9da2c600da0aba2dabc
@@ -70,34 +101,30 @@ spec:
                 cpu: 100m
               limits:
                 memory: 8Gi
-          gluetun:
-            image:
-              repository: ghcr.io/qdm12/gluetun
-              tag: v3.40.0
-            env:
-              VPN_SERVICE_PROVIDER: protonvpn
-              VPN_PORT_FORWARDING: "on"
-              DOT: "off"
-              FIREWALL_INPUT_PORTS: *port
-            envFrom:
-              - secretRef:
-                  name: gluetun-secret
-            securityContext:
-              capabilities:
-                add:
-                  - NET_ADMIN
-            resources:
-              limits:
-                squat.ai/tun: 1
           port-forward:
-            dependsOn: main
             image:
-              repository: docker.io/patrickaclark/gluetun-qbittorrent-port-manager
-              tag: "0.1.2"
+              repository: ghcr.io/bjw-s-labs/gluetun-qb-port-sync
+              tag: 0.0.4@sha256:5fd1da9f2d6509c00b6d6f4b3b7ada6fa097b8134040fc8965b6c1dc8584dc6b
             env:
-              QBITTORRENT_SERVER: localhost
-              QBITTORRENT_PORT: *port
-              PORT_FORWARDED: "/tmp/gluetun/forwarded_port"
+              GLUETUN_CONTROL_SERVER_HOST: localhost
+              GLUETUN_CONTROL_SERVER_PORT: 8000
+              GLUETUN_CONTROL_SERVER_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: qbittorrent
+                    key: GLUETUN_CONTROL_SERVER_API_KEY
+              QBITTORRENT_HOST: localhost
+              QBITTORRENT_WEBUI_PORT: *port
+              CRON_ENABLED: true
+              CRON_SCHEDULE: "*/5 * * * *"
+              LOG_TIMESTAMP: false
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
           reannounce:
             image:
               repository: ghcr.io/buroa/qbtools
@@ -114,7 +141,7 @@ spec:
                     values: ["sabnzbd"]
               topologyKey: kubernetes.io/hostname
     service:
-      main:
+      app:
         controller: *app
         primary: true
         ports:
@@ -126,7 +153,7 @@ spec:
           http:
             port: *port
     ingress:
-      main:
+      app:
         enabled: true
         className: internal
         annotations:
@@ -156,17 +183,31 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /config
+      empty-config:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            port-forward:
+              - path: /config
       data:
         enabled: true
         existingClaim: qb-rw
         globalMounts:
           - path: /media/qbittorrent
-      gluetun-data:
-        type: emptyDir
+      gluetun-auth:
+        type: secret
+        name: qbittorrent-gluetun
         advancedMounts:
           qbittorrent:
             gluetun:
-              - path: /tmp/gluetun
-            port-forward:
-              - path: /tmp/gluetun
+              - path: *gluetunAuthPath
+                subPath: auth.toml
+      dnsdist:
+        type: configMap
+        name: qbittorrent-dnsdist
+        advancedMounts:
+          qbittorrent:
+            dnsdist:
+              - path: /etc/dnsdist/dnsdist.conf
+                subPath: dnsdist.conf
                 readOnly: true
