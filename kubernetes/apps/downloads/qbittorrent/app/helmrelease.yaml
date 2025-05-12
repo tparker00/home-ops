@@ -31,7 +31,7 @@ spec:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
         containers:
-          qbittorrent:
+          main:
             dependsOn: gluetun
             image:
               repository: ghcr.io/tparker00/qbittorrent
@@ -90,7 +90,7 @@ spec:
               limits:
                 squat.ai/tun: 1
           port-forward:
-            dependsOn: qbittorrent
+            dependsOn: main
             image:
               repository: docker.io/patrickaclark/gluetun-qbittorrent-port-manager
               tag: "0.1.2"
