@@ -23,7 +23,7 @@ spec:
       retries: 3
   values:
     controllers:
-      qbittorrent:
+      main:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
@@ -31,7 +31,7 @@ spec:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
         containers:
-          main:
+          qbittorrent:
             dependsOn: gluetun
             image:
               repository: ghcr.io/tparker00/qbittorrent
@@ -164,7 +164,7 @@ spec:
       gluetun-data:
         type: emptyDir
         advancedMounts:
-          qbittorrent:
+          main:
             gluetun:
               - path: /tmp/gluetun
             port-forward:
