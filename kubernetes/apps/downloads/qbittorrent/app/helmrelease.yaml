@@ -48,7 +48,7 @@ spec:
               VPN_SERVICE_PROVIDER: protonvpn
               VPN_PORT_FORWARDING_PROVIDER: protonvpn
               VPN_PORT_FORWARDING: "on"
-              FIREWALL_INPUT_PORTS: *port
+              FIREWALL_INPUT_PORTS: &port 8080
               DOT: "off"
               DNS_ADDRESS: 127.0.0.2
               HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
@@ -69,7 +69,7 @@ spec:
               tag: 5.1.0@sha256:3b9e53979861ea48f13644f5e75f60a1e940b4553e74e9da2c600da0aba2dabc
             env:
               TZ: ${TIMEZONE}
-              QBITTORRENT__PORT: &port 8080
+              QBITTORRENT__PORT: *port
               QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
               QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
                 10.68.0.0/16, 10.86.0.0/26, 10.10.5.0/24, 192.168.1.0/24
