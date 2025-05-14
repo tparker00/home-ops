@@ -5,4 +5,6 @@ metadata:
   name: cluster-settings
   namespace: flux-system
 data:
-  SETTING_EXAMPLE: Global settings for your cluster go in this file, this file is NOT encrypted
+  K8S_CLUSTER_CIDR: 10.68.0.0/16
+  K8S_POD_CIDR: 10.68.0.0/16
+  K8S_SERVICE_CIDR: 10.86.0.0/16

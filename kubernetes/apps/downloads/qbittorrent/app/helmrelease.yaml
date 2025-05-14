@@ -52,6 +52,7 @@ spec:
               DOT: "off"
               DNS_ADDRESS: 127.0.0.2
               HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
+              FIREWALL_OUTBOUND_SUBNETS: ${K8S_CLUSTER_CIDR},${K8S_SERVICE_CIDR}
             envFrom:
               - secretRef:
                   name: gluetun-secret
