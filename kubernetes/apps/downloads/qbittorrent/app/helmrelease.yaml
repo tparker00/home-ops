@@ -42,8 +42,6 @@ spec:
               VPN_PORT_FORWARDING_PROVIDER: protonvpn
               VPN_PORT_FORWARDING: "on"
               FIREWALL_INPUT_PORTS: &port 8080
-              DOT: "off"
-              DNS_ADDRESS: 127.0.0.2
               HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
             envFrom:
               - secretRef:
