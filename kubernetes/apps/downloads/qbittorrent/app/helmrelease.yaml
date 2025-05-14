@@ -32,14 +32,7 @@ spec:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
         initContainers:
-          dnsdist:
-            image:
-              repository: docker.io/powerdns/dnsdist-19
-              tag: 1.9.9@sha256:3c50b8cf114b61f06a5b66319ab9c74c227072123c4e5871b7acbd21af5d097c
-            restartPolicy: Always
           gluetun:
-            dependsOn:
-              - dnsdist
             image:
               repository: ghcr.io/qdm12/gluetun
               tag: v3.40.0@sha256:2b42bfa046757145a5155acece417b65b4443c8033fb88661a8e9dcf7fda5a00
@@ -207,12 +200,3 @@ spec:
             gluetun:
               - path: *gluetunAuthPath
                 subPath: auth.toml
-      dnsdist:
-        type: configMap
-        name: qbittorrent-dnsdist
-        advancedMounts:
-          qbittorrent:
-            dnsdist:
-              - path: /etc/dnsdist/dnsdist.conf
-                subPath: dnsdist.conf
-                readOnly: true
