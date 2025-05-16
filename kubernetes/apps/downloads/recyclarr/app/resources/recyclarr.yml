@@ -37,7 +37,6 @@ sonarr:
         assign_scores_to:
           - name: WEB-1080p
           - name: WEB-2160p
-
       # Block DV, boost HDR10+
       - trash_ids:
           - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
