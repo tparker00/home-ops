@@ -42,14 +42,14 @@ spec:
             env:
               UN_WEBSERVER_METRICS: true
               UN_SONARR_0_URL: http://sonarr.downloads.svc.cluster.local:8989
-              UN_SONARR_0_PATHS_0: /media/downloads/complete/tv
+              UN_SONARR_0_PATHS_0: /media/qbittorrent/downloads
               UN_RADARR_0_URL: http://radarr.downloads.svc.cluster.local
-              UN_RADARR_0_PATHS_0: /media/downloads/complete/movie
+              UN_RADARR_0_PATHS_0: //media/qbittorrent/downloads
               UN_LIDARR_0_URL: http://lidarr.downloads.svc.cluster.local:8080
-              UN_LIDARR_0_PATHS_0: /media/downloads/complete/music
+              UN_LIDARR_0_PATHS_0: /media/qbittorrent/downloads
             envFrom:
               - secretRef:
-                  name: unpackerr
+                  name: unpackerr-secret
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -81,10 +81,8 @@ spec:
             interval: 1m
             scrapeTimeout: 10s
     persistence:
-      media:
-        type: nfs
-        server: singularity.milkyway
-        path: /volume1/media
+      data:
+        enabled: true
+        existingClaim: qb-rw
         globalMounts:
-          - path: /media
-            readOnly: true
+          - path: /media/qbittorrent
