@@ -1,0 +1,88 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: unpackerr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      unpackerr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
+        containers:
+          app:
+            image:
+              repository: ghcr.io/unpackerr/unpackerr
+              tag: 0.14.5@sha256:dc72256942ce50d1c8a1aeb5aa85b6ae2680a36eefd2182129d8d210fce78044
+            env:
+              UN_WEBSERVER_METRICS: true
+              UN_SONARR_0_URL: http://sonarr.downloads.svc.cluster.local:8989
+              UN_SONARR_0_PATHS_0: /media/qbittorrent/downloads
+              UN_RADARR_0_URL: http://radarr.downloads.svc.cluster.local
+              UN_RADARR_0_PATHS_0: //media/qbittorrent/downloads
+              UN_LIDARR_0_URL: http://lidarr.downloads.svc.cluster.local:8080
+              UN_LIDARR_0_PATHS_0: /media/qbittorrent/downloads
+            envFrom:
+              - secretRef:
+                  name: unpackerr-secret
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 500m
+                memory: 250Mi
+              limits:
+                memory: 2Gi
+    service:
+      app:
+        controller: unpackerr
+        ports:
+          http:
+            port: 5656
+    serviceMonitor:
+      app:
+        serviceName: unpackerr
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+    persistence:
+      data:
+        enabled: true
+        existingClaim: qb-rw
+        globalMounts:
+          - path: /media/qbittorrent
