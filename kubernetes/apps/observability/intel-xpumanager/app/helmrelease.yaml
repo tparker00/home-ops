@@ -30,6 +30,9 @@ spec:
     controllers:
       intel-xpumanager:
         type: daemonset
+        pod:
+          nodeSelector:
+            intel.feature.node.kubernetes.io/gpu: "true"
         containers:
           app:
             image:
