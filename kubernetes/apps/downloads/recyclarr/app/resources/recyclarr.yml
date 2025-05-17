@@ -20,6 +20,11 @@ sonarr:
       # Remux-1080p - Anime
       - template: sonarr-v4-quality-profile-anime
       - template: sonarr-v4-custom-formats-anime
+
+    quality_profiles:
+      - name: WEB-1080p
+      - name: WEB-2160p
+
     custom_formats:
       # Optional
       - trash_ids:
@@ -32,19 +37,7 @@ sonarr:
         assign_scores_to:
           - name: WEB-1080p
           - name: WEB-2160p
-      # Allow x265 HD releases with HDR/DV
-      - trash_ids:
-          - 47435ece6b99a0b477caf360e79ba0bb # x265 (HD)
-        assign_scores_to:
-          - name: WEB-1080p
-            score: 0
-          - name: WEB-2160p
-            score: 0
-      - trash_ids:
-          - 9b64dff695c2115facf1b6ea59c9bd07 # x265 (no HDR/DV)
-        assign_scores_to:
-          - name: WEB-1080p
-          - name: WEB-2160p
+
       # Block DV, boost HDR10+
       - trash_ids:
           - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
@@ -90,19 +83,6 @@ radarr:
           - 7357cf5161efbf8c4d5d0c30b4815ee2 # Obfuscated
           - 5c44f52a8714fdd79bb4d98e2673be1f # Retags
           - f537cf427b64c38c8e36298f657e4828 # Scene
-        assign_scores_to:
-          - name: HD Bluray + WEB
-          - name: UHD Bluray + WEB
-      - trash_ids:
-          # Allow x265 HD releases with HDR/DV
-          - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
-        assign_scores_to:
-          - name: HD Bluray + WEB
-            score: 0
-          - name: UHD Bluray + WEB
-            score: 0
-      - trash_ids:
-          - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
         assign_scores_to:
           - name: HD Bluray + WEB
           - name: UHD Bluray + WEB
