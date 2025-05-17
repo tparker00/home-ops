@@ -17,18 +17,9 @@ sonarr:
       # WEB-2160p
       - template: sonarr-v4-quality-profile-web-2160p
       - template: sonarr-v4-custom-formats-web-2160p
-      # FR-MULTi-VO-WEB-1080p
-      - template: sonarr-v4-quality-profile-bluray-web-1080p-french-multi-vo
-      - template: sonarr-v4-custom-formats-bluray-web-1080p-french-multi-vo
-      # FR-MULTi-VO-WEB-2160p
-      - template: sonarr-v4-quality-profile-bluray-web-2160p-french-multi-vo
-      - template: sonarr-v4-custom-formats-bluray-web-2160p-french-multi-vo
       # Remux-1080p - Anime
       - template: sonarr-v4-quality-profile-anime
       - template: sonarr-v4-custom-formats-anime
-      # FR-ANIME-VOSTFR
-      - template: sonarr-v4-quality-profile-1080p-french-anime-vostfr
-      - template: sonarr-v4-custom-formats-1080p-french-anime-vostfr
     custom_formats:
       # Optional
       - trash_ids:
@@ -41,8 +32,6 @@ sonarr:
         assign_scores_to:
           - name: WEB-1080p
           - name: WEB-2160p
-          - name: FR-MULTi-VO-WEB-1080p
-          - name: FR-MULTi-VO-WEB-2160p
       # Allow x265 HD releases with HDR/DV
       - trash_ids:
           - 47435ece6b99a0b477caf360e79ba0bb # x265 (HD)
@@ -51,17 +40,11 @@ sonarr:
             score: 0
           - name: WEB-2160p
             score: 0
-          - name: FR-MULTi-VO-WEB-1080p
-            score: 0
-          - name: FR-MULTi-VO-WEB-2160p
-            score: 0
       - trash_ids:
           - 9b64dff695c2115facf1b6ea59c9bd07 # x265 (no HDR/DV)
         assign_scores_to:
           - name: WEB-1080p
           - name: WEB-2160p
-          - name: FR-MULTi-VO-WEB-1080p
-          - name: FR-MULTi-VO-WEB-2160p
       # Block DV, boost HDR10+
       - trash_ids:
           - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
@@ -69,42 +52,11 @@ sonarr:
           - 385e9e8581d33133c3961bdcdeffb7b4 # DV HDR10+ Boost
         assign_scores_to:
           - name: WEB-2160p
-          - name: FR-MULTi-VO-WEB-2160p
       # Block SDR except SDR WEB
       - trash_ids:
           - 83304f261cf516bb208c18c54c0adf97 # SDR (no WEBDL)
         assign_scores_to:
           - name: WEB-2160p
-          - name: FR-MULTi-VO-WEB-2160p
-      # Block FanSUB
-      - trash_ids:
-          - 84f0acbda9c0c9de783894fb66df25aa # FanSUB
-        assign_scores_to:
-          - name: FR-MULTi-VO-WEB-1080p
-            score: -10000
-          - name: FR-MULTi-VO-WEB-2160p
-            score: -10000
-      # French preferences (101 for preferred, 0 or -101 for others)
-      - trash_ids:
-          - 2c29a39a4fdfd6d258799bc4c09731b9 # VFF
-          - 7ae924ee9b2f39df3283c6c0beb8a2aa # VOF
-          - b6816a0e1d4b64bf3550ad3b74b009b6 # VFI
-          - 34789ec3caa819f087e23bbf9999daf7 # VF2
-        assign_scores_to:
-          - name: FR-MULTi-VO-WEB-1080p
-            score: 101
-          - name: FR-MULTi-VO-WEB-2160p
-            score: 101
-      - trash_ids:
-          - 7a7f4e4f58bd1058440236d033a90b67 # VFQ
-          - 802dd70b856c423a9b0cb7f34ac42be1 # VOQ
-          - 82085412d9a53ba8d8e46fc624eb701d # VQ
-          - 0ce1e39a4676c6692ce47935278dac76 # VFB
-        assign_scores_to:
-          - name: FR-MULTi-VO-WEB-1080p
-            score: 0
-          - name: FR-MULTi-VO-WEB-2160p
-            score: 0
       # Anime
       - trash_ids:
           - 026d5aadd1a6b4e550b134cb6c72b3ca # Uncensored
@@ -113,12 +65,6 @@ sonarr:
         assign_scores_to:
           - name: Remux-1080p - Anime
             score: 0
-          - name: FR-ANIME-VOSTFR
-            score: 0
-      - trash_ids:
-          - 44b6c964dad997577d793fd004a39224 # FR Anime FanSub
-        assign_scores_to:
-          - name: FR-ANIME-VOSTFR
 
 radarr:
   radarr:
@@ -134,12 +80,6 @@ radarr:
       # UHD Bluray + WEB
       - template: radarr-quality-profile-uhd-bluray-web
       - template: radarr-custom-formats-uhd-bluray-web
-      # FR-MULTi-VO-HD
-      - template: radarr-quality-profile-hd-bluray-web-french-multi-vo
-      - template: radarr-custom-formats-hd-bluray-web-french-multi-vo
-      # FR-MULTi-VO-UHD
-      - template: radarr-quality-profile-uhd-bluray-web-french-multi-vo
-      - template: radarr-custom-formats-uhd-bluray-web-french-multi-vo
     custom_formats:
       # Optional
       - trash_ids:
@@ -153,8 +93,6 @@ radarr:
         assign_scores_to:
           - name: HD Bluray + WEB
           - name: UHD Bluray + WEB
-          - name: FR-MULTi-VO-HD
-          - name: FR-MULTi-VO-UHD
       - trash_ids:
           # Allow x265 HD releases with HDR/DV
           - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
@@ -163,17 +101,11 @@ radarr:
             score: 0
           - name: UHD Bluray + WEB
             score: 0
-          - name: FR-MULTi-VO-HD
-            score: 0
-          - name: FR-MULTi-VO-UHD
-            score: 0
       - trash_ids:
           - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
         assign_scores_to:
           - name: HD Bluray + WEB
           - name: UHD Bluray + WEB
-          - name: FR-MULTi-VO-HD
-          - name: FR-MULTi-VO-UHD
       # Block DV, boost HDR10+
       - trash_ids:
           - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
@@ -181,7 +113,6 @@ radarr:
           - 55a5b50cb416dea5a50c4955896217ab # DV HDR10+ Boost
         assign_scores_to:
           - name: UHD Bluray + WEB
-          - name: FR-MULTi-VO-UHD
       # UHD Audio (to enable with decent audio setup)
       # - trash_ids:
       #     - 496f355514737f7d83bf7aa4d24f8169 # TrueHD Atmos
@@ -206,33 +137,3 @@ radarr:
           - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
         assign_scores_to:
           - name: UHD Bluray + WEB
-          - name: FR-MULTi-VO-UHD
-      # Block FanSUB
-      - trash_ids:
-          - 02e48d30a176c91baf9e15de05e5dc6a # FanSUB
-        assign_scores_to:
-          - name: FR-MULTi-VO-HD
-            score: -10000
-          - name: FR-MULTi-VO-UHD
-            score: -10000
-      # French preferences (101 for preferred, 0 or -101 for others)
-      - trash_ids:
-          - 404c08fd0bd67f39b4d8e5709319094e # VFF
-          - 4cafa20d5584f6ba1871d1b8941aa3cb # VOF
-          - 52772f1cad6b5d26c2551f79bc538a50 # VFI
-          - 29b5f7b1a5f20f64228786c3ab1bdc7d # VF2
-        assign_scores_to:
-          - name: FR-MULTi-VO-HD
-            score: 101
-          - name: FR-MULTi-VO-UHD
-            score: 101
-      - trash_ids:
-          - b6ace47331a1d3b77942fc18156f6df6 # VFQ
-          - f7caa1942be5cc547c266bd3dbc2cda9 # VOQ
-          - 95aa50f71a01c82354a7a2b385f1c4d8 # VQ
-          - b3fb499641d7b3c2006be1d9eb014cb3 # VFB
-        assign_scores_to:
-          - name: FR-MULTi-VO-HD
-            score: 0
-          - name: FR-MULTi-VO-UHD
-            score: 0
