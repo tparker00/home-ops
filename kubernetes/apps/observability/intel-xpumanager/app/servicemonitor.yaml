@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: intel-xpumanager
+    app.kubernetes.io/name: intel-xpumanager
+  name: intel-xpumanager
+  namespace: observability
+spec:
+  endpoints:
+  - interval: 5s
+    path: /metrics
+    port: metrics
+    scheme: http
+  fallbackScrapeProtocol: PrometheusText0.0.4
+  jobLabel: intel-xpumanager
+  namespaceSelector:
+    matchNames:
+    - observability
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: intel-xpumanager

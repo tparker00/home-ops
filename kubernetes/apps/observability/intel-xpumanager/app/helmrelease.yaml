@@ -97,16 +97,6 @@ spec:
         ports:
           metrics:
             port: 29999
-    serviceMonitor:
-      exporter:
-        enabled: true
-        endpoints:
-          - port: metrics
-            path: /metrics
-            scheme: http
-            interval: 1m
-            scrapteTimeout: 20s
-        serviceName: intel-xpumanager
 
     persistence:
       kubeletpodres:
