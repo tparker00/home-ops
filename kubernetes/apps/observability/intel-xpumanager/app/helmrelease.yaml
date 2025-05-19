@@ -97,7 +97,15 @@ spec:
         ports:
           http:
             port: 29999
-
+    serviceMonitor:
+      exporter:
+        enabled: true
+        endpoints:
+          - port: metrics
+            scheme: http
+            interval: 1m
+            scrapteTimeout: 20s
+        serviceName: intel-xpumanager
     ingress:
       exporter:
         className: internal
