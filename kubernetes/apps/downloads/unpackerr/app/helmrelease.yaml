@@ -85,4 +85,4 @@ spec:
         enabled: true
         existingClaim: qb-rw
         globalMounts:
-          - path: /media/qbittorrent
+          - path: /data/qbittorrent
