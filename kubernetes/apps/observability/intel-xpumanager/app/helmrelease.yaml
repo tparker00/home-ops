@@ -95,30 +95,18 @@ spec:
       exporter:
         controller: *app
         ports:
-          http:
+          metrics:
             port: 29999
     serviceMonitor:
       exporter:
         enabled: true
         endpoints:
           - port: metrics
+            path: /metrics
             scheme: http
             interval: 1m
             scrapteTimeout: 20s
         serviceName: intel-xpumanager
-    ingress:
-      exporter:
-        className: internal
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: exporter
-                  port: http
-        tls:
-          - hosts:
-              - *host
 
     persistence:
       kubeletpodres:
