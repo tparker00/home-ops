@@ -1,10 +1,11 @@
+---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  labels:
-    app.kubernetes.io/instance: intel-xpumanager
-    app.kubernetes.io/name: intel-xpumanager
-  name: intel-xpumanager
+  name: &app intel-xpumanager
+  labels: &labels
+    app.kubernetes.io/instance: *app
+    app.kubernetes.io/name: *app
   namespace: observability
 spec:
   endpoints:
@@ -19,4 +20,4 @@ spec:
     - observability
   selector:
     matchLabels:
-      app.kubernetes.io/name: intel-xpumanager
+      <<: *labels
