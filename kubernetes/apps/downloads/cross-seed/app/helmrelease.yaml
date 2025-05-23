@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: cross-seed
+  name: &app cross-seed
 spec:
   interval: 1h
   chart:
@@ -66,13 +66,13 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
-        controller: cross-seed
+        controller: *app
         ports:
           http:
             port: *port
     persistence:
       config:
-        existingClaim: cross-seed
+        existingClaim: *app
       secret-file:
         type: secret
         name: cross-seed-secret
