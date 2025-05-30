@@ -63,6 +63,8 @@ spec:
                 squat.ai/tun: "1"
         containers:
           app:
+            dependsOn:
+              - gluetun
             nameOverride: *app
             image:
               repository: ghcr.io/tparker00/qbittorrent
