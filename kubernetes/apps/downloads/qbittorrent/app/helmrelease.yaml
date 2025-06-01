@@ -197,14 +197,6 @@ spec:
         existingClaim: qb-rw
         globalMounts:
           - path: /media/qbittorrent
-      gluetun-config:
-        type: secret
-        name: gluetun-config-secret
-        advancedMounts:
-          qbittorrent:
-            gluetun:
-              - path: /gluetun/wireguard/wg0.conf
-                subPath: custom.conf
       gluetun-auth:
         type: secret
         name: qbittorrent-gluetun
