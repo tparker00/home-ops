@@ -153,16 +153,15 @@ spec:
               topologyKey: kubernetes.io/hostname
     service:
       app:
-        controller: *app
-        primary: true
-        ports:
-          http:
-            port: 9999
-      gluetun:
-        controller: *app
+        controller: qbittorrent
+        type: LoadBalancer
         ports:
           http:
             port: *port
+          bittorrent:
+            enabled: true
+            port: 38619
+            protocol: TCP
     ingress:
       app:
         enabled: true
@@ -181,7 +180,7 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
-                  identifier: gluetun
+                  identifier: app
                   port: http
         tls:
           - hosts:
