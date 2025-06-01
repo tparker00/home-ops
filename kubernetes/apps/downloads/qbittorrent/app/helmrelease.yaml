@@ -186,12 +186,6 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /config
-      empty-config:
-        type: emptyDir
-        advancedMounts:
-          qbittorrent:
-            port-forward:
-              - path: /config
       data:
         enabled: true
         existingClaim: qb-rw
