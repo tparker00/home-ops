@@ -51,7 +51,7 @@ spec:
               DOT: "off"
               DNS_ADDRESS: 127.0.0.2
               VPN_INTERFACE: wg0
-              WIREGUARD_ENDPOINT_PORT: 51820
+              WIREGUARD_ENDPOINT_PORT: 1637
               VPN_PORT_FORWARDING: on
               VPN_PORT_FORWARDING_PROVIDER: protonvpn
               HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
