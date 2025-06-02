@@ -6,6 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./gluetun.sops.yaml
+  - ./vpn.sops.yaml
   - ../../../../templates/gatus/guarded
   - ../../../../templates/moosefs
 configMapGenerator:
