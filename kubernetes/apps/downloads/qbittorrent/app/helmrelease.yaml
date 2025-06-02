@@ -45,12 +45,11 @@ spec:
               tag: v3.40.0@sha256:2b42bfa046757145a5155acece417b65b4443c8033fb88661a8e9dcf7fda5a00
             restartPolicy: Always
             env:
-              VPN_SERVICE_PROVIDER: airvpn
-              VPN_TYPE: wireguard
+              VPN_SERVICE_PROVIDER: custom
+              OPENVPN_CUSTOM_CONFIG: /gluetun/custom.conf
               FIREWALL_INPUT_PORTS: &port 8080
               DOT: "off"
               DNS_ADDRESS: 127.0.0.2
-              VPN_INTERFACE: wg0
               HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
               FIREWALL_OUTBOUND_SUBNETS: ${K8S_CLUSTER_CIDR},${K8S_SERVICE_CIDR}
               UPDATER_PERIOD: "24h"
