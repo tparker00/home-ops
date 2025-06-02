@@ -172,11 +172,11 @@ spec:
           - path: /media/qbittorrent
       gluetun-config:
         type: secret
-        name: gluetun-config-secret
+        name: gluetun-ovpn
         advancedMounts:
           qbittorrent:
             gluetun:
-              - path: /tmp/config
+              - path: /gluetun/custom.conf
                 subPath: custom.conf
       gluetun-auth:
         type: secret
