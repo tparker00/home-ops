@@ -109,6 +109,12 @@ spec:
       enabled: true
       replicaCount: 2
       config: *config
+      resources:
+        requests:
+          cpu: 200m
+          memory: 256Mi
+        limits:
+          memory: 768Gi
       persistence:
         enabled: true
         storageClass: local-hostpath
