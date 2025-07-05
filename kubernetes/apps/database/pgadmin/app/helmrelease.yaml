@@ -42,7 +42,7 @@ spec:
           app:
             image:
               repository: dpage/pgadmin4
-              tag: 9.4
+              tag: 9.5
             envFrom:
               - secretRef:
                   name: pgadmin-secret
