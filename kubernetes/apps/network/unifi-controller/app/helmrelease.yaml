@@ -39,7 +39,7 @@ spec:
             nameOverride: *app
             image:
               repository: jacobalberty/unifi
-              tag: v8.0.24
+              tag: v8.5.6
             env:
               RUNAS_UID0: "false"
               UNIFI_UID: "999"
@@ -101,7 +101,7 @@ spec:
             protocol: TCP
           http:
             port: 8443
-            protocol: HTTPS
+            protocol: TCP
           portal-http:
             enabled: true
             port: 8880
