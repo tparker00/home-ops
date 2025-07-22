@@ -6,13 +6,13 @@ metadata:
   name: &app unifi
   namespace: flux-system
 spec:
-  targetNamespace: networking
+  targetNamespace: network
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-secrets-bitwarden
-  path: ./kubernetes/apps/networking/unifi-controller/app
+  path: ./kubernetes/apps/network/unifi-controller/app
   prune: true
   sourceRef:
     kind: GitRepository
