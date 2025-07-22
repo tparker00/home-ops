@@ -92,7 +92,8 @@ spec:
     service:
       app:
         controller: *app
-        primary: true
+        type: LoadBalancer
+        externalTrafficPolicy: Local
         ports:
           controller:
             enabled: true
