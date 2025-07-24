@@ -40,38 +40,18 @@ spec:
             image:
               repository: jacobalberty/unifi
               tag: v9.3.43
+              pullPolicy: IfNotPresent
             env:
-              RUNAS_UID0: "false"
-              UNIFI_UID: "999"
-              UNIFI_GID: "999"
-              UNIFI_STDOUT: "true"
+              CERTNAME: tls.crt
+              CERT_IS_CHAIN: true
+              CERT_PRIVATE_NAME: tls.key
+              UNIFI_HTTPS_PORT: 443
+              RUNAS_UID0: false
+              UNIFI_UID: 999
+              UNIFI_GID: 999
+              UNIFI_STDOUT: true
+              JVM_INIT_HEAP_SIZE:
               JVM_MAX_HEAP_SIZE: 1024M
-              PORTAL_HTTPS_PORT: "443"
-            ports:
-              - name: controller
-                containerPort: 8080
-                protocol: TCP
-              - name: discovery
-                containerPort: 10001
-                protocol: UDP
-              - name: http
-                containerPort: 8443
-                protocol: TCP
-              - name: portal-http
-                containerPort: 8880
-                protocol: TCP
-              - name: portal-https
-                containerPort: 443
-                protocol: TCP
-              - name: speedtest
-                containerPort: 6789
-                protocol: TCP
-              - name: stun
-                containerPort: 3478
-                protocol: UDP
-              - name: syslog
-                containerPort: 5514
-                protocol: UDP
             resources:
               requests:
                 cpu: 23m
@@ -95,35 +75,28 @@ spec:
         type: LoadBalancer
         externalTrafficPolicy: Local
         ports:
+          https:
+            port: 443
+            protocol: HTTPS
           controller:
-            enabled: true
             port: 8080
             protocol: TCP
-          http:
-            port: 8443
-            protocol: TCP
           portal-http:
-            enabled: true
             port: 8880
             protocol: HTTP
           portal-https:
-            enabled: true
-            port: 443
+            port: 8843
             protocol: HTTPS
           speedtest:
-            enabled: true
             port: 6789
             protocol: TCP
           stun:
-            enabled: true
             port: 3478
             protocol: UDP
           syslog:
-            enabled: true
             port: 5514
             protocol: UDP
           discovery:
-            enabled: true
             port: 10001
             protocol: UDP
 
@@ -143,29 +116,11 @@ spec:
               - path: /
                 service:
                   identifier: app
-                  port: http
-          - host: &hotspot "hotspot.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: portal-https
-          - host: &controller "unifi-controller.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: controller
+                  port: https
         tls:
           - hosts:
               - *host
             secretName: unifi-tls
-          - hosts:
-              - *hotspot
-            secretName: hotspot-tls
-          - hosts:
-              - *controller
-            secretName: unifi-controller-tls
 
     persistence:
       data:
@@ -174,3 +129,9 @@ spec:
           unifi-controller:
             app:
               - path: /unifi
+      cert:
+        type: secret
+        name: "${SECRET_DOMAIN/./-}-production-tls"
+        globalMounts:
+          - path: /unifi/cert
+            readOnly: true
