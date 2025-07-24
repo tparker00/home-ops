@@ -45,7 +45,6 @@ spec:
               CERTNAME: tls.crt
               CERT_IS_CHAIN: true
               CERT_PRIVATE_NAME: tls.key
-              UNIFI_HTTPS_PORT: 443
               RUNAS_UID0: false
               UNIFI_UID: 999
               UNIFI_GID: 999
@@ -76,7 +75,7 @@ spec:
         externalTrafficPolicy: Local
         ports:
           https:
-            port: 443
+            port: 8443
             protocol: HTTPS
           controller:
             port: 8080
