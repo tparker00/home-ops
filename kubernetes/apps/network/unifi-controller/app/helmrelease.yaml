@@ -64,7 +64,6 @@ spec:
               startup:
                 enabled: true
                 port: 8080
-
     service:
       app:
         controller: *app
@@ -95,7 +94,6 @@ spec:
           discovery:
             port: 10001
             protocol: UDP
-
     ingress:
       app:
         enabled: true
@@ -117,7 +115,6 @@ spec:
         tls:
           - hosts:
               - *host
-            secretName: unifi-tls
 
     persistence:
       data:
