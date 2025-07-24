@@ -106,13 +106,14 @@ spec:
           gethomepage.dev/icon: unifi
           gethomepage.dev/name: Unifi Controller
           gethomepage.dev/weight: "10" # optional
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
         hosts:
           - host: &host "unifi.${SECRET_DOMAIN}"
             paths:
               - path: /
                 service:
                   identifier: app
-                  port: controller
+                  port: https
         tls:
           - hosts:
               - *host
