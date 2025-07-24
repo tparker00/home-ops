@@ -42,9 +42,6 @@ spec:
               tag: v9.3.43
               pullPolicy: IfNotPresent
             env:
-              CERTNAME: tls.crt
-              CERT_IS_CHAIN: true
-              CERT_PRIVATE_NAME: tls.key
               RUNAS_UID0: false
               UNIFI_UID: 999
               UNIFI_GID: 999
@@ -79,7 +76,7 @@ spec:
             protocol: HTTPS
           controller:
             port: 8080
-            protocol: TCP
+            protocol: HTTP
           portal-http:
             port: 8880
             protocol: HTTP
@@ -115,7 +112,7 @@ spec:
               - path: /
                 service:
                   identifier: app
-                  port: https
+                  port: controller
         tls:
           - hosts:
               - *host
@@ -128,9 +125,3 @@ spec:
           unifi-controller:
             app:
               - path: /unifi
-      cert:
-        type: secret
-        name: "${SECRET_DOMAIN/./-}-production-tls"
-        globalMounts:
-          - path: /unifi/cert
-            readOnly: true
