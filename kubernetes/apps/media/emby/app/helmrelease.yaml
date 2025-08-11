@@ -61,8 +61,8 @@ spec:
                 memory: 10Gi
 
     service:
-      emby:
-        controller: emby
+      app:
+        controller: *app
         type: LoadBalancer
         externalTrafficPolicy: Cluster
         ports:
