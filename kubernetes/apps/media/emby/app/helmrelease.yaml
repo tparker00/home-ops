@@ -1,0 +1,115 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app emby
+  namespace: media
+spec:
+  driftDetection:
+    mode: enabled
+  chart:
+    spec:
+      chart: app-template
+      version: 4.2.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  interval: 30m
+  maxHistory: 10
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+
+  values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+        supplementalGroups:
+          - 44
+          - 109
+          - 10000
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    controllers:
+      emby:
+        type: statefulset
+        containers:
+          app:
+            image:
+              repository: ghcr.io/home-operations/emby
+              tag: 4.8.11
+            resources:
+              requests:
+                memory: 1Gi
+                gpu.intel.com/i915: 1
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 10Gi
+
+    service:
+      emby:
+        controller: emby
+        type: LoadBalancer
+        externalTrafficPolicy: Cluster
+        ports:
+          http:
+            port: &port 8096
+    ingress:
+      app:
+        enabled: true
+        className: external
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/description: Emby
+          gethomepage.dev/group: Medie
+          gethomepage.dev/icon: emby
+          gethomepage.dev/name: Emby server
+          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      config:
+        enabled: true
+        existingClaim: *app
+        advancedMounts:
+          emby:
+            app:
+              - path: /config
+      tv-data:
+        enabled: true
+        existingClaim: tv-ro
+        globalMounts:
+          - path: /mnt/tv
+            readOnly: true
+      movie-data:
+        enabled: true
+        existingClaim: movies-ro
+        globalMounts:
+          - path: /mnt/movies
+            readOnly: true
+      transcode:
+        type: emptyDir
