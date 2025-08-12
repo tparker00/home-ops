@@ -9,6 +9,7 @@ resources:
   # Flux-Kustomizations
   - ./immich/ks.yaml
   - ./overseerr/ks.yaml
+  - ./jellyfin/ks.yaml
   #- ./jellyseerr/ks.yaml
   - ./kavita/ks.yaml
   - ./komga/ks.yaml
