@@ -10,6 +10,7 @@ resources:
   - ./immich/ks.yaml
   - ./overseerr/ks.yaml
   - ./jellyfin/ks.yaml
+  - ./jellyfin-watched/ks.yaml
   #- ./jellyseerr/ks.yaml
   - ./kavita/ks.yaml
   - ./komga/ks.yaml
