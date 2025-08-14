@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/database/meliseaerch/app
+  path: ./kubernetes/apps/database/melisearch/app
   prune: true
   sourceRef:
     kind: GitRepository
