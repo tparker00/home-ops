@@ -7,5 +7,6 @@ resources:
   - ./namespace.yaml
   # Flux-Kustomizations
   - ./cloudnative-pg/ks.yaml
+  - ./melisearch/ks.yaml
   - ./pgadmin/ks.yaml
   - ./dragonfly/ks.yaml
