@@ -6,7 +6,7 @@ metadata:
   name: &app melisearch
   namespace: flux-system
 spec:
-  targetNamespace: media
+  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
