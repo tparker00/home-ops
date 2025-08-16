@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lobaro/restic-backup-docker
-              tag: v1.4.0
+              tag: v1.4.2
             command: [ "/bin/sh", "-c", "while true; do sleep 36000; done" ]
             env:
               TZ: ${TIMEZONE}
@@ -52,7 +52,7 @@ spec:
             nameOverride: backup
             image:
               repository: ghcr.io/lobaro/restic-backup-docker
-              tag: v1.4.0
+              tag: v1.4.2
             command:
             - /bin/sh
             args:
@@ -75,7 +75,7 @@ spec:
             nameOverride: check
             image:
               repository: ghcr.io/lobaro/restic-backup-docker
-              tag: v1.4.0
+              tag: v1.4.2
             command:
             - /bin/sh
             args:
