@@ -82,7 +82,7 @@ spec:
               #BLACKLIST_USERS: ""
               WHITELIST_USERS: ""
               SYNC_FROM_PLEX_TO_JELLYFIN: "True"
-              SYNC_FROM_JELLYFIN_TO_PLEX: "True"
+              SYNC_FROM_JELLYFIN_TO_PLEX: "False"
               GENERATE_LOCATIONS: "True"
 
             envFrom:
