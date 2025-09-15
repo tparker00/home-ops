@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository:  ghcr.io/tparker00/tautulli
-              tag: 2.15.3@sha256:745d219e70bb7d3daf98ade22f00f9619bc79bfb297122b030c1ad0d9012eee0
+              tag: 2.16.0@sha256:932e2af987cfe7c199907909669b635ea6a33a080e3b292d3463788ef2385b4a
             env:
               TZ: ${TIMEZONE}
             resources:
