@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgppeeringpolicy_v2alpha1.json
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPPeeringPolicy
+metadata:
+  name: bgp-loadbalancer-ip-main
+spec:
+  nodeSelector:
+    matchLabels:
+      kubernetes.io/os: "linux"
+  virtualRouters:
+    - localASN: 64501
+      exportPodCIDR: false
+      serviceSelector:
+        matchExpressions:
+          - key: thisFakeSelector
+            operator: NotIn
+            values:
+              - will-match-and-announce-all-services
+      neighbors:
+        - peerAddress: ${ROUTER_IP}/24
+          peerASN: 64501
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumloadbalancerippool_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: l3-pool
+spec:
+  blocks:
+    - cidr: ${CILIUM_BGP_SVC_RANGE}
