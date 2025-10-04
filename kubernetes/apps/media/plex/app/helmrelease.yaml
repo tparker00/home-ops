@@ -75,7 +75,7 @@ spec:
         controller: plex
         type: LoadBalancer
         annotations:
-          lbipam.cilium.io/ips: ${SVC_PLEX_ADDR}
+          io.cilium/lb-ipam-ips: ${SVC_PLEX_ADDR}
         ports:
           http:
             port: 32400
