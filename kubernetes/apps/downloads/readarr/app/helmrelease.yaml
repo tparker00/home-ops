@@ -124,7 +124,6 @@ spec:
           gethomepage.dev/description: eBook Downloads
           gethomepage.dev/widget.type: readarr
           gethomepage.dev/widget.url: http://readarr.downloads
-          gethomepage.dev/widget.key: "{{READARR__API_KEY}}"
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
             paths:
