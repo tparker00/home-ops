@@ -27,7 +27,7 @@ spec:
       retries: 3
   values:
     controllers:
-      jellyfin:
+      checkrr:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -38,6 +38,7 @@ spec:
             env:
               TZ: America/New_York
             args: ["-c", "/data/checkrr.yaml"]
+            workingDir: /data
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
