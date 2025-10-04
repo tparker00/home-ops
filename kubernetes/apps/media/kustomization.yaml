@@ -7,6 +7,7 @@ resources:
   - ./namespace.yaml
   # - ./emby/ks.yaml
   # Flux-Kustomizations
+  - ./checkrr/ks.yaml
   - ./immich/ks.yaml
   - ./overseerr/ks.yaml
   - ./jellyfin/ks.yaml
