@@ -23,49 +23,59 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    controllers:
-      tun-device:
-        type: daemonset
-        pod:
-          automountServiceAccountToken: false
-          enableServiceLinks: false
-          hostNetwork: true
-          hostPID: true
-          nodeSelector:
-            kubernetes.io/os: "linux"
-        containers:
-          app:
-            image:
-              repository: ghcr.io/squat/generic-device-plugin
-              tag: 6475ff5d0927c0f25b3a39a661aa657ca190d0ef
-            args:
-              - --device
-              - |
-                name: tun
+    defaultPodOptions:
+      priorityClassName: system-node-critical
+    configMaps:
+      config:
+        data:
+          config.yaml: |-
+            devices:
+              - name: tun
                 groups:
                   - count: 1000
                     paths:
                       - path: /dev/net/tun
-            securityContext:
-              privileged: true
+    controllers:
+      generic-device-plugin:
+        type: daemonset
+        strategy: RollingUpdate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/squat/generic-device-plugin
+              tag: 36bfc606bba2064de6ede0ff2764cbb52edff70d@sha256:ba6f0b4cf6c858d6ad29ba4d32e4da11638abbc7d96436bf04f582a97b2b8821
+            args:
+              - --log-level=info
+              - --config=/config/config.yaml
             resources:
               requests:
-                cpu: 50m
-                memory: 10Mi
+                cpu: 10m
               limits:
-                memory: 20Mi
+                memory: 64Mi
+            securityContext:
+              # privileged: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
     persistence:
-      device-plugin:
-        type: hostPath
-        hostPath: /var/lib/kubelet/device-plugins
-        hostPathType: Directory
+      config:
+        type: configMap
+        identifier: config
         globalMounts:
-          - path: /var/lib/kubelet/device-plugins
-            readOnly: true
+          - path: /config/config.yaml
+            subPath: config.yaml
       dev:
         type: hostPath
         hostPath: /dev
-        hostPathType: Directory
         globalMounts:
-          - path: /dev
-            readOnly: true
+          - readOnly: true
+      sys:
+        type: hostPath
+        hostPath: /sys
+        globalMounts:
+          - readOnly: true
+      var-lib-kubelet-device-plugins:
+        type: hostPath
+        hostPath: /var/lib/kubelet/device-plugins
