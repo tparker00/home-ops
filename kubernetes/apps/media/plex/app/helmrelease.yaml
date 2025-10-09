@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/tparker00/plex
-              tag: 1.42.1.10060-4e8b05daf
+              tag: 1.42.2.10156-f737b826c
             env:
               TZ: ${TIMEZONE}
             securityContext:
@@ -57,10 +57,9 @@ spec:
             resources:
               requests:
                 cpu: 1000m
-                memory: 8G
+                memory: 4G
                 gpu.intel.com/i915: 1
               limits:
-                memory: 16G
                 gpu.intel.com/i915: 1
     defaultPodOptions:
       securityContext:
