@@ -127,11 +127,6 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-          reannounce:
-            image:
-              repository: ghcr.io/buroa/qbtools
-              tag: v0.21.2
-            args: ["reannounce", "-s", "localhost", "-p", "8080"]
     pod:
       affinity:
         podAntiAffinity:
