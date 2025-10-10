@@ -12,7 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-secrets-bitwarden
-  path: ./kubernetes/apps/storage/talos-backup/app
+  path: ./kubernetes/apps/talos/talos-backup/app
   prune: true
   sourceRef:
     kind: GitRepository
