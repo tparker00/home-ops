@@ -6,7 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./grafana-dashboard.yaml
   - ./helmrelease.yaml
-  - ./rbac.yaml
+#  - ./rbac.yaml
   - ../../../../templates/gatus/external
 configMapGenerator:
   - name: gatus-configmap
