@@ -31,7 +31,3 @@ spec:
     envFrom:
         - secretRef:
             name: talos-secret
-
-  valuesFrom:
-    - kind: Secret
-      name: talos-backup-helm-values
