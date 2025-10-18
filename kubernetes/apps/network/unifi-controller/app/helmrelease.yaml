@@ -37,7 +37,7 @@ spec:
             nameOverride: *app
             image:
               repository: jacobalberty/unifi
-              tag: v9.4.19
+              tag: v9.5.21
               pullPolicy: IfNotPresent
             env:
               RUNAS_UID0: false
