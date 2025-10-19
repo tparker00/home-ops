@@ -20,6 +20,8 @@ resources:
   - ./openebs.yaml
   - ./external-secrets.yaml
   - ./node-feature-discovery.yaml
+  - ./nvdp.yaml
+  - ./nvidia.yaml
   - ./postfinance.yaml
   - ./prometheus-community.yaml
   - ./spegel.yaml
