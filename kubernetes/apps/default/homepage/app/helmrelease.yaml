@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: ghcr.io/gethomepage/homepage
-              tag: v1.5.0
+              tag:  v1.6.1@sha256:8c7ec6a3c9094af7ac0686aa361fed3129264a8ed2c17594d5114a5e8342f7c9
             env:
               TZ: ${TIMEZONE}
               HOMEPAGE_ALLOWED_HOSTS: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
