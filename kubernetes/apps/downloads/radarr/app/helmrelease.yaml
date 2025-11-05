@@ -122,6 +122,7 @@ spec:
           gethomepage.dev/name: Radarr
           gethomepage.dev/icon: radarr.png
           gethomepage.dev/widget.type: radarr
+          gethomepage.dev/widget.key: "{{`{{HOMEPAGE_VAR_RADARR_TOKEN}}`}}"
           gethomepage.dev/widget.url: http://radarr.downloads
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
