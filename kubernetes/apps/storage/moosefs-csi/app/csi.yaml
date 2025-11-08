@@ -206,7 +206,7 @@ spec:
               mountPath: /var/lib/csi/sockets/pluginproxy/
         # resizer
         - name: csi-resizer
-          image: k8s.gcr.io/sig-storage/csi-resizer:v0.5.0
+          image: k8s.gcr.io/sig-storage/csi-resizer:v0.5.1
           args:
             - "--v=5"
             - "--csi-address=$(ADDRESS)"
