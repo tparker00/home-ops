@@ -193,7 +193,7 @@ spec:
               mountPath: /var/lib/csi/sockets/pluginproxy/
         # attacher
         - name: csi-attacher
-          image: k8s.gcr.io/sig-storage/csi-attacher:v3.1.0
+          image: k8s.gcr.io/sig-storage/csi-attacher:v3.5.1
           args:
             - "--v=5"
             - "--csi-address=$(ADDRESS)"
