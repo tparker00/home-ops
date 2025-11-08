@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository:  ghcr.io/wizarrrr/wizarr
-              tag: v2025.10.8
+              tag: v2025.11.2
             env:
               TZ: ${TIMEZONE}
             resources:
