@@ -1,6 +1,2 @@
-shore-control01.yaml
-shore-control02.yaml
-shore-control03.yaml
 talosconfig
-shore-worker01.yaml
-shore-vworker01.yaml
+*.yaml
