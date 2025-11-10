@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   # Pre Flux-Kustomizations
   - ./additional-ingress/ks.yaml
+  - ./atuin/ks.yaml
   - ./clusterpolicies/ks.yaml
   - ./languagetool/ks.yaml
   - ./homepage/ks.yaml
