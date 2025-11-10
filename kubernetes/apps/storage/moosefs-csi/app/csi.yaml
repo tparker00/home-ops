@@ -224,7 +224,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: ghcr.io/moosefs/moosefs-csi:0.9.7-4.56.6
+          image: ghcr.io/tparker00/moosefs-csi:0.9.8
           args:
             - "--mode=controller"
             - "--csi-endpoint=$(CSI_ENDPOINT)"
@@ -322,7 +322,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: ghcr.io/moosefs/moosefs-csi:0.9.7-4.56.6
+          image: ghcr.io/tparker00/moosefs-csi:0.9.8
           args:
             - "--mode=node"
             - "--csi-endpoint=$(CSI_ENDPOINT)"
