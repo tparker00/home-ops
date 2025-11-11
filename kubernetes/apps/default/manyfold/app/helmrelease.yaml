@@ -18,7 +18,6 @@ spec:
         name: bjw-s-charts
         namespace: flux-system
   dependsOn: []
-  interval: 15m
   values:
     controllers:
       manyfold:
