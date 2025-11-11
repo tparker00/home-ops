@@ -42,6 +42,8 @@ spec:
               repository: ghcr.io/bjw-s-labs/manyfold
               tag: 0.129.0@sha256:ec525394e6bab03bbe2f9f97ae3c236d0c3811bc5da73c7151c0f8038f323123
             env:
+              PID: &pid 1000
+              GID: &gid 100
               DATABASE_URL: sqlite3:/data/database/manyfold.sqlite3
               MULTIUSER: false
               PORT: &port 3214
@@ -77,9 +79,9 @@ spec:
               capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 100
-        fsGroup: 100
+        runAsUser: *pid
+        runAsGroup: *gid
+        fsGroup: *gid
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
