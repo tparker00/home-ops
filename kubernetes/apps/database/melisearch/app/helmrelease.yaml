@@ -33,6 +33,9 @@ spec:
             image:
               repository: getmeili/meilisearch
               tag: v1.24
+            envFrom:
+              - secretRef:
+                  name: melisearch-secret
             probes:
               liveness: &probes
                 enabled: true
