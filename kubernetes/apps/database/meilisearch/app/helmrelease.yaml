@@ -25,7 +25,7 @@ spec:
       retries: 3
   values:
     controllers:
-      jellyfin:
+      meilisearch:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
