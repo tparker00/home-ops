@@ -27,15 +27,20 @@ spec:
       namespace: kube-system
   values:
     name: intel-gpu-plugin
-    sharedDevNum: 3
-    nodeFeatureRule: true
     gpu:
       enabled: true
       resourceManager: true
       sharedDevNum: 3
 
-    # Add custom arguments to the plugin
+    # Override at the top level instead of under gpu.plugin
+    logLevel: 2
+    enableMonitoring: true
+    allocationPolicy: none
+
+    # Try specifying args at the root level
     args:
-      - -resource-manager
-      - -shared-dev-num=3
-      - -resource-name=skeelz.net/gpu
+      - "-v=2"
+      - "-enable-monitoring"
+      - "-resource-manager"
+      - "-shared-dev-num=3"
+      - "-resource-name=skeelz.net/gpu"
