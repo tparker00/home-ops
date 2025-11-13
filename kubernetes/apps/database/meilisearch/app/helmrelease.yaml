@@ -33,6 +33,13 @@ spec:
             image:
               repository: getmeili/meilisearch
               tag: v1.24
+            env:
+              MEILI_ENV: production
+              MEILI_NO_ANALYTICS: true
+              MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE: true
+              MEILI_DB_PATH: /config/data.ms
+              MEILI_DUMP_DIR: /config/dumps
+              MEILI_SNAPSHOT_DIR: /config/snapshots
             envFrom:
               - secretRef:
                   name: meilisearch-secret
@@ -56,9 +63,13 @@ spec:
                   periodSeconds: 10
             resources:
               requests:
-                memory: 1Gi
+                memory: 256Mi
               limits:
                 memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -66,6 +77,7 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [44, 10000, 65539]
     service:
       app:
         ports:
