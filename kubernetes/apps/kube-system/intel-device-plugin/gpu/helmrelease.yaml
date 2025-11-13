@@ -34,3 +34,4 @@ spec:
       resourceManager: true
       resources:
         - name: skeelz.net/gpu
+          deviceIds: []
