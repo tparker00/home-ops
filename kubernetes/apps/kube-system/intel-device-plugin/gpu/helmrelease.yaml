@@ -34,9 +34,8 @@ spec:
       resourceManager: true
       sharedDevNum: 3
 
-      # Add custom arguments to the plugin
-      plugin:
-        args:
-          - -resource-manager
-          - -shared-dev-num=3
-          - -resource-name=skeelz.net/gpu
+    # Add custom arguments to the plugin
+    args:
+      - -resource-manager
+      - -shared-dev-num=3
+      - -resource-name=skeelz.net/gpu
