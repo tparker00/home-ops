@@ -101,4 +101,4 @@ spec:
       config:
         existingClaim: "{{ .Release.Name }}"
         globalMounts:
-          - path: /meili_data
+          - path: /config
