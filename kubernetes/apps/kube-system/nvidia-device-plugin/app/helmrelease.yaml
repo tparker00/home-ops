@@ -44,3 +44,7 @@ spec:
               resources:
                 - name: nvidia.com/gpu
                   replicas: 6
+          resources:
+            gpus:
+              - name: skeelz.net/gpu  # Custom unified name
+                devices: all
