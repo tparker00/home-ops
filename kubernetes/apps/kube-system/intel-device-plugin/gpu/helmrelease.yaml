@@ -32,6 +32,11 @@ spec:
     gpu:
       enabled: true
       resourceManager: true
-      resources:
-        - name: skeelz.net/gpu
-          deviceIds: []
+      sharedDevNum: 3
+
+      # Add custom arguments to the plugin
+      plugin:
+        args:
+          - -resource-manager
+          - -shared-dev-num=3
+          - -resource-name=skeelz.net/gpu
