@@ -8,5 +8,5 @@ data:
       timeSlicing: {}
     resources:
       gpus:
-        - name: my-company.com/gpu  # Custom unified name
+        - name: skeelz.net/gpu  # Custom unified name
           devices: all
