@@ -29,3 +29,10 @@ spec:
     name: intel-gpu-plugin
     sharedDevNum: 3
     nodeFeatureRule: true
+    gpu:
+      enabled: true
+      resourceManager: true
+
+      # This is the key setting - configure the resource name
+      resources:
+        - name: skeelz.net/gpu

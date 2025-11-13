@@ -12,7 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: node-feature-discovery
-  path: ./kubernetes/apps/kube-system/intel-device-plugin/app
+  path: ./kubernetes/apps/kube-system/gpu/intel-device-plugin/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -35,7 +35,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: node-feature-discovery
-  path: ./kubernetes/apps/kube-system/intel-device-plugin/gpu
+  path: ./kubernetes/apps/kube-system/gpu/intel-device-plugin/gpu
   prune: true
   sourceRef:
     kind: GitRepository

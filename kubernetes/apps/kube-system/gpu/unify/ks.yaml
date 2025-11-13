@@ -2,10 +2,10 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: nvidia-device-plugin
+  name: unify-gpu
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/kube-system/nvidia-device-plugin/app
+  path: ./kubernetes/apps/kube-system/gpu/unify/app
   prune: true
   sourceRef:
     kind: GitRepository
