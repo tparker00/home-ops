@@ -4,6 +4,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: envoy
+  namespace: network
 spec:
   jobLabel: envoy-proxy
   namespaceSelector:
@@ -23,6 +24,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: envoy-gateway
+  namespace: network
 spec:
   endpoints:
     - port: metrics
