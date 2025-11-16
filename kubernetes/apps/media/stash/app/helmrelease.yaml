@@ -57,14 +57,20 @@ spec:
         ports:
           http:
             port: 9999
-    route:
+    ingress:
       main:
-        hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
-
+        enabled: true
+        className: internal
+        hosts:
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
     persistence:
       config:
         enabled: true
