@@ -47,10 +47,10 @@ spec:
               tag: 2.1.5.5216@sha256:affb671fa367f4b7029d58f4b7d04e194e887ed6af1cf5a678f3c7aca5caf6ca
             env:
               TZ: ${TIMEZONE}
-              PROWLARR__INSTANCE_NAME: Prowlarr
+              PROWLARR__APP__INSTANCENAME: Prowlarr
               PROWLARR__SERVER__PORT: &port 80
-              PROWLARR__LOG_LEVEL: info
-              PROWLARR__AUTHENTICATION_METHOD: External
+              PROWLARR__LOG__LEVEL: info
+              PROWLARR__AUTH__METHOD: External
             envFrom: *envFrom
             resources:
               requests:
