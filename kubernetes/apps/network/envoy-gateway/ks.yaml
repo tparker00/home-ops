@@ -32,7 +32,6 @@ spec:
       CLUSTER: ${CLUSTER}
       EXTERNAL_DOMAIN: external
       INTERNAL_DOMAIN: internal
-      REPLICAS: "2"
       SVC_GATEWAY_EXTERNAL: 10.10.5.16
       SVC_GATEWAY_INTERNAL: 10.10.5.15
   prune: true
