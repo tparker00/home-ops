@@ -23,7 +23,6 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: certificates-import
     - name: envoy-gateway
   interval: 1h
   path: ./kubernetes/apps/network/envoy-gateway/config
