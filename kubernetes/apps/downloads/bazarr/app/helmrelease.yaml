@@ -42,7 +42,8 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/home-operations/bazarr@sha256:509ce657970df14cb21190b842a1bd842c178169c2e3c3d2e2ac094ab3954471
+              repository: ghcr.io/home-operations/bazarr
+              tag: sha256:509ce657970df14cb21190b842a1bd842c178169c2e3c3d2e2ac094ab3954471
             env:
               TZ: ${TIMEZONE}
             envFrom: *envFrom
