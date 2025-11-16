@@ -32,7 +32,8 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/home-operations/tautulli@sha256:d6b50d6250eae3586cbb996c2dd153b78a3274fbe37b6ad080ed00fe45a73beb
+              repository: ghcr.io/home-operations/tautulli
+              tag: 2.16.0@sha256:2a092f86a51f5718111097b0fced33eaa876b5904a543b7504f92357a4f75635
             env:
               TZ: ${TIMEZONE}
             resources:
