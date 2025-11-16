@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.bjw-s.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: externaldns-opnesense
+spec:
+  chart:
+    spec:
+      chart: external-dns
+      version: 1.19.0
+      sourceRef:
+        kind: HelmRepository
+        name: external-dns
+        namespace: flux-system
+  interval: 30m
+  values:
+    fullnameOverride: externaldns-opnesense
+    logLevel: &logLevel info
+    domainFilters:
+      - "${SECRET_DOMAIN}"
+    podAnnotations:
+      secret.reloader.stakater.com/reload: externaldns-opnesense-secret
+    provider:
+      name: webhook
+      webhook:
+        image:
+          repository: ghcr.io/crutonjohn/external-dns-opnsense-webhook
+          tag: v0.1.0
+        env:
+          - name: LOG_LEVEL
+            value: *logLevel
+          - name: OPNSENSE_HOST
+            value: https://192.168.1.1
+          - name: OPNSENSE_SKIP_TLS_VERIFY
+            value: "true"
+        envFrom:
+          - secretRef:
+              name: external-dns-opnsense-secret
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http-webhook
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http-webhook
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+    resources:
+      requests:
+        cpu: 16m
+        memory: 90M
+      limits:
+        memory: 90M
+    serviceMonitor:
+      enabled: true
+    extraArgs:
+      - --ignore-ingress-tls-spec
+    policy: sync
+    sources: ["ingress", "service", "crd"]
+    registry: noop
