@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/home-operations/tautulli
-              tag: sha256-d6b50d6250eae3586cbb996c2dd153b78a3274fbe37b6ad080ed00fe45a73beb
+              tag: sha256:d6b50d6250eae3586cbb996c2dd153b78a3274fbe37b6ad080ed00fe45a73beb
             env:
               TZ: ${TIMEZONE}
             resources:
