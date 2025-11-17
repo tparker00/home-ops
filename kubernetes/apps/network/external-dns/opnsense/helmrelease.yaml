@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: externaldns-opnesense
+  name: externaldns-opnsense
 spec:
   chart:
     spec:
@@ -14,12 +14,12 @@ spec:
         namespace: flux-system
   interval: 30m
   values:
-    fullnameOverride: externaldns-opnesense
+    fullnameOverride: externaldns-opnsense
     logLevel: &logLevel info
     domainFilters:
       - "${SECRET_DOMAIN}"
     podAnnotations:
-      secret.reloader.stakater.com/reload: externaldns-opnesense-secret
+      secret.reloader.stakater.com/reload: externaldns-opnsense-secret
     provider:
       name: webhook
       webhook:
