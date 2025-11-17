@@ -27,12 +27,22 @@ spec:
           repository: ghcr.io/crutonjohn/external-dns-opnsense-webhook
           tag: v0.1.0
         env:
-          LOG_LEVEL: *logLevel
-          OPNSENSE_HOST: "https://192.168.1.1"
-          OPNSENSE_SKIP_TLS_VERIFY: "true"
-        envFrom:
-          - secretRef:
-              name: external-dns-opnsense-secret
+          - name: LOG_LEVEL
+            value: *logLevel
+          - name: OPNSENSE_HOST
+            value: https://192.168.1.1
+          - name: OPNSENSE_SKIP_TLS_VERIFY
+            value: "true"
+          - name: OPNSENSE_API_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: external-dns-opnsense-secret
+                key: OPNSENSE_API_SECRET
+          - name: OPNSENSE_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: external-dns-opnsense-secret
+                key: OPNSENSE_API_KEY
         livenessProbe:
           httpGet:
             path: /healthz
