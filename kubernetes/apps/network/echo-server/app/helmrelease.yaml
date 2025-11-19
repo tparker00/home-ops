@@ -6,7 +6,8 @@ metadata:
 spec:
   chartRef:
     kind: OCIRepository
-    name: app-template
+    name: bjw-s-charts
+    namespace: flux-system
   dependsOn: []
   interval: 15m
   values:
