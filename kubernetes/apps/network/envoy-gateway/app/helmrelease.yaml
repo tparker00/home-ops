@@ -30,6 +30,9 @@ spec:
       imageRegistry: mirror.gcr.io
     config:
       envoyGateway:
+        extensionApis:
+          enableEnvoyPatchPolicy: true
+          enableBackend: false
         provider:
           type: Kubernetes
           kubernetes:
