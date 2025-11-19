@@ -4,10 +4,15 @@ kind: HelmRelease
 metadata:
   name: echo
 spec:
-  chartRef:
-    kind: OCIRepository
-    name: bjw-s-charts
-    namespace: flux-system
+  chart:
+    spec:
+      chart: app-template
+      version: 4.4.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
   dependsOn: []
   interval: 15m
   values:
