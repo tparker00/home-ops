@@ -37,9 +37,6 @@ spec:
               MEILI_ENV: production
               MEILI_NO_ANALYTICS: true
               MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE: true
-              MEILI_DB_PATH: /config/data.ms
-              MEILI_DUMP_DIR: /config/dumps
-              MEILI_SNAPSHOT_DIR: /config/snapshots
             envFrom:
               - secretRef:
                   name: meilisearch-secret
@@ -68,37 +65,28 @@ spec:
                 memory: 2Gi
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
-        runAsGroup: 100
-        fsGroup: 100
+        runAsGroup: 1000
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [44, 10000, 65539]
     service:
       app:
         ports:
           http:
             port: *port
-    ingress:
+    route:
       app:
-        enabled: true
-        className: internal
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
         globalMounts:
-          - path: /config
+          - path: /meili_data
