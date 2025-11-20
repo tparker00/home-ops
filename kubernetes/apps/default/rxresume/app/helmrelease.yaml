@@ -88,6 +88,3 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
-        tls:
-          - hosts:
-              - *host
