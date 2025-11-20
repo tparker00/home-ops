@@ -90,3 +90,10 @@ spec:
         existingClaim: "{{ .Release.Name }}"
         globalMounts:
           - path: /meili_data
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          melisearch:
+            app:
+              - path: /tmp
+                subPath: tmp
