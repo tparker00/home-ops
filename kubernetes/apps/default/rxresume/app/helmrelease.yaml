@@ -9,10 +9,11 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.7.3
+      version: 4.4.0
+      interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s
+        name: bjw-s-charts
         namespace: flux-system
   maxHistory: 2
   install:
@@ -81,17 +82,12 @@ spec:
         ports:
           http:
             port: 4000
-    ingress:
-      main:
-        enabled: true
-        className: internal
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: main
-                  port: http
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
         tls:
           - hosts:
               - *host
