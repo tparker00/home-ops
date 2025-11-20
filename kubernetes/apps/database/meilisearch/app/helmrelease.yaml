@@ -86,7 +86,7 @@ spec:
           - name: envoy-internal
             namespace: network
     persistence:
-      meili_data:
+      config:
         existingClaim: "{{ .Release.Name }}"
         globalMounts:
-          - path: /config
+          - path: /meili_data
