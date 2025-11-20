@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: echo
+  name: &app echo
   namespace: flux-system
 spec:
   commonMetadata:
