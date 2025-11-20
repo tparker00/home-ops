@@ -12,4 +12,3 @@ resources:
   - ./manyfold/ks.yaml
   - ./namespace.yaml
   - ./rxresume/ks.yaml
-  - ./theme-park/ks.yaml
