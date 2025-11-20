@@ -8,9 +8,9 @@ metadata:
 spec:
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app
+      app.kubernetes.io/name: echo
   interval: 1h
-  path: ./kubernetes/apps/network/echo-server/app
+  path: ./kubernetes/apps/network/echo/app
   postBuild:
     substitute:
       SUBDOMAIN: echo
