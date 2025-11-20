@@ -59,6 +59,8 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 5
+    serviceAccount:
+      homepage: {}
     service:
       main:
         controller: *app
@@ -89,5 +91,4 @@ spec:
             path: /app/config/settings.yaml
           - subPath: widgets.yaml
             path: /app/config/widgets.yaml
-    serviceAccount:
-      create: true
+
