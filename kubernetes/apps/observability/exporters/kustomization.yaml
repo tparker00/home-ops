@@ -9,7 +9,6 @@ resources:
   - ./node-exporter/ks.yaml
   - ./prowlarr-exporter/ks.yaml
   - ./radarr-exporter/ks.yaml
-  - ./readarr-exporter/ks.yaml
   - ./sabnzbd-exporter/ks.yaml
   - ./sonarr-exporter/ks.yaml
   - ./speedtest-exporter/ks.yaml
