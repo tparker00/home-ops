@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./bazarr-exporter/ks.yaml
   - ./blackbox-exporter/ks.yaml
+  - ./lidarr-exporter/ks.yaml
   - ./node-exporter/ks.yaml
   - ./radarr-exporter/ks.yaml
   - ./sabnzbd-exporter/ks.yaml
