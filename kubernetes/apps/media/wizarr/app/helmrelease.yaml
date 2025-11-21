@@ -55,6 +55,7 @@ spec:
         parentRefs:
           - name: envoy-external
             namespace: network
+    persistence:
       config:
         enabled: true
         existingClaim: *app
