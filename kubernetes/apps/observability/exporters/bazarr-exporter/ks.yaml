@@ -3,22 +3,25 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app bitmagnet
+  name: &app bazarr-exporter
   namespace: flux-system
 spec:
-  targetNamespace: downloads
+  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: bazarr
     - name: external-secrets-bitwarden
-    - name: cloudnative-pg
-  interval: 10m
-  path: ./kubernetes/apps/downloads/bitmagnet/app
+  path: ./kubernetes/apps/observability/exporters/bazarr-exporter/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+  wait: false # no flux ks dependents
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
   postBuild:
     substitute:
       APP: *app

@@ -9,10 +9,11 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.7.3
+      version: 4.4.0
+      interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s
+        name: bjw-s-charts
         namespace: flux-system
   maxHistory: 2
   install:
@@ -73,16 +74,6 @@ spec:
               readiness: *probes
               startup:
                 enabled: false
-          metrics:
-            image:
-              repository: ghcr.io/onedr0p/exportarr
-              tag: v2.3.0
-              pullPolicy: IfNotPresent
-            env:
-              - name: PORT
-                value: &metricsPort 9794
-            envFrom: *envFrom
-            args: ["lidarr"]
         pod:
           securityContext:
             runAsUser: 568
@@ -96,47 +87,12 @@ spec:
         ports:
           http:
             port: *port
-      metrics:
-        nameOverride: metrics
-        controller: *app
-        ports:
-          metrics:
-            port: *metricsPort
-    serviceMonitor:
-      main:
-        enabled: true
-        endpoints:
-          - port: metrics
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 20s
-        serviceName: lidarr-metrics
-    ingress:
-      main:
-        enabled: true
-        className: internal
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Downloads
-          gethomepage.dev/name: Lidarr
-          gethomepage.dev/icon: lidarr.png
-          gethomepage.dev/widget.type: lidarr
-          gethomepage.dev/widget.url: http://lidarr.downloads
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: main
-                  port: http
-              - path: /metrics
-                service:
-                  identifier: metrics
-                  port: metrics
-        tls:
-          - hosts:
-              - *host
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
     persistence:
       config:
         enabled: true
