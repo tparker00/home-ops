@@ -7,6 +7,7 @@ resources:
   - ./blackbox-exporter/ks.yaml
   - ./lidarr-exporter/ks.yaml
   - ./node-exporter/ks.yaml
+  - ./prowlarr-exporter/ks.yaml
   - ./radarr-exporter/ks.yaml
   - ./sabnzbd-exporter/ks.yaml
   - ./sonarr-exporter/ks.yaml
