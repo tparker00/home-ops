@@ -9,10 +9,11 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.7.3
+      version: 4.4.0
+      interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s
+        name: bjw-s-charts
         namespace: flux-system
   install:
     remediation:
@@ -65,27 +66,12 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-    ingress:
+    route:
       app:
-        className: external
-        annotations:
-          external-dns/is-public: "true"
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: "Overseerr"
-          gethomepage.dev/group: "Media Management"
-          gethomepage.dev/icon: "overseerr"
-          gethomepage.dev/description: "Request management and media discovery tool."
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        hosts:
-          - host: &host "requests.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-            - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-external
+            namespace: network
     persistence:
       config:
         existingClaim: *app

@@ -9,10 +9,11 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.7.3
+      version: 4.4.0
+      interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s
+        name: bjw-s-charts
         namespace: flux-system
   maxHistory: 2
   install:
@@ -58,29 +59,12 @@ spec:
         ports:
           http:
             port: 5000
-    ingress:
-      main:
-        enabled: true
-        className: external
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Media
-          gethomepage.dev/name: Kavita
-          gethomepage.dev/icon: kavita.png
-          gethomepage.dev/widget.type: kavita
-          gethomepage.dev/widget.url: http://kavita.media:5000
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        hosts:
-          - host: &host comics.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: main
-                  port: http
-        tls:
-          - hosts:
-              - *host
+    route:
+      app:
+        hostnames: ["comics.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-external
+            namespace: network
     persistence:
       config:
         enabled: true

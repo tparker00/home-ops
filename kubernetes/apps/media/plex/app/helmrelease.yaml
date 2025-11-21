@@ -78,28 +78,12 @@ spec:
         ports:
           http:
             port: 32400
-    ingress:
+    route:
       app:
-        enabled: true
-        className: external
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Media
-          gethomepage.dev/name: Plex
-          gethomepage.dev/icon: plex.png
-          gethomepage.dev/widget.type: plex
-          gethomepage.dev/widget.url: http://plex.media:32400
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        hosts:
-          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-external
+            namespace: network
     persistence:
       config:
         enabled: true

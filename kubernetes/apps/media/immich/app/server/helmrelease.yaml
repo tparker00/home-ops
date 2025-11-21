@@ -9,13 +9,12 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.7.3
+      version: 4.4.0
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s
+        name: bjw-s-charts
         namespace: flux-system
-
   maxHistory: 2
   install:
     createNamespace: true
@@ -108,13 +107,11 @@ spec:
           http:
             port: *port
       metrics:
-        nameOverride: metrics
         controller: *app
         ports:
           metrics:
             port: 8081
       microservices-metrics:
-        nameOverride: microservices-metrics
         controller: *app
         ports:
           microservices-metrics:
@@ -140,24 +137,16 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 20s
-    ingress:
+    route:
       app:
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-          nignx.ingress.kubernetes.io/force-ssl-redirect: "true"
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-          nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
-        hosts:
-          - host: &host photos.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["photos.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+        parentRefs:
+          - name: envoy-external
+            namespace: network
 
     persistence:
       library:
