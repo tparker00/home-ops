@@ -142,9 +142,8 @@ spec:
         hostnames: ["photos.${SECRET_DOMAIN}"]
         rules:
           - backendRefs:
-            kind: Service
-            name: immich-server-app
-            port: 3001
+              - identifier: app
+                port: *port
         parentRefs:
           - name: envoy-external
             namespace: network
