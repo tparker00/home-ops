@@ -22,7 +22,7 @@ spec:
 
   values:
     controllers:
-      radarr-exporter:
+      lidarr-exporter:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
