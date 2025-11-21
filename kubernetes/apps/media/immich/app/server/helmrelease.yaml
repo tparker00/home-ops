@@ -138,7 +138,7 @@ spec:
             interval: 1m
             scrapeTimeout: 20s
     route:
-      app:
+      main:
         hostnames: ["photos.${SECRET_DOMAIN}"]
         parentRefs:
           - name: envoy-external
