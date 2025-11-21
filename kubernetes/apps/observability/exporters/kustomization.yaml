@@ -6,4 +6,5 @@ resources:
   - ./blackbox-exporter/ks.yaml
   - ./node-exporter/ks.yaml
   - ./radarr-exporter/ks.yaml
+  - ./sonarr-exporter.ks.yaml
   - ./speedtest-exporter/ks.yaml
