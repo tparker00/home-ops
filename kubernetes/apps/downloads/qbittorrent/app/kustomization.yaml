@@ -7,7 +7,6 @@ resources:
   - ./helmrelease.yaml
   - ./gluetun.sops.yaml
   - ./vpn.sops.yaml
-  - ../../../../templates/gatus/guarded
   - ../../../../templates/moosefs
 configMapGenerator:
   - name: qbittorrent-dnsdist
