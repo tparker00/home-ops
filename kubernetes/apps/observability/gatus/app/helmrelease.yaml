@@ -27,7 +27,7 @@ spec:
   values:
     controllers:
       gatus:
-        type: statefullset
+        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
