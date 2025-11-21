@@ -107,13 +107,11 @@ spec:
           http:
             port: *port
       metrics:
-        nameOverride: metrics
         controller: *app
         ports:
           metrics:
             port: 8081
       microservices-metrics:
-        nameOverride: microservices-metrics
         controller: *app
         ports:
           microservices-metrics:
