@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: tenchi
+spec:
+  hostnames: ["tenchi.${SECRET_DOMAIN}"]
+  parentRefs:
+    - name: envoy-internal
+      namespace: network
+  rules:
+    - backendRefs:
+        - name: tenchi
+          port: 8006
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: tenchi
+subsets:
+  - addresses:
+      - ip: ${TENCHI_IP}
+    ports:
+      - name: https
+        port: 8006
+        protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenchi
+spec:
+  ports:
+    - name: https
+      port: 8006
+  type: ClusterIP
