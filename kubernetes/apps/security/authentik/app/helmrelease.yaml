@@ -51,16 +51,8 @@ spec:
           annotations:
             external-dns.alpha.kubernetes.io/target: ${SECRET_DOMAIN}
           parentRefs:
-            - group: gateway.networking.k8s.io
-              kind: Gateway
-              name: envoy-internal
+            - name: envoy-external
               namespace: networking
-              sectionName: https
-            - group: gateway.networking.k8s.io
-              kind: Gateway
-              name: envoy-external
-              namespace: networking
-              sectionName: https
     worker:
       deploymentStrategy:
         type: RollingUpdate
