@@ -13,6 +13,9 @@ spec:
   dependsOn:
     - name: kube-prometheus-stack
   path: ./kubernetes/apps/observability/exporters/blackbox-exporter/app
+  postBuild:
+    substitute:
+      SUBDOMAIN: blackbox
   prune: true
   sourceRef:
     kind: GitRepository
