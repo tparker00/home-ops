@@ -14,9 +14,6 @@ spec:
     - name: cloudnative-pg-cluster
     - name: external-secrets-bitwarden
   path: ./kubernetes/apps/observability/grafana/app
-  postBuild:
-    substitute:
-      SUBDOMAIN: grafana
   prune: true
   sourceRef:
     kind: GitRepository
@@ -28,3 +25,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      SUBDOMAIN: grafana
