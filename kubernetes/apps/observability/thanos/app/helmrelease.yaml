@@ -67,14 +67,6 @@ spec:
           addr: >-
             dragonfly.database.svc.cluster.local:6379,
           db: 2
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        hostname: &host thanos.${SECRET_DOMAIN}
-        tls: true
-        extraTls:
-          - hosts:
-              - *host
     query:
       enabled: true
       replicaCount: 2
