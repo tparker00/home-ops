@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/default/additional-ingress/app
+  path: ./kubernetes/apps/default/additional-routes/app
   prune: true
   sourceRef:
     kind: GitRepository

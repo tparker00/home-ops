@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: moosefs
+spec:
+  hostnames: ["moosefs.${SECRET_DOMAIN}"]
+  parentRefs:
+    - name: envoy-internal
+      namespace: network
+  rules:
+    - backendRefs:
+        - name: moosefs
+          port: 9425
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: moosefs
+subsets:
+  - addresses:
+      - ip: ${NAS_IP}
+    ports:
+      - name: http
+        port: 9425
+        protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moosefs
+spec:
+  ports:
+    - name: http
+      port: 9425
+  type: ClusterIP

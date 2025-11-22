@@ -10,6 +10,9 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/kube-system/cilium/app
+  postBuild:
+    substitute:
+      SUBDOMAIN: hubble
   prune: false # never should be deleted
   sourceRef:
     kind: GitRepository

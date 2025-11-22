@@ -92,27 +92,12 @@ spec:
           discovery:
             port: 10001
             protocol: UDP
-    ingress:
+    route:
       app:
-        enabled: true
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/description: Ubiquiti Unifi Controller
-          gethomepage.dev/group: Networking
-          gethomepage.dev/icon: unifi
-          gethomepage.dev/name: Unifi Controller
-          gethomepage.dev/weight: "10" # optional
-          nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-        hosts:
-          - host: &host "unifi.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: https
-        tls:
-          - hosts:
-              - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
 
     persistence:
       data:
