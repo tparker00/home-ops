@@ -46,10 +46,10 @@ spec:
         main:
           enabled: true
           hostnames:
-            - "id.${SECRET_DOMAIN}"
             - "authentik.${SECRET_DOMAIN}"
+            - "id.${SECRET_DOMAIN}"
           annotations:
-            external-dns.alpha.kubernetes.io/target: ${SECRET_DOMAIN}
+            external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           parentRefs:
             - name: envoy-external
               namespace: networking
