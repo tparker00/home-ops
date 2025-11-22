@@ -42,17 +42,6 @@ spec:
       metrics:
         serviceMonitor:
           enabled: true
-      route:
-        main:
-          enabled: true
-          hostnames:
-            - "authentik.${SECRET_DOMAIN}"
-            - "id.${SECRET_DOMAIN}"
-          annotations:
-            external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-          parentRefs:
-            - name: envoy-external
-              namespace: networking
     worker:
       deploymentStrategy:
         type: RollingUpdate
