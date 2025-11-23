@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: getmeili/meilisearch
-              tag: v1.25
+              tag: v1.26
             env:
               MEILI_ENV: production
               MEILI_NO_ANALYTICS: true
