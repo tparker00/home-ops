@@ -94,7 +94,7 @@ spec:
             protocol: UDP
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        hostnames: ["unifi.${SECRET_DOMAIN}"]
         parentRefs:
           - name: envoy-internal
             namespace: network
