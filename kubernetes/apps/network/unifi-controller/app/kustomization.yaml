@@ -5,4 +5,5 @@ kind: Kustomization
 namespace: networking
 resources:
   - helmrelease.yaml
-  - ../../../../templates/moosefs
+components:
+  - ../../../../components/moosefs
