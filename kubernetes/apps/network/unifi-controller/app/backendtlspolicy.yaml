@@ -8,8 +8,8 @@ spec:
   targetRefs:
     - group: ''
       kind: Service
-      name: unifi
+      name: unifi-controller
       sectionName: https
   validation:
     wellKnownCACertificates: System
-    hostname: unifi.${SECRET_EXTERNAL_DOMAIN}
+    hostname: unifi.${SECRET_DOMAIN}
