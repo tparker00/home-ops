@@ -14,6 +14,7 @@ resources:
   - ./jetstack.yaml
   - ./kyverno.yaml
   - ./metrics-server.yaml
+  - ./nvidia-operator.yaml
   - ./openebs.yaml
   - ./external-secrets.yaml
   - ./node-feature-discovery.yaml
