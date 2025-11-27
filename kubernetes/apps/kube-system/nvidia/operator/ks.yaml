@@ -14,7 +14,7 @@ spec:
     secretRef:
       name: sops-age
   interval: 30m
-  path: ./kubernetes/apps/kube-system/device-plugin/nvidia/app
+  path: ./kubernetes/apps/kube-system/nvidia/operator/app
   postBuild:
     substituteFrom:
       - name: cluster-secrets
