@@ -14,4 +14,5 @@ patches:
         path: /spec/dependsOn/-
         value:
           name: moosefs-csi
-          namespace: storage
+          namespace: kube-system
+          kind: Kustomization
