@@ -68,6 +68,9 @@ spec:
               limits:
                 memory: 10Gi
     defaultPodOptions:
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: jellyfin-gpu
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
