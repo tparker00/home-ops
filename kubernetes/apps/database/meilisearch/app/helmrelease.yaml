@@ -16,6 +16,7 @@ spec:
         kind: HelmRepository
         name: bjw-s-charts
         namespace: flux-system
+  dependsOn: []
   install:
     remediation:
       retries: 3

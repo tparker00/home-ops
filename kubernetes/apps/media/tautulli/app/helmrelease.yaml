@@ -16,6 +16,7 @@ spec:
         name: bjw-s-charts
         namespace: flux-system
   maxHistory: 2
+  dependsOn: []
   install:
     remediation:
       retries: 3
