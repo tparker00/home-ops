@@ -5,7 +5,8 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ../../../../templates/moosefs
+components:
+  - ../../../../components/moosefs
 configMapGenerator:
   - name: pmm-config-tpl
     files:

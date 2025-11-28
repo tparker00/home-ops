@@ -15,6 +15,7 @@ spec:
         name: bjw-s
         namespace: flux-system
   maxHistory: 2
+  dependsOn: []
   install:
     remediation:
       retries: 3

@@ -7,4 +7,5 @@ resources:
   - backendtlspolicy.yaml
   - certificate.yaml
   - helmrelease.yaml
-  - ../../../../templates/moosefs
+components:
+  - ../../../../components/moosefs

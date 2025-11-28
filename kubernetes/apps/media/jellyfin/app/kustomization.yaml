@@ -5,4 +5,5 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./pvc.yaml
-  - ../../../../templates/moosefs
+components:
+  - ../../../../components/moosefs

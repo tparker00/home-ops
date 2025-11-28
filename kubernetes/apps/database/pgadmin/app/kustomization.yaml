@@ -4,7 +4,8 @@ namespace: database
 resources:
   - helmrelease.yaml
   - externalsecret.yaml
-  - ../../../../templates/moosefs
+components:
+  - ../../../../components/moosefs
 configMapGenerator:
   - name: pgadmin-local-config-configmap
     files:
