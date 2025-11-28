@@ -37,6 +37,9 @@ spec:
           reloader.stakater.com/auto: "true"
 
         pod:
+          resourceClaims:
+            - name: gpu
+              resourceClaimTemplateName: immich-gpu
           enableServiceLinks: false
           nodeSelector:
                   feature.node.kubernetes.io/coral-tpu: "true"

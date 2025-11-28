@@ -68,8 +68,6 @@ spec:
               IMMICH_METRICS: true
             envFrom: *envFrom
             resources:
-              claims:
-                - name: gpu
               requests:
                 cpu: 100m
                 memory: 256Mi
