@@ -66,5 +66,5 @@ spec:
     extraArgs:
       - --ignore-ingress-tls-spec
     policy: sync
-    sources: ["ingress", "service", "crd", "gateway-httproute"]
+    sources: ["gateway-httproute", "ingress", "service", "crd"]
     registry: noop

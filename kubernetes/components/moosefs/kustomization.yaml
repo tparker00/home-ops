@@ -13,6 +13,6 @@ patches:
       - op: add
         path: /spec/dependsOn/-
         value:
-          name: csi-moosefs-node
+          name: moosefs-csi
           namespace: kube-system
           kind: Kustomization
