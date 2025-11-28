@@ -13,6 +13,5 @@ patches:
       - op: add
         path: /spec/dependsOn/-
         value:
-          name: moosefs-csi
-          namespace: kube-system
-          kind: Kustomization
+          name: external-secrets
+          namespace: external-secrets
