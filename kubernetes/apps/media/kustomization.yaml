@@ -2,9 +2,12 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: media
+components:
+  - ../../../components/namespace
+replacements:
+  - path: ../../../components/replacements/ks.yaml
 resources:
-  # Pre Flux-Kustomizations
-  - ./namespace.yaml
   # Flux-Kustomizations
   - ./checkrr/ks.yaml
   - ./immich/ks.yaml
