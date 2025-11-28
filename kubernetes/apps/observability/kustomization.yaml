@@ -7,7 +7,6 @@ components:
 replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
-  - ./namespace.yaml
   - ./exporters
   - ./gatus/ks.yaml
   - ./grafana/ks.yaml
