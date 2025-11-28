@@ -37,6 +37,9 @@ spec:
           reloader.stakater.com/auto: "true"
 
         pod:
+          resourceClaims:
+            - name: gpu
+              resourceClaimTemplateName: immich-gpu
           enableServiceLinks: false
           nodeSelector:
                   feature.node.kubernetes.io/coral-tpu: "true"
@@ -63,13 +66,13 @@ spec:
               MACHINE_LEARNING_CACHE_FOLDER: /cache
               TRANSFORMERS_CACHE: /cache
             resources:
+              claims:
+                - name: gpu
               requests:
                 cpu: 100m
                 memory: 274M
-                gpu.intel.com/i915: 1
               limits:
                 memory: 3949M
-                gpu.intel.com/i915: 1
 
     service:
       app:
