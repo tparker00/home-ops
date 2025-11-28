@@ -11,4 +11,4 @@ resources:
   - ./server
   - ./machine-learning
 components:
-  - ../../../../components/gpu/intel
+  - ../../../../../components/gpu/intel
