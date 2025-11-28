@@ -10,5 +10,3 @@ resources:
   - ./externalsecret.yaml
   - ./server
   - ./machine-learning
-components:
-  - ../../../../components/gpu/intel
