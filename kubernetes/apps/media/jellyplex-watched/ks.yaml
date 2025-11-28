@@ -6,7 +6,6 @@ metadata:
   name: &app jellyplex-watched
   namespace: flux-system
 spec:
-  targetNamespace: media
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

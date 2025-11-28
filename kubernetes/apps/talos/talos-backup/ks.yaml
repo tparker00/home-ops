@@ -6,7 +6,6 @@ metadata:
   name: &app talos-backup
   namespace: flux-system
 spec:
-  targetNamespace: talos
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

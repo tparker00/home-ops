@@ -6,7 +6,6 @@ metadata:
   name: &app plex
   namespace: flux-system
 spec:
-  targetNamespace: media
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -35,7 +34,6 @@ metadata:
   namespace: flux-system
 spec:
   targetNamespace: media
-  commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
@@ -59,7 +57,6 @@ metadata:
 spec:
   targetNamespace: media
   commonMetadata:
-    labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: plex
@@ -89,7 +86,6 @@ spec:
   targetNamespace: media
   commonMetadata:
     labels:
-      app.kubernetes.io/name: *app
   dependsOn:
     - name: plex
     - name: tautulli

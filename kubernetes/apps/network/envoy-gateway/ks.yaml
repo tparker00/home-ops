@@ -6,7 +6,6 @@ metadata:
   name: envoy-gateway
   namespace: flux-system
 spec:
-  targetNamespace: network
   interval: 1h
   path: ./kubernetes/apps/network/envoy-gateway/app
   prune: true
@@ -23,7 +22,6 @@ metadata:
   name: envoy-config
   namespace: flux-system
 spec:
-  targetNamespace: network
   dependsOn:
     - name: envoy-gateway
   interval: 1h

@@ -5,7 +5,6 @@ metadata:
   name: &app prometheus-operator-crds
   namespace: flux-system
 spec:
-  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

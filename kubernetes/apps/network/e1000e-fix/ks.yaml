@@ -6,7 +6,6 @@ metadata:
   name: &app e1000e-fix
   namespace: flux-system
 spec:
-  targetNamespace: network
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

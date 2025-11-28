@@ -6,7 +6,6 @@ metadata:
   name: &app bazarr
   namespace: flux-system
 spec:
-  targetNamespace: downloads
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
