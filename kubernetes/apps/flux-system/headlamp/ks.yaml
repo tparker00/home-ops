@@ -4,6 +4,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: headlamp
+  namespace: kube-system
 spec:
   targetNamespace: flux-system
   interval: 1h
