@@ -2,6 +2,11 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: default
+components:
+  - ../../components/namespace
+replacements:
+  - path: ../../components/replacements/ks.yaml
 resources:
   # Pre Flux-Kustomizations
   - ./additional-routes/ks.yaml
@@ -10,5 +15,4 @@ resources:
   - ./languagetool/ks.yaml
   - ./homepage/ks.yaml
   - ./manyfold/ks.yaml
-  - ./namespace.yaml
   - ./rxresume/ks.yaml

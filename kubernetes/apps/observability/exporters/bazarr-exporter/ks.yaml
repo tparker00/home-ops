@@ -6,7 +6,6 @@ metadata:
   name: &app bazarr-exporter
   namespace: flux-system
 spec:
-  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

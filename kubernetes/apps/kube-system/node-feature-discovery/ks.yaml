@@ -7,7 +7,6 @@ metadata:
 spec:
   path: ./kubernetes/apps/kube-system/node-feature-discovery/app
   prune: true
-  targetNamespace: kube-system
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -29,7 +28,6 @@ metadata:
 spec:
   path: ./kubernetes/apps/kube-system/node-feature-discovery/rules
   prune: true
-  targetNamespace: kube-system
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

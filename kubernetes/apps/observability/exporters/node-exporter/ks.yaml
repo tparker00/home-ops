@@ -5,7 +5,6 @@ metadata:
   name: &app node-exporter-probes
   namespace: flux-system
 spec:
-  targetNamespace: observability
   dependsOn:
     - name: kube-prometheus-stack
   path: ./kubernetes/apps/observability/exporters/node-exporter/probes

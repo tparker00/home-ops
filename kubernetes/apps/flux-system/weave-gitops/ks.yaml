@@ -6,7 +6,6 @@ metadata:
   name: &app weave-gitops
   namespace: flux-system
 spec:
-  targetNamespace: flux-system
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

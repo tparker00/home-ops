@@ -6,7 +6,6 @@ metadata:
   name: &app plex
   namespace: flux-system
 spec:
-  targetNamespace: media
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -34,7 +33,6 @@ metadata:
   name: &app plex-auto-languages
   namespace: flux-system
 spec:
-  targetNamespace: media
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -57,7 +55,6 @@ metadata:
   name: &app plex-image-cleanup
   namespace: flux-system
 spec:
-  targetNamespace: media
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -86,7 +83,6 @@ metadata:
   name: &app plex-meta-manager
   namespace: flux-system
 spec:
-  targetNamespace: media
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

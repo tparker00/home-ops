@@ -6,7 +6,6 @@ metadata:
   name: &app dragonfly
   namespace: flux-system
 spec:
-  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -27,7 +26,6 @@ metadata:
   name: &app dragonfly-cluster
   namespace: flux-system
 spec:
-  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

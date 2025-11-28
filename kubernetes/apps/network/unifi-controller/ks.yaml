@@ -6,7 +6,6 @@ metadata:
   name: &app unifi-controller
   namespace: flux-system
 spec:
-  targetNamespace: network
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

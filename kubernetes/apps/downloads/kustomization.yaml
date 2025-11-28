@@ -2,11 +2,14 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: downloads
+replacements:
+  - path: ../../components/replacements/ks.yaml
 resources:
+  - ./namespace.yaml
   - ./bazarr/ks.yaml
   - ./byparr/ks.yaml
   - ./cross-seed/ks.yaml
-  - ./namespace.yaml
   - ./flaresolverr/ks.yaml
   - ./huntarr/ks.yaml
   - ./kapowarr/ks.yaml

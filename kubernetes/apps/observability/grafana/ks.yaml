@@ -6,7 +6,6 @@ metadata:
   name: &app grafana
   namespace: flux-system
 spec:
-  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
