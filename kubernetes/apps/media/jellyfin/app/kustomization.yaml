@@ -7,3 +7,4 @@ resources:
   - ./pvc.yaml
 components:
   - ../../../../components/moosefs
+  - ../../../../components/gpu/intel
