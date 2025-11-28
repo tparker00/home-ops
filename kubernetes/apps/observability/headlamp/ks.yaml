@@ -14,7 +14,7 @@ spec:
     - name: authentik
     - name: external-secrets-bitwarden
   interval: 1h
-  path: ./kubernetes/apps/flux-system/headlamp/app
+  path: ./kubernetes/apps/observability/headlamp/app
   postBuild:
     substitute:
       SUBDOMAIN: headlamp
