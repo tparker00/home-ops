@@ -13,5 +13,5 @@ patches:
       - op: add
         path: /spec/dependsOn/-
         value:
-          name: external-secrets
-          namespace: external-secrets
+          name: local-path-provisioner
+          namespace: storage
