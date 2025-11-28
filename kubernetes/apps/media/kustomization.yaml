@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
-  # - ./emby/ks.yaml
   # Flux-Kustomizations
   - ./checkrr/ks.yaml
   - ./immich/ks.yaml
