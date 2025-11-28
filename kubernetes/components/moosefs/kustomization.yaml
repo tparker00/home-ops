@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
-apiVersion: kustomize.config.k8s.io/v1alpha1
+apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Component
 resources:
   - ./claim.yaml
@@ -13,5 +13,6 @@ patches:
       - op: add
         path: /spec/dependsOn/-
         value:
-          name: moosefs-csi
-          namespace: storage
+          name: csi-moosefs-node
+          namespace: kube-system
+          kind: Kustomization
