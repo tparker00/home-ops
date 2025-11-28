@@ -6,7 +6,7 @@ metadata:
   name: &app homepage
   namespace: flux-system
 spec:
-    commonMetadata:
+  commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
