@@ -23,5 +23,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: qb
       MFS_CAPACITY: 2Gi
