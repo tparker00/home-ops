@@ -6,7 +6,7 @@ metadata:
   name: &app headlamp
   namespace: flux-system
 spec:
-  targetNamespace: flux-system
+  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
