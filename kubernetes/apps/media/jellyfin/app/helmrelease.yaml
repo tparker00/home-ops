@@ -61,11 +61,11 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             resources:
+              claims:
+                - name: gpu
               requests:
                 memory: 1Gi
-                gpu.intel.com/i915: 1
               limits:
-                gpu.intel.com/i915: 1
                 memory: 10Gi
     defaultPodOptions:
       securityContext:
