@@ -6,4 +6,4 @@ resources:
   - ./helmrelease.yaml
   - ./pvc.yaml
 components:
-  - ../../../../components/moosefs
+  - ../../../components/moosefs

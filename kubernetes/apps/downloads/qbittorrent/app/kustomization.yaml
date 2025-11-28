@@ -8,7 +8,7 @@ resources:
   - ./gluetun.sops.yaml
   - ./vpn.sops.yaml
 components:
-  - ../../../../components/moosefs
+  - ../../../components/moosefs
 configMapGenerator:
   - name: qbittorrent-dnsdist
     files:

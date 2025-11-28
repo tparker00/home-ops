@@ -6,7 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
 components:
-  - ../../../../components/moosefs
+  - ../../../components/moosefs
 configMapGenerator:
   - name: pmm-config-tpl
     files:

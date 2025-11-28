@@ -5,7 +5,7 @@ resources:
   - helmrelease.yaml
   - externalsecret.yaml
 components:
-  - ../../../../components/moosefs
+  - ../../../components/moosefs
 configMapGenerator:
   - name: pgadmin-local-config-configmap
     files:
