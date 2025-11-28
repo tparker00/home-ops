@@ -5,4 +5,4 @@ namespace: media
 resources:
   - ./helmrelease.yaml
 components:
-  - ../../../components/moosefs
+  - ../../../../components/moosefs

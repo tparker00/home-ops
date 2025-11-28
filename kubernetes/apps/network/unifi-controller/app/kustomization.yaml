@@ -6,4 +6,4 @@ namespace: networking
 resources:
   - helmrelease.yaml
 components:
-  - ../../../components/moosefs
+  - ../../../../components/moosefs

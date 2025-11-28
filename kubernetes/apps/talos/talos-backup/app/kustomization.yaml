@@ -6,4 +6,4 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
 components:
-  - ../../../components/moosefs
+  - ../../../../components/moosefs
