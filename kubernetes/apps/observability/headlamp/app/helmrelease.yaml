@@ -74,6 +74,12 @@ spec:
     clusterRoleBinding:
       create: false
     config:
+      oidc:
+        secret:
+          create: false
+        externalSecret:
+          enabled: true
+          name: headlamp-secret
       pluginsDir: /build/plugins
     podAnnotations:
       reloader.stakater.com/auto: "true"
