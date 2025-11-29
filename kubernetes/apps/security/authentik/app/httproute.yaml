@@ -6,11 +6,12 @@ metadata:
   name: authentik
   namespace: security
   annotations:
-    external-dns.alpha.kubernetes.io/target: "id.${SECRET_DOMAIN}"
+    external-dns.alpha.kubernetes.io/target: "sso.${SECRET_DOMAIN}"
 spec:
   hostnames:
     - "authentik.${SECRET_DOMAIN}"
     - "id.${SECRET_DOMAIN}"
+    - "sso.${SECRET_DOMAIN}"
   parentRefs:
     - name: envoy-external
       namespace: network
