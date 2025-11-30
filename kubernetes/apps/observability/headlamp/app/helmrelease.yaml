@@ -83,8 +83,6 @@ spec:
       pluginsDir: /build/plugins
     podAnnotations:
       reloader.stakater.com/auto: "true"
-    service:
-      port: 4466
     serviceAccount:
       create: false
       name: headlamp-admin

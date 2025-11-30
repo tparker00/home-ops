@@ -11,4 +11,4 @@ spec:
   rules:
     - backendRefs:
         - name: headlamp
-          port: 4466
+          port: 80
