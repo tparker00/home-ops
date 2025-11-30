@@ -28,7 +28,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      radarr:
+      radarr-4k:
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
