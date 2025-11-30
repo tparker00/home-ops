@@ -48,11 +48,11 @@ spec:
               tag: 6.0.4.10291@sha256:73fbdba72dcde5fec16264e63a9daba7829b5c2806a75615463a67117b100de3
             env:
               TZ: ${TIMEZONE}
-              RADARR__AUTHENTICATION_METHOD: External
-              RADARR__AUTHENTICATION_REQUIRED: DisabledForLocalAddresses
-              RADARR__INSTANCE_NAME: Radarr 4k
-              RADARR__PORT: &port 80
-              RADARR__LOG_LEVEL: info
+              RADARR__AUTH__METHOD: External
+              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              RADARR__APP__INSTANCENAME: Radarr 4k
+              RADARR__SERVER__PORT: &port 80
+              RADARR__LOG__LEVEL: info
             envFrom: *envFrom
             probes:
               liveness: &probes
