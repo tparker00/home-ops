@@ -74,6 +74,7 @@ spec:
     clusterRoleBinding:
       create: false
     config:
+      baseUrl: "${SUBDOMAIN}.${SECRET_DOMAIN}"
       oidc:
         secret:
           create: false
@@ -81,6 +82,7 @@ spec:
           enabled: true
           name: headlamp-secret
       pluginsDir: /build/plugins
+    extraArgs:
     podAnnotations:
       reloader.stakater.com/auto: "true"
     serviceAccount:
