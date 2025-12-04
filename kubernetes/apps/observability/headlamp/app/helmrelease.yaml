@@ -74,7 +74,7 @@ spec:
     clusterRoleBinding:
       create: false
     config:
-      baseUrl: "${SUBDOMAIN}.${SECRET_DOMAIN}"
+      baseURL: "${SUBDOMAIN}.${SECRET_DOMAIN}"
       oidc:
         secret:
           create: false
