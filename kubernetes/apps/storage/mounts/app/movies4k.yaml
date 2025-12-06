@@ -11,7 +11,7 @@ spec:
     - ReadOnlyMany
   csi:
     driver: csi.moosefs.com
-    volumeHandle: movies
+    volumeHandle: movies4k
     volumeAttributes:
       mfsSubDir: "/movies-4k"
 ---
@@ -27,7 +27,7 @@ spec:
     - ReadWriteMany
   csi:
     driver: csi.moosefs.com
-    volumeHandle: movies
+    volumeHandle: movies4k
     volumeAttributes:
       mfsSubDir: "/movies-4k"
 ---
