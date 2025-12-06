@@ -8,7 +8,7 @@ resources:
   - ./immich.yaml
   - ./minio.yaml
   - ./movies.yaml
-  - ./movies-4k.yaml
+  - ./movies4k.yaml
   - ./music.yaml
   - ./photos.yaml
   - ./postgres-backup.yaml
