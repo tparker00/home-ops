@@ -104,6 +104,12 @@ spec:
         globalMounts:
           - path: /mnt/movies
             readOnly: true
+      movie4k-data:
+        enabled: true
+        existingClaim: movies4k-ro
+        globalMounts:
+          - path: /mnt/movies-4k
+            readOnly: true
       tmp:
         type: emptyDir
       transcode:
