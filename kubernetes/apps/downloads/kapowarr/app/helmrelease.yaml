@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/elfhosted/kapowarr-dev
-              digest: c59b5ce2277a4f0da9863617f1626e54928410a9
+              tag: c59b5ce2277a4f0da9863617f1626e54928410a9
             env:
               TZ: ${TIMEZONE}
             resources:
