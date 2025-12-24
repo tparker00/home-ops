@@ -25,4 +25,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      MFS_CAPACITY: 300Gi
+      MFS_CAPACITY: 350Gi
