@@ -6,7 +6,7 @@ resources:
   # Pre Flux-Kustomizations
   - ./additional-routes/ks.yaml
   - ./atuin/ks.yaml
-  - ./clusterpolicies/ks.yaml
+ # - ./clusterpolicies/ks.yaml
   - ./languagetool/ks.yaml
   - ./homepage/ks.yaml
   - ./manyfold/ks.yaml
