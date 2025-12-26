@@ -34,6 +34,7 @@ spec:
       masquerade: true
       preallocateMaps: true
       tproxy: true
+      hostLegacyRouting: true
     bpfClockProbe: true
     bgpControlPlane:
       enabled: true
