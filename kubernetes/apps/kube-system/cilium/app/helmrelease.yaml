@@ -50,7 +50,7 @@ spec:
     dashboards:
       enabled: true
     devices: bond+
-    enableIPv4BIGTCP: true
+    enableIPv4BIGTCP: false
     endpointRoutes:
       enabled: true
     envoy:
