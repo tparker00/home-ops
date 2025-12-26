@@ -39,7 +39,7 @@ spec:
       exclusive: false
     dashboards:
       enabled: true
-    devices: eno+,ens+
+    devices: e+
     enableIPv4BIGTCP: false
     endpointRoutes:
       enabled: true
