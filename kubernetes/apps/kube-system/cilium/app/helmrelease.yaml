@@ -1,70 +1,115 @@
 ---
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: cilium
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 1.18.5
+  url: oci://ghcr.io/home-operations/charts-mirror/cilium
+---
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: cilium
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: cilium
-      version: 1.18.5
-      sourceRef:
-        kind: HelmRepository
-        name: cilium
-        namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  valuesFrom:
-    - kind: ConfigMap
-      name: cilium-helm-values
+  chartRef:
+    kind: OCIRepository
+    name: cilium
+  dependsOn: []
+  interval: 15m
   values:
+    autoDirectNodeRoutes: true
+    bandwidthManager:
+      enabled: true
+      bbr: true
+    bpf:
+      datapathMode: netkit
+      masquerade: true
+      preallocateMaps: true
+      tproxy: true
+    bpfClockProbe: true
+    bgpControlPlane:
+      enabled: true
+    cgroup:
+      automount:
+        enabled: false
+      hostRoot: /sys/fs/cgroup
+    # cluster:
+    #   id: 1
+      # name: ${CLUSTER:=main}
+    cni:
+      exclusive: false
+    dashboards:
+      enabled: true
+    devices: bond+
+    enableIPv4BIGTCP: true
+    endpointRoutes:
+      enabled: true
+    envoy:
+      enabled: false
     hubble:
       enabled: true
-      metrics:
-        enabled:
-          - dns:query
-          - drop
-          - tcp
-          - flow
-          - port-distribution
-          - icmp
-          - http
-        serviceMonitor:
-          enabled: true
-        dashboards:
-          enabled: true
-          annotations:
-            grafana_folder: Cilium
-      relay:
-        enabled: true
-        rollOutPods: true
-        prometheus:
-          serviceMonitor:
-            enabled: true
-      ui:
-        enabled: true
-        rollOutPods: true
+    ipam:
+      mode: kubernetes
+    ipv4NativeRoutingCIDR: 10.42.0.0/16
+    k8sServiceHost: 127.0.0.1
+    k8sServicePort: 7445
+    kubeProxyReplacement: true
+    kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
+    l2announcements:
+      enabled: true
+    loadBalancer:
+      algorithm: maglev
+      mode: dsr
+    localRedirectPolicies:
+      enabled: true
     operator:
+      dashboards:
+        enabled: true
       prometheus:
         enabled: true
         serviceMonitor:
           enabled: true
-      dashboards:
-        enabled: true
-        annotations:
-          grafana_folder: Cilium
+      replicas: 1
+      rollOutPods: true
+    pmtuDiscovery:
+      enabled: true
     prometheus:
       enabled: true
       serviceMonitor:
         enabled: true
         trustCRDsExist: true
-    dashboards:
+    rollOutCiliumPods: true
+    routingMode: native
+    securityContext:
+      capabilities:
+        ciliumAgent:
+          - CHOWN
+          - KILL
+          - NET_ADMIN
+          - NET_RAW
+          - IPC_LOCK
+          - SYS_ADMIN
+          - SYS_RESOURCE
+          - PERFMON
+          - BPF
+          - DAC_OVERRIDE
+          - FOWNER
+          - SETGID
+          - SETUID
+        cleanCiliumState:
+          - NET_ADMIN
+          - SYS_ADMIN
+          - SYS_RESOURCE
+          - PERFMON
+          - BPF
+    socketLB:
       enabled: true
-      annotations:
-        grafana_folder: Cilium
+      hostNamespaceOnly: true
