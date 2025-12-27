@@ -9,7 +9,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/kube-system/cilium/app
+  path: ./kubernetes/apps/kube-system/cilium-old/app
   postBuild:
     substitute:
       SUBDOMAIN: hubble
@@ -34,7 +34,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: cilium
-  path: ./kubernetes/apps/kube-system/cilium/config
+  path: ./kubernetes/apps/kube-system/cilium-old/config
   prune: false # never should be deleted
   sourceRef:
     kind: GitRepository
