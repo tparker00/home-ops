@@ -17,11 +17,11 @@ spec:
   values:
     autoDirectNodeRoutes: true
     bandwidthManager:
-      enabled: false
+      enabled: true
       bbr: true
     bpf:
       datapathMode: netkit
-      masquerade: true
+      masquerade: false
       preallocateMaps: true
       tproxy: true
       hostLegacyRouting: true
@@ -39,8 +39,7 @@ spec:
       exclusive: false
     dashboards:
       enabled: true
-    devices: e+
-    enableIPv4BIGTCP: false
+    enableIPv4BIGTCP: true
     endpointRoutes:
       enabled: true
     envoy:
@@ -49,7 +48,7 @@ spec:
       enabled: true
     ipam:
       mode: kubernetes
-    ipv4NativeRoutingCIDR: 10.42.0.0/16
+    ipv4NativeRoutingCIDR: 10.68.0.0/16
     k8sServiceHost: 127.0.0.1
     k8sServicePort: 7445
     kubeProxyReplacement: true
