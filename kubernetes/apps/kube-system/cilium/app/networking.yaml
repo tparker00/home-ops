@@ -85,7 +85,7 @@ spec:
       peers:
         - name: opnsense
           peerASN: 64512
-          peerAddress: 192.168.1.1
+          peerAddress: 10.10.5.253
           peerConfigRef:
             name: l3-bgp-peer-config
 ---
