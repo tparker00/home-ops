@@ -67,7 +67,7 @@ spec:
       app:
         controller: *app
         type: LoadBalancer
-        loadBalancerIP: 10.10.2.3
+        loadBalancerIP: 10.10.5.2
         ports:
           https:
             port: 8443
