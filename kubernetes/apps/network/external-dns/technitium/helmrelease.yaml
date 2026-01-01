@@ -26,25 +26,38 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    provider: webhook
+    provider:
+      name: webhook
+      webhook:
+        image:
+          repository: ghcr.io/roosmaa/external-dns-technitium-webhook
+          tag: v0.4.1
+          pullPolicy: IfNotPresent
+        env:
+          - name: RUST_LOG
+            value: "external_dns_technitium_webhook=info"
+          - name: LISTEN_PORT
+            value: "5580"
+          - name: TECHNITIUM_URL
+            value: "192.168.1.10:5380"
+          - name: ZONE
+            value: ${SECRET_DOMAIN}
+        envFrom:
+        - secretRef:
+            name: external-dns-technitium-secret
+      livenessProbe:
+        httpGet:
+          path: /healthz
+          port: http-webhook
+        initialDelaySeconds: 10
+        timeoutSeconds: 5
+      readinessProbe:
+        httpGet:
+          path: /readyz
+          port: http-webhook
+        initialDelaySeconds: 10
+        timeoutSeconds: 5
     fullnameOverride: &name externaldns-internal-technitium
-    webhook:
-      image:
-        repository: ghcr.io/roosmaa/external-dns-technitium-webhook
-        tag: v0.4.1
-        pullPolicy: IfNotPresent
-      env:
-        - name: RUST_LOG
-          value: "external_dns_technitium_webhook=info"
-        - name: LISTEN_PORT
-          value: "5580"
-        - name: TECHNITIUM_URL
-          value: "192.168.1.10:5380"
-        - name: ZONE
-          value: ${SECRET_DOMAIN}
-      envFrom:
-      - secretRef:
-          name: external-dns-technitium-secret
     policy: sync
     sources:
       - ingress
@@ -58,15 +71,3 @@ spec:
       enabled: true
     podAnnotations:
       secret.reloader.stakater.com/reload: external-dns-technitium-secret
-    livenessProbe:
-      httpGet:
-        path: /healthz
-        port: http-webhook
-      initialDelaySeconds: 10
-      timeoutSeconds: 5
-    readinessProbe:
-      httpGet:
-        path: /readyz
-        port: http-webhook
-      initialDelaySeconds: 10
-      timeoutSeconds: 5
