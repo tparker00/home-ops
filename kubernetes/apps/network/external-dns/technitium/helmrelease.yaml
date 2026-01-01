@@ -34,12 +34,10 @@ spec:
           tag: "0.4.1"
           pullPolicy: IfNotPresent
         env:
-          - name: RUST_LOG
-            value: "external_dns_technitium_webhook=info"
-          - name: LISTEN_PORT
-            value: "5580"
           - name: TECHNITIUM_URL
-            value: "192.168.1.10:5380"
+            value: "http://192.168.1.10:5380"
+          - name: DOMAIN_FILTERS
+            value: ${SECRET_DOMAIN}
           - name: ZONE
             value: ${SECRET_DOMAIN}
           - name: TECHNITIUM_USERNAME
