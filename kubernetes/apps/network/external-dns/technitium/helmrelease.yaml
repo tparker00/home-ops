@@ -30,7 +30,7 @@ spec:
       name: webhook
       webhook:
         image:
-          repository: ghcr.io/roosmaa/external-dns-technitium-webhook
+          repository: ghcr.io/djr747/external-dns-technitium-webhook
           tag: "0.4.1"
           pullPolicy: IfNotPresent
         env:
@@ -42,9 +42,16 @@ spec:
             value: "192.168.1.10:5380"
           - name: ZONE
             value: ${SECRET_DOMAIN}
-        envFrom:
-        - secretRef:
-            name: external-dns-technitium-secret
+          - name: TECHNITIUM_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: external-dns-technitium-secret
+                key: technitium_username
+          - name: TECHNITIUM_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: external-dns-technitium-secret
+                key: technitium_password
       livenessProbe:
         httpGet:
           path: /healthz
