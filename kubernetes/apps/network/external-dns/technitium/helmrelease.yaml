@@ -15,7 +15,16 @@ spec:
         name: external-dns
         namespace: flux-system
       interval: 30m
-
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
+    remediation:
+      strategy: rollback
+      retries: 3
   values:
     provider: rfc2136
     fullnameOverride: &name externaldns-internal-technitium
