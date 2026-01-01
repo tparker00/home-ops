@@ -26,29 +26,25 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    provider: rfc2136
+    provider: webook
     fullnameOverride: &name externaldns-internal-technitium
-    env:
-      - name: EXTERNAL_DNS_RFC2136_HOST
-        value: "192.168.1.10"
-      - name: EXTERNAL_DNS_RFC2136_PORT
-        value: "53"
-      - name: EXTERNAL_DNS_RFC2136_ZONE
-        value: ${SECRET_DOMAIN}
-      - name: EXTERNAL_DNS_RFC2136_TSIG_AXFR
-        value: "true"
-      - name: EXTERNAL_DNS_RFC2136_TSIG_KEYNAME
-        value: externaldns
-      - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET_ALG
-        valueFrom:
-          secretKeyRef:
-            name: external-dns-technitium-secret
-            key: bind_rndc_algorithm
-      - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
-        valueFrom:
-          secretKeyRef:
-            name: external-dns-technitium-secret
-            key: bind_rndc_secret
+    webhook:
+      image:
+        repository: ghcr.io/roosmaa/external-dns-technitium-webhook
+        tag: v0.4.1
+        pullPolicy: IfNotPresent
+      env:
+        - name: RUST_LOG
+          value: "external_dns_technitium_webhook=info"
+        - name: LISTEN_PORT
+          value: "5580"
+        - name: TECHNITIUM_URL
+          value: "192.168.1.10:5380"
+        - name: ZONE
+          value: ${SECRET_DOMAIN}
+      envFrom:
+      - secretRef:
+          name: external-dns-technitium-secret
     policy: sync
     sources:
       - ingress
@@ -62,14 +58,15 @@ spec:
       enabled: true
     podAnnotations:
       secret.reloader.stakater.com/reload: external-dns-technitium-secret
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              version: v1
-              kind: Deployment
-              name: *name
-            patch: |
-              - op: add
-                path: /spec/template/spec/enableServiceLinks
-                value: false
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: http-webhook
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+    readinessProbe:
+      httpGet:
+        path: /readyz
+        port: http-webhook
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
