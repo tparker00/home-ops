@@ -3,7 +3,7 @@ kind: Secret
 metadata:
     name: qbittorrent-gluetun
 stringData:
-    auth.toml: ENC[AES256_GCM,data:8rAjs7K/KOry4c2Enev0uV3Tuvyt+SAxosUGc/RNeRU7DvM+wSJU91aouEs/gkDIFP7KXRXJ8TTOzhdoCV6ATQVcXO6CUpK1WaVPn/f3uU0bg/rB8BXJdI/yByFBNLO7ke4IhWDQWMuRjQRvYSSLDJiuIiQ2oE9uvm0QUsJeypij4YE4KAS2epR00IenTwTaZ5jWjnfs+1TAEb0X0SgGxOSueA9rPhqTmr4OVFFtrxTSuZ+e0ccKR3bdHIhvZIESBpye5OTgbAO2oBvZkaqzu+ivw3BAsrc8eUb6HHdBucX1590n6k2+2eCr5jUY49gmLrvCMtdntjsFkRZdKXohabC/4Xvzt3A=,iv:ZbDHrOf9zNwVGi99Ud+tRaPISeiLQ0VBA5UyPJGTkuA=,tag:M/dfltW9Z7lVXGJTkd22wA==,type:str]
+    auth.toml: ENC[AES256_GCM,data:T1q7rEzUb79c9bAUScpAcn3Mqo4w31kT2XjF3GHbU1ml392t4Bg+mxOAT2XS4CBRoxaRhgn+puoIF0kp6XA+jChIfG3KfnHf2tVth3gnOWmR5sWtilrkiq7PKY+5AGHpKRUPyuUTUB+4Fje9oO9M06p6Yx8w9j43WvG9qWbMJMBGaFWBnnkKy+5rgKCs7uZ0NFFUdKbiLXnT5RqSRtIaIVglfgsfJaihCXhWdmNoXN9PnuxHXH6WjrCzsiljZJyfvyPnO5tGWdyIu+2kphW8ftaFVxKn9wE9Q0ke8Mgo/VaNwB8JNQnvUFwPEl2vLMzFMpZKcEmn6y65jtRs+9Zm,iv:QhveObg1MpTXomD42EwLywF4z9qEFN+2MCmV1H3Y6ak=,tag:cAd0fjoYFLMg7IVHEwkopw==,type:str]
 sops:
     age:
         - recipient: age1r2gl2pd3gmys7u9jnt5ueth8rrj7u9k5rkzqmmcmq52qe09jffuq5n2l5m
@@ -15,7 +15,7 @@ sops:
             Zk1zOU43Yk1jSFBCT3YwSmphOGNsNEEK2ALRt9iy4erVDb6lRHvNFH4YyiwkoUas
             oQs0rf2EKu+VeyTmOz6M/sVSiTUPekcs4HagXQqHhaFYL2+31yarOw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-05-14T17:31:34Z"
-    mac: ENC[AES256_GCM,data:m5tfiFB1wQgQ2oAuLQC4iKdvt3r4w5QX2khMICxYM/2aV1vUdw3bRoeDZktcf8CXXsvxZE3F9jxkz5vR//18xo3gfk01C8gePkCDXo4Vyidz/h82DBSsxor0Jju0zeSGVNaA0WgY/nsP218tTUA128I6JAHxlypY9ABW1m0MKyY=,iv:eETNOdfT7YxblxipEAqw1rYyalSgT9atUPt9s3IMb7Y=,tag:PP8s2hkbRNlyqwQZGwxnGA==,type:str]
+    lastmodified: "2026-01-04T19:57:22Z"
+    mac: ENC[AES256_GCM,data:RfaNZUjFL2IhUfQiXYsMhaGFEnDhCtuzcuSGcptJWhOdDVNxwoaTvtPOuD8R8N9H4tMdd4qEEIw3SyFvKEfWiP0ktcAlA1WjHinncSwjEYqy34YS1ZXQH3OS3DRUxoAFaajS82DY6igg1ZhUQeBsz1w99oAdU4KFsi/tAEoYxFI=,iv:NVzuSe2ZJBfe4UQkpcfi1TptobAlZjQIJVujXgQWp50=,tag:RTa/Rc6WER3xcVnDpDKorw==,type:str]
     encrypted_regex: ^(data|stringData)$
-    version: 3.10.2
+    version: 3.11.0
