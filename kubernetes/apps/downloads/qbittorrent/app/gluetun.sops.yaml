@@ -3,7 +3,7 @@ kind: Secret
 metadata:
     name: qbittorrent-gluetun
 stringData:
-    auth.toml: ENC[AES256_GCM,data:T1q7rEzUb79c9bAUScpAcn3Mqo4w31kT2XjF3GHbU1ml392t4Bg+mxOAT2XS4CBRoxaRhgn+puoIF0kp6XA+jChIfG3KfnHf2tVth3gnOWmR5sWtilrkiq7PKY+5AGHpKRUPyuUTUB+4Fje9oO9M06p6Yx8w9j43WvG9qWbMJMBGaFWBnnkKy+5rgKCs7uZ0NFFUdKbiLXnT5RqSRtIaIVglfgsfJaihCXhWdmNoXN9PnuxHXH6WjrCzsiljZJyfvyPnO5tGWdyIu+2kphW8ftaFVxKn9wE9Q0ke8Mgo/VaNwB8JNQnvUFwPEl2vLMzFMpZKcEmn6y65jtRs+9Zm,iv:QhveObg1MpTXomD42EwLywF4z9qEFN+2MCmV1H3Y6ak=,tag:cAd0fjoYFLMg7IVHEwkopw==,type:str]
+    auth.toml: ENC[AES256_GCM,data:Heuzas4lssLNzT94DOquyi7M4Vx8qjLYa+OKyUqnrFlF3IghMdiazLUHqe7ltJTGTCPRAQdA7PI7LX5Gs0RSEeBICDUR+Hoy8xd7vhnXwIY3T2FUy02Zpd/TCgxFFnuaNpgLvc7C3L5fuS/dKpW+Gu4AypqryxNQDA6yqRO/Iajp5ji1XPJsUaDmE9Cq8+cjcAhyMMzlG1AfDiJwUcJ2O3jzBGVDO35XQl2BGqDwCLb8plT+d48fS7Rsyliv70Ywur8QKW+XRZptEJl18Pbcb68xmi4duYsJ9pAz3zBMcag8k2W6fglGrceUefLY1kJS9m/1F0hM78oFrNwK1A==,iv:kriiqof3WrVnu2DdJsR7riIGP1gyurwARtMmjDAJjiI=,tag:mXMxvd9Py06IeDlpx5X+jg==,type:str]
 sops:
     age:
         - recipient: age1r2gl2pd3gmys7u9jnt5ueth8rrj7u9k5rkzqmmcmq52qe09jffuq5n2l5m
@@ -15,7 +15,7 @@ sops:
             Zk1zOU43Yk1jSFBCT3YwSmphOGNsNEEK2ALRt9iy4erVDb6lRHvNFH4YyiwkoUas
             oQs0rf2EKu+VeyTmOz6M/sVSiTUPekcs4HagXQqHhaFYL2+31yarOw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-01-04T19:57:22Z"
-    mac: ENC[AES256_GCM,data:RfaNZUjFL2IhUfQiXYsMhaGFEnDhCtuzcuSGcptJWhOdDVNxwoaTvtPOuD8R8N9H4tMdd4qEEIw3SyFvKEfWiP0ktcAlA1WjHinncSwjEYqy34YS1ZXQH3OS3DRUxoAFaajS82DY6igg1ZhUQeBsz1w99oAdU4KFsi/tAEoYxFI=,iv:NVzuSe2ZJBfe4UQkpcfi1TptobAlZjQIJVujXgQWp50=,tag:RTa/Rc6WER3xcVnDpDKorw==,type:str]
+    lastmodified: "2026-01-04T19:59:03Z"
+    mac: ENC[AES256_GCM,data:Zsnd821O/wtkuj6hl4NZO8zEULfeAB35wbMbfHRWKMwk2tUDPStualQTgYDH83dO08w70kMfJnPIi1xfJPOZwPQsIUUyFRPi1i1DniUjKurTEUFN07UevJ8cj9/OxdcZA4C5q+hTzRaxobGVsoxfpOQUpyj3YJwOLgGH5moHrU0=,iv:96UrVBLiw7pIGeWl48Ewt5qkKO65U0N1gTqizLwJTEs=,tag:mjijHpVlqimSv7C2Y2J9SQ==,type:str]
     encrypted_regex: ^(data|stringData)$
     version: 3.11.0
