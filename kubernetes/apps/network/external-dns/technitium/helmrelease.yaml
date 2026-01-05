@@ -65,9 +65,7 @@ spec:
     fullnameOverride: &name externaldns-internal-technitium
     policy: sync
     sources:
-      - ingress
       - service
-      - crd
       - gateway-httproute
     txtPrefix: "k8s."
     domainFilters:
