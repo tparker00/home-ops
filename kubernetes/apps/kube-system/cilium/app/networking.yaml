@@ -81,11 +81,11 @@ spec:
       kubernetes.io/os: linux
   bgpInstances:
     - name: cilium
-      localASN: 64514
+      localASN: 64513
       peers:
-        - name: opnsense
+        - name: vyos
           peerASN: 64512
-          peerAddress: 10.10.5.253
+          peerAddress: 10.10.5.1
           peerConfigRef:
             name: l3-bgp-peer-config
 ---
