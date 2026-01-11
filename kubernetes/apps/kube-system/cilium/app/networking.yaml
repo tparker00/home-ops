@@ -23,6 +23,7 @@ spec:
   blocks:
     - start: "10.10.5.2"
       stop: "10.10.5.14"
+  disabled: true
 ---
 # yaml-language-server: $schema=https://kube-schemas.pages.dev/cilium.io/ciliumloadbalancerippool_v2.json
 apiVersion: cilium.io/v2
