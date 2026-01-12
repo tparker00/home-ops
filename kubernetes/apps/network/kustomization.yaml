@@ -12,3 +12,4 @@ resources:
   - ./k8s-gateway/ks.yaml
   - ./tun-device/ks.yaml
   - ./unifi-controller/ks.yaml
+  - ./vyManager/ks.yaml
