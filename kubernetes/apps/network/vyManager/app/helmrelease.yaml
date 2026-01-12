@@ -51,7 +51,7 @@ spec:
               VYMANAGER_ENV: production
               BETTER_AUTH_URL: "https://vymanager.${SECRET_DOMAIN}"
               NEXT_PUBLIC_APP_URL: "https://vymanager.${SECRET_DOMAIN}"
-              NEXT_PUBLIC_API_URL: "https://api.vymanager.${SECRET_DOMAIN}"
+              NEXT_PUBLIC_API_URL: "https://api-vymanager.${SECRET_DOMAIN}"
             envFrom: *envFrom
           backend:
             image:
@@ -84,7 +84,7 @@ spec:
           - name: envoy-internal
             namespace: network
       api:
-        hostnames: ["api.{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        hostnames: ["api-{{ .Release.Name }}.${SECRET_DOMAIN}"]
         rules:
           - backendRefs:
               - name: vymanager-api
