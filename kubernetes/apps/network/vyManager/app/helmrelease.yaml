@@ -78,7 +78,7 @@ spec:
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
         rules:
           - backendRefs:
-              - name: *app
+              - name: vymanager-main
                 port: http
         parentRefs:
           - name: envoy-internal
@@ -87,7 +87,7 @@ spec:
         hostnames: ["api.{{ .Release.Name }}.${SECRET_DOMAIN}"]
         rules:
           - backendRefs:
-              - name: api
+              - name: vymanager-api
                 port: http
         parentRefs:
           - name: envoy-internal
