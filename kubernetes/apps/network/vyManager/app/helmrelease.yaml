@@ -1,0 +1,94 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vymanager
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 4.6.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  dependsOn: []
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      vymanager:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/tparker00/postgres-init
+              tag: 16.10@sha256:bdbbdc21b2e33255a387eaa0b2ca8103dae78d04feb370f5df806aff3870170f
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: vymanager-secret
+        containers:
+          frontend:
+            image:
+              repository: ghcr.io/community-vyprojects/vymanager-frontend
+              tag: beta@sha256:f7ed30eca0a2ab3015542117d47575ceda7a1ee68958deea07d84c321a41da01
+            env:
+              TZ: ${TIMEZONE}
+              NODE_ENV: production
+              VYMANAGER_ENV: production
+              BETTER_AUTH_URL: "https://vymanager.${SECRET_DOMAIN}"
+              NEXT_PUBLIC_APP_URL: "https://vymanager.${SECRET_DOMAIN}"
+              NEXT_PUBLIC_API_URL: "https://api.vymanager.${SECRET_DOMAIN}"
+            envFrom: *envFrom
+          backend:
+            image:
+              repository: ghcr.io/community-vyprojects/vymanager-backend
+              tag: beta@sha256:8ab994702e4037d29da39f6d7009e731eb94adb2915fedcb4c586c4cd4f01c09
+            env:
+              TZ: ${TIMEZONE}
+              FRONTEND_URL: "https://vymanager.${SECRET_DOMAIN}"
+            envFrom: *envFrom
+    service:
+      main:
+        controller: *app
+        primary: true
+        ports:
+          http:
+            port: 3000
+      api:
+        controller: *app
+        ports:
+          http:
+            port: 8000
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - name: *app
+                port: http
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+      api:
+        hostnames: ["api.{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - name: api
+                port: http
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
