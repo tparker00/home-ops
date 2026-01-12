@@ -67,19 +67,19 @@ spec:
         primary: true
         ports:
           http:
-            port: 3000
+            port: &frontend_port 3000
       api:
         controller: *app
         ports:
           http:
-            port: 8000
+            port: &backend_port 8000
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
         rules:
           - backendRefs:
               - name: vymanager-main
-                port: http
+                port: *frontend_port
         parentRefs:
           - name: envoy-internal
             namespace: network
@@ -88,7 +88,7 @@ spec:
         rules:
           - backendRefs:
               - name: vymanager-api
-                port: http
+                port: *backend_port
         parentRefs:
           - name: envoy-internal
             namespace: network
