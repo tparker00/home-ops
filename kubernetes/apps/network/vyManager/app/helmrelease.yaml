@@ -56,7 +56,7 @@ spec:
           backend:
             image:
               repository: ghcr.io/community-vyprojects/vymanager-backend
-              tag: beta@sha256:d6cc4dc1dd518f879e44a0994ab12c67f5130ad9117045d42638bf0b28b1bf23
+              tag: beta@sha256:21fa50be08b43923a11bf53a0bed03f3eb59e18efd09ab4ab4c31ba049be3cc9
             env:
               TZ: ${TIMEZONE}
               FRONTEND_URL: "https://vymanager.${SECRET_DOMAIN}"
