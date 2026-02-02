@@ -42,7 +42,7 @@ spec:
           main:
             image:
               repository: ghcr.io/amruthpillai/reactive-resume
-              tag: v5.0.4
+              tag: v5.0.5
               pullPolicy: IfNotPresent
             env:
               PORT: 4000
