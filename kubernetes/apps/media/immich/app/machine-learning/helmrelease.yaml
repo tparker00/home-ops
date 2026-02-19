@@ -38,6 +38,8 @@ spec:
 
         pod:
           enableServiceLinks: false
+          securityContext:
+            supplementalGroups: [44, 105, 109, 226, 10000]
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname
