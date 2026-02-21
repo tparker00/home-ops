@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: aetaric/checkrr
-              tag: 3.6.0@sha256:b72a31fcba88ec79cc2e07b69f2343b5da3594ba611c2346402e90f2781615f3
+              tag: 3.6.1@sha256:c817e081e9397c240e5b13b09363fe26c9f94248489d3b4f0279e67495b1f12e
             env:
               TZ: America/New_York
             args: ["-c", "/data/checkrr.yaml"]
