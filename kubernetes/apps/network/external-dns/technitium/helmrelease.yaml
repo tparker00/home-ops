@@ -31,7 +31,7 @@ spec:
       webhook:
         image:
           repository: ghcr.io/djr747/external-dns-technitium-webhook
-          tag: "0.4.1"
+          tag: "0.4.3"
           pullPolicy: IfNotPresent
         env:
           - name: TECHNITIUM_URL
