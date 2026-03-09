@@ -71,7 +71,7 @@ spec:
             nameOverride: *app
             image:
               repository: ghcr.io/tparker00/qbittorrent
-              tag: 5.1.2@sha256:6a4a65cd0a8b588b9c0a0793b5cce8ab0adbd249557a4f86ef5318c032935618
+              tag: 5.1.4@sha256:9a824f781cc2ee075a18fc6263d6482ebdcdee443896481c32111fc8a4f7a7ad
             env:
               TZ: ${TIMEZONE}
               QBITTORRENT__PORT: *port
