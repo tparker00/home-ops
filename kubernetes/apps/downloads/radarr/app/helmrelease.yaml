@@ -35,7 +35,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/tparker00/postgres-init
-              tag: 16.12@sha256:d3141d1cdb69529a6d8f60af96253278fa5a0223944fdb36f609821e79bc291d
+              tag: 16.13@sha256:738c143d7d3d29451fab994328e613594d1426bb2a605340c12cea6e2985bfdb
               pullPolicy: IfNotPresent
             envFrom: &envFrom
               - secretRef:
