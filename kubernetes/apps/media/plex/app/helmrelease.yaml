@@ -91,7 +91,7 @@ spec:
           external-dns.alpha.kubernetes.io/external: "true"
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 401"]
-        hostnames: &host ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
         parentRefs:
           - name: envoy-external
             namespace: network
@@ -110,8 +110,7 @@ spec:
           - name: internal
             namespace: kube-system
             sectionName: https
-        hostnames:
-          - *host
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
         rules:
           - backendRefs:
               - identifier: gateway
