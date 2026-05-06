@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: ghcr.io/tparker00/plex
-              tag: 1.43.0.10492-121068a07
+              tag: 1.43.1.10611-1e34174b1
             env:
               TZ: ${TIMEZONE}
             securityContext:
