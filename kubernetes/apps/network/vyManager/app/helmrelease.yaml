@@ -44,7 +44,7 @@ spec:
           frontend:
             image:
               repository: ghcr.io/community-vyprojects/vymanager-frontend
-              tag: beta@sha256:38b1f03fc6f65aa61e094a647b98b6e0a5d59c5a5bfda7741969b21f9efdf061
+              tag: beta@sha256:ff4bfdeedef3d91206bd1ff1bb573e6d5aca4ea22c310eaaea1eb5d8908f4638
             env:
               TZ: ${TIMEZONE}
               NODE_ENV: production
