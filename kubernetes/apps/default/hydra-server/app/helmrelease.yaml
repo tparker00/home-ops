@@ -1,0 +1,89 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app hydra-server
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 5.0.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  dependsOn: []
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      hydra-server:
+        pod:
+          securityContext:
+            runAsUser: 100
+            runAsGroup: 101
+            fsGroup: 101
+            fsGroupChangePolicy: "OnRootMismatch"
+        strategy: RollingUpdate
+        containers:
+          main:
+            image:
+              repository: jpeg6/hydra-server
+              tag: latest@sha256:1552f954ff5e347eb892332c1a2e8ba7c0a470a68e46405862c33206e17e09df
+              pullPolicy: IfNotPresent
+            env:
+              TZ: ${TIMEZONE}
+              IS_CUSTOM_SERVER: "true"
+            envFrom:
+              - secretRef:
+                  name: hydra-secret
+            resources:
+              requests:
+                cpu: 1000m
+              limits:
+                cpu: 4000m
+                memory: 1Gi
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+    service:
+      main:
+        controller: *app
+        ports:
+          http:
+            port: 3000
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+    persistence:
+      config:
+        enabled: true
+        existingClaim: "{{ .Release.Name }}-config"
+        globalMounts:
+          - path: /app/config
+      data:
+        enabled: true
+        existingClaim: "{{ .Release.Name }}-data"
+        globalMounts:
+          - path: /data
