@@ -28,7 +28,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      languagetool:
+      hydra-server:
         pod:
           securityContext:
             runAsUser: 100
@@ -44,6 +44,10 @@ spec:
               pullPolicy: IfNotPresent
             env:
               TZ: ${TIMEZONE}
+              IS_CUSTOM_SERVER: "true"
+            envFrom:
+              - secretRef:
+                  name: hydra-secret
             resources:
               requests:
                 cpu: 1000m
