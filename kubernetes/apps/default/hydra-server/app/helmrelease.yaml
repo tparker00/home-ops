@@ -29,12 +29,6 @@ spec:
   values:
     controllers:
       hydra-server:
-        pod:
-          securityContext:
-            runAsUser: 100
-            runAsGroup: 101
-            fsGroup: 101
-            fsGroupChangePolicy: "OnRootMismatch"
         strategy: RollingUpdate
         containers:
           main:
