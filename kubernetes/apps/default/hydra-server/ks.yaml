@@ -10,6 +10,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: external-secrets-bitwarden
   path: ./kubernetes/apps/default/hydra-server/app
   prune: true
   sourceRef:
@@ -21,6 +23,9 @@ spec:
   timeout: 5m
   postBuild:
     substitute:
-      APP: *app
-      MFS_CAPACITY: 20Gi
+      APP: hydra-server-config
+      MFS_CAPACITY: 2Gi
       MFS_ACCESSMODES: ReadWriteOnce
+      APP2: hydra-server-data
+      MFS2_CAPACITY: 20Gi
+      MFS2_ACCESSMODES: ReadWriteOnce

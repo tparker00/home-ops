@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "${CLAIM:-${APP2}}"
+  labels:
+    app.kubernetes.io/name: "${APP2}"
+spec:
+  accessModes: ["${MFS2_ACCESSMODES:-ReadWriteOnce}"]
+  resources:
+    requests:
+      storage: "${MFS2_CAPACITY}"
+  storageClassName: moosefs-storage
