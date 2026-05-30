@@ -36,7 +36,7 @@ spec:
           main:
             image:
               repository: jpeg6/hydra-server
-              tag: latest@sha256:1552f954ff5e347eb892332c1a2e8ba7c0a470a68e46405862c33206e17e09df
+              tag: latest@sha256:295745828113fad19bf7b4907eca4577a11e583fb4d3cd9e3394720b3875ac65
               pullPolicy: IfNotPresent
             env:
               TZ: ${TIMEZONE}
