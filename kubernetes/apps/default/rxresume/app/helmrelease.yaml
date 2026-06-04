@@ -47,6 +47,7 @@ spec:
             env:
               PORT: 4000
               NODE_ENV: production
+              APP_URL: http://localhost:4000
               PUBLIC_URL: https://rxresume.${SECRET_DOMAIN}
               STORAGE_URL: https://s3.${SECRET_DOMAIN}/rxresume
               CHROME_TOKEN: chrome_token
@@ -82,7 +83,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: 4000
+            port: 3000
     route:
       app:
         hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
