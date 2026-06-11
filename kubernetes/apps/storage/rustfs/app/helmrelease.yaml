@@ -43,6 +43,8 @@ spec:
               RUSTFS_CONSOLE_ENABLE: "true"
               RUSTFS_BROWSER_REDIRECT_URL: "https://${GATUS_SUBDOMAIN}.${SECRET_DOMAIN}"
               RUSTFS_SERVER_DOMAINS: "${S3_SUBDOMAIN}.${SECRET_DOMAIN}"
+              RUSTFS_DRIVE_WALKDIR_TIMEOUT_SECS: 120
+              RUSTFS_DRIVE_WALKDIR_STALL_TIMEOUT_SECS: 120
             envFrom:
               - secretRef:
                   name: *app
