@@ -36,7 +36,7 @@ spec:
   dependsOn:
     - name: cloudnative-pg
     - name: external-secrets-bitwarden
-    - name: minio
+    - name: rustfs
   path: ./kubernetes/apps/database/cloudnative-pg/cluster
   prune: true
   sourceRef:
