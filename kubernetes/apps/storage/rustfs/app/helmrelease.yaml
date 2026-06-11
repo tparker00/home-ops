@@ -50,6 +50,7 @@ spec:
               RUSTFS_CAPACITY_MAX_TIMEOUT: 1200
               RUSTFS_CAPACITY_STALL_TIMEOUT: 600
               RUSTFS_DRIVE_TIMEOUT_PROFILE: high_latency
+              RUSTFS_NETWORK_MOUNT_MODE: true
             envFrom:
               - secretRef:
                   name: *app
