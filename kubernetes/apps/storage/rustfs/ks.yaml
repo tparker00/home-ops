@@ -25,6 +25,6 @@ spec:
     substitute:
       APP: *app
       S3_SUBDOMAIN: s3
-      GATYUS_SUBDOMAIN: rustfs
-      GATYUS_PATH: /health
+      GATUS_SUBDOMAIN: rustfs
+      GATUS_PATH: /health
       GATUS_STATUS: "403"
