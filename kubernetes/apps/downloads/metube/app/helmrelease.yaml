@@ -57,5 +57,5 @@ spec:
         enabled: true
         existingClaim: downloads-rw
         globalMounts:
-        - path: /data
+        - path: /downloads
           subPath: metube
