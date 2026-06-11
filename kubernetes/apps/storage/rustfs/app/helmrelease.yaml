@@ -45,6 +45,9 @@ spec:
               RUSTFS_SERVER_DOMAINS: "${S3_SUBDOMAIN}.${SECRET_DOMAIN}"
               RUSTFS_DRIVE_WALKDIR_TIMEOUT_SECS: 600
               RUSTFS_DRIVE_WALKDIR_STALL_TIMEOUT_SECS: 600
+              RUSTFS_CAPACITY_STAT_TIMEOUT: 300
+              RUSTFS_CAPACITY_MAX_TIMEOUT: 1200
+              RUSTFS_CAPACITY_STALL_TIMEOUT: 600
             envFrom:
               - secretRef:
                   name: *app
