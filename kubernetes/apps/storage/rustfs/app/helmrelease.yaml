@@ -28,7 +28,7 @@ spec:
     keepHistory: false
   values:
     controllers:
-      minio:
+      rustfs:
         type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
