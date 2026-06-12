@@ -6,12 +6,12 @@ metadata:
 spec:
   attachRequired: true
   podInfoOnMount: false
+  fsGroupPolicy: "File"
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: moosefs-storage
-  namespace: kube-system
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
 provisioner: csi.moosefs.com
@@ -113,11 +113,15 @@ rules:
     resources: ["persistentvolumeclaims/status"]
     verbs: ["update", "patch"]
   - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: [""]
     resources: ["events"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["volumeattributesclasses"]
+    verbs: ["get", "list", "watch"]
+
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -224,7 +228,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: ghcr.io/tparker00/moosefs-csi:0.9.8
+          image: moosefs/moosefs-csi:1.0.0-4.59.2
           args:
             - "--mode=controller"
             - "--csi-endpoint=$(CSI_ENDPOINT)"
@@ -322,7 +326,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: ghcr.io/tparker00/moosefs-csi:0.9.8
+          image: moosefs/moosefs-csi:1.0.0-4.59.2
           args:
             - "--mode=node"
             - "--csi-endpoint=$(CSI_ENDPOINT)"
