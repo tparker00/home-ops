@@ -8,7 +8,6 @@ resources:
   - ./cross-seed/ks.yaml
   - ./namespace.yaml
   - ./flaresolverr/ks.yaml
-  #- ./huntarr/ks.yaml
   - ./kapowarr/ks.yaml
   - ./lidarr/ks.yaml
   - ./metube/ks.yaml
