@@ -55,7 +55,7 @@ spec:
               ACCESS_TOKEN_SECRET: access_token_secret
               REFRESH_TOKEN_SECRET: refresh_token_secret
               MAIL_FROM: noreply@localhost
-              REDIS_URL: redis://dragonfly.database.svc.cluster.local
+              REDIS_URL: "redis://{{ .Release.Name }}-dragonfly:6379"
             envFrom: *envFrom
             probes:
               liveness:
