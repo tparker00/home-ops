@@ -7,4 +7,5 @@ resources:
   - ./external.yaml
   - ./external2.yaml
   - ./internal.yaml
+  - ./internal2.yaml
   - ./observability.yaml
