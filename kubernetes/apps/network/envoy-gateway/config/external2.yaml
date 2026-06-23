@@ -32,7 +32,7 @@ spec:
       tls:
         certificateRefs:
           - kind: Secret
-            name: "analogpuddle-com-staging-tls"
+            name: "analogpuddle-com-tls"
 ---
 # yaml-language-server: $schema=https://schemas.zinn.ca/gateway.networking.k8s.io/httproute_v1.json
 apiVersion: gateway.networking.k8s.io/v1
