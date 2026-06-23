@@ -17,6 +17,7 @@ spec:
         selector:
           dnsZones:
             - "${SECRET_DOMAIN}"
+            - "analogpuddle.com"
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
