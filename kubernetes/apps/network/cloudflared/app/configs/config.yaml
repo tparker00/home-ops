@@ -10,6 +10,10 @@ ingress:
   - service: http_status:404
   - hostname: "analogpuddle.com"
     service: https://envoy-external.network.svc.cluster.local:443
+    originRequest:
+      originServerName: "external.analogpuddle.com"
   - hostname: "*.analogpuddle.com"
     service: https://envoy-external.network.svc.cluster.local:443
+    originRequest:
+      originServerName: "external.analogpuddle.com"
   - service: http_status:404
