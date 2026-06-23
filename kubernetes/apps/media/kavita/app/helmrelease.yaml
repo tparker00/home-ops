@@ -62,7 +62,9 @@ spec:
             port: 5000
     route:
       app:
-        hostnames: ["comics.${SECRET_DOMAIN}"]
+        hostnames:
+          - "comics.${SECRET_DOMAIN}"
+          - "comics.analogpuddle.com"
         parentRefs:
           - name: envoy-external
             namespace: network

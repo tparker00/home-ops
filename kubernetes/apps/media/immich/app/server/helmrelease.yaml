@@ -141,7 +141,9 @@ spec:
             scrapeTimeout: 20s
     route:
       app:
-        hostnames: ["photos.${SECRET_DOMAIN}"]
+        hostnames:
+          - "photos.${SECRET_DOMAIN}"
+          - "photos.analogpuddle.com"
         rules:
           - backendRefs:
               - identifier: app

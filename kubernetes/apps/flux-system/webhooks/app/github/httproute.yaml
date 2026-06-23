@@ -8,7 +8,9 @@ metadata:
     gatus.home-operations.com/endpoint: |-
       conditions: ["[STATUS] == 404"]
 spec:
-  hostnames: ["flux-webhook.${SECRET_DOMAIN}"]
+  hostnames:
+    - "flux-webhook.${SECRET_DOMAIN}"
+    - "flux-webhook.analogpuddle.com"
   parentRefs:
     - name: envoy-external
       namespace: network

@@ -113,6 +113,8 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
           - "status.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.analogpuddle.com"
+          - "status.analogpuddle.com"
         parentRefs:
           - name: envoy-external
             namespace: network

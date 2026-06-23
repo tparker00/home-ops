@@ -69,7 +69,9 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.${SECRET_DOMAIN}"]
+        hostnames:
+          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.analogpuddle.com"
         parentRefs:
           - name: envoy-external
             namespace: network

@@ -52,7 +52,9 @@ spec:
             port: 5690
     route:
       app:
-        hostnames: ["join.${SECRET_DOMAIN}"]
+        hostnames:
+          - "join.${SECRET_DOMAIN}"
+          - "join.analogpuddle.com"
         parentRefs:
           - name: envoy-external
             namespace: network

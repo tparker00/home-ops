@@ -12,6 +12,9 @@ spec:
     - "authentik.${SECRET_DOMAIN}"
     - "id.${SECRET_DOMAIN}"
     - "sso.${SECRET_DOMAIN}"
+    - "authentik.analogpuddle.com"
+    - "id.analogpuddle.com"
+    - "sso.analogpuddle.com"
   parentRefs:
     - name: envoy-external
       namespace: network
