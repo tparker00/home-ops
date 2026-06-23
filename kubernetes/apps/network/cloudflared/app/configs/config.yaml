@@ -8,3 +8,8 @@ ingress:
   - hostname: "*.${SECRET_DOMAIN}"
     service: https://envoy-external.network.svc.cluster.local:443
   - service: http_status:404
+  - hostname: "analogpuddle.com"
+    service: https://envoy-external.network.svc.cluster.local:443
+  - hostname: "*.analogpuddle.com"
+    service: https://envoy-external.network.svc.cluster.local:443
+  - service: http_status:404
