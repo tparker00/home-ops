@@ -92,3 +92,21 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
+      analogpuddle:
+        hostnames: ["{{ .Release.Name }}.analogpuddle.com"]
+        rules:
+          - backendRefs:
+              - name: vymanager-main
+                port: *frontend_port
+        parentRefs:
+          - name: envoy-internal-ap
+            namespace: network
+      analogpuddle-api:
+        hostnames: ["api-{{ .Release.Name }}.analogpuddle.com"]
+        rules:
+          - backendRefs:
+              - name: vymanager-api
+                port: *backend_port
+        parentRefs:
+          - name: envoy-internal-ap
+            namespace: network

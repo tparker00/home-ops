@@ -115,6 +115,26 @@ spec:
           - backendRefs:
               - name: *app
                 port: 9000
+      analogpuddle:
+        hostnames:
+          - "{{ .Release.Name }}.analogpuddle.com"
+        parentRefs:
+          - name: envoy-internal-ap
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: 9001
+      analogpuddle-s3:
+        hostnames:
+          - "s3.analogpuddle.com"
+        parentRefs:
+          - name: envoy-internal-ap
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: 9000
     persistence:
       data:
         enabled: true

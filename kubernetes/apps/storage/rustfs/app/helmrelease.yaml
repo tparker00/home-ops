@@ -114,6 +114,26 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+      analogpuddle:
+        hostnames:
+          - "${GATUS_SUBDOMAIN}.analogpuddle.com"
+        parentRefs:
+          - name: envoy-internal-ap
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *http
+      analogpuddle-s3:
+        hostnames:
+          - "s3.analogpuddle.com"
+        parentRefs:
+          - name: envoy-internal-ap
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       data:
         enabled: true

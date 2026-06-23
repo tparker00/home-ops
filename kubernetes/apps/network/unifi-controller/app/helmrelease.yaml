@@ -106,6 +106,18 @@ spec:
             timeouts:
               request: 0s # websocket, never time out
               backendRequest: 0s # websocket, never time out
+      analogpuddle:
+        hostnames: ["unifi.analogpuddle.com"]
+        parentRefs:
+          - name: envoy-internal-ap
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: *app
+                port: 8443
+            timeouts:
+              request: 0s # websocket, never time out
+              backendRequest: 0s # websocket, never time out
     persistence:
       data:
         existingClaim: *app

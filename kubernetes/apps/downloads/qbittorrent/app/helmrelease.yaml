@@ -151,6 +151,11 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
+      analogpuddle:
+        hostnames: ["qb.analogpuddle.com"]
+        parentRefs:
+          - name: envoy-internal-ap
+            namespace: network
     persistence:
       config:
         enabled: true

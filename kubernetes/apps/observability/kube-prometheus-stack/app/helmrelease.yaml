@@ -46,6 +46,13 @@ spec:
           parentRefs:
             - name: envoy-internal
               namespace: network
+        analogpuddle:
+          enabled: true
+          hostnames:
+            - alertmanager.analogpuddle.com
+          parentRefs:
+            - name: envoy-internal-ap
+              namespace: network
       alertmanagerSpec:
         replicas: 2
         useExistingSecret: true
@@ -140,6 +147,13 @@ spec:
             - prometheus.${SECRET_DOMAIN}
           parentRefs:
             - name: envoy-internal
+              namespace: network
+        analogpuddle:
+          enabled: true
+          hostnames:
+            - prometheus.analogpuddle.com
+          parentRefs:
+            - name: envoy-internal-ap
               namespace: network
       thanosService:
         enabled: true
