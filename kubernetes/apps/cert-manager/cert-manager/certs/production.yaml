@@ -12,5 +12,3 @@ spec:
   dnsNames:
     - "${SECRET_DOMAIN}"
     - "*.${SECRET_DOMAIN}"
-    - "analogpuddle.com"
-    - "*.analogpuddle.com"
