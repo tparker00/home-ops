@@ -88,7 +88,7 @@ spec:
         parentRefs:
           - name: envoy-external
             namespace: network
-      app2:
+      analogpuddle:
         hostnames:
           - "{{ .Release.Name }}.analogpuddle.com"
         parentRefs:
