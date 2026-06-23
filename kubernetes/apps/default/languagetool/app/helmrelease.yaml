@@ -74,9 +74,14 @@ spec:
             conditions: ["[STATUS] == 400"]
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-          - "{{ .Release.Name }}.analogpuddle.com"
         parentRefs:
           - name: envoy-external
+            namespace: network
+      analogpuddle:
+        hostnames:
+          - "{{ .Release.Name }}.analogpuddle.com"
+        parentRefs:
+          - name: envoy-external-ap
             namespace: network
     persistence:
       ngrams:

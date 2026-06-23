@@ -84,9 +84,14 @@ spec:
             url: https://{{ .Release.Name }}.${SECRET_DOMAIN}/talos_version
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-          - "{{ .Release.Name }}.analogpuddle.com"
         parentRefs:
           - name: envoy-external
+            namespace: network
+      analogpuddle:
+        hostnames:
+          - "{{ .Release.Name }}.analogpuddle.com"
+        parentRefs:
+          - name: envoy-external-ap
             namespace: network
     persistence:
       config-file:

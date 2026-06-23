@@ -93,9 +93,24 @@ spec:
             conditions: ["[STATUS] == 401"]
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-          - "{{ .Release.Name }}.analogpuddle.com"
         parentRefs:
           - name: envoy-external
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: gateway
+                port: *port
+            timeouts:
+              backendRequest: 3600s
+      analogpuddle:
+        annotations:
+          external-dns.alpha.kubernetes.io/external: "true"
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 401"]
+        hostnames:
+          - "{{ .Release.Name }}.analogpuddle.com"
+        parentRefs:
+          - name: envoy-external-ap
             namespace: network
         rules:
           - backendRefs:

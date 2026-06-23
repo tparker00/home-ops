@@ -64,9 +64,14 @@ spec:
       app:
         hostnames:
           - "comics.${SECRET_DOMAIN}"
-          - "comics.analogpuddle.com"
         parentRefs:
           - name: envoy-external
+            namespace: network
+      analogpuddle:
+        hostnames:
+          - "comics.analogpuddle.com"
+        parentRefs:
+          - name: envoy-external-ap
             namespace: network
     persistence:
       config:

@@ -54,9 +54,14 @@ spec:
       app:
         hostnames:
           - "join.${SECRET_DOMAIN}"
-          - "join.analogpuddle.com"
         parentRefs:
           - name: envoy-external
+            namespace: network
+      analogpuddle:
+        hostnames:
+          - "join.analogpuddle.com"
+        parentRefs:
+          - name: envoy-external-ap
             namespace: network
     persistence:
       config:

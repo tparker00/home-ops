@@ -113,10 +113,17 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
           - "status.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+      analogpuddle:
+        annotations:
+          gatus.home-operations.com/enabled: "false"
+        hostnames:
           - "{{ .Release.Name }}.analogpuddle.com"
           - "status.analogpuddle.com"
         parentRefs:
-          - name: envoy-external
+          - name: envoy-external-ap
             namespace: network
     rbac:
       roles:

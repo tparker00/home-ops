@@ -143,13 +143,22 @@ spec:
       app:
         hostnames:
           - "photos.${SECRET_DOMAIN}"
-          - "photos.analogpuddle.com"
         rules:
           - backendRefs:
               - identifier: app
                 port: *port
         parentRefs:
           - name: envoy-external
+            namespace: network
+      analogpuddle:
+        hostnames:
+          - "photos.analogpuddle.com"
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+        parentRefs:
+          - name: envoy-external-ap
             namespace: network
 
     persistence:
