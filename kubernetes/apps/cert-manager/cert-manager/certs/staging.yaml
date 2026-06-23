@@ -18,7 +18,7 @@ kind: Certificate
 metadata:
   name: "analogpuddle-com-staging"
 spec:
-  secretName: "analogpuddle-com-staging-staging-tls"
+  secretName: "analogpuddle-com-staging-tls"
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer

@@ -35,6 +35,8 @@ spec:
       INTERNAL_DOMAIN: internal
       SVC_GATEWAY_EXTERNAL: 10.10.2.6
       SVC_GATEWAY_INTERNAL: 10.10.2.5
+      SVC_GATEWAY_EXTERNAL2: 10.10.2.8
+      SVC_GATEWAY_INTERNAL2: 10.10.2.7
   prune: true
   sourceRef:
     kind: GitRepository
