@@ -70,7 +70,7 @@ spec:
           chrome:
             image:
               repository: ghcr.io/browserless/chromium
-              tag: v2.54.0
+              tag: v2.54.1
               pullPolicy: IfNotPresent
             env:
               TIMEOUT: 10000
