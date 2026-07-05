@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/alexta69/metube
-              tag: "2026.06.20"
+              tag: "2026.07.05"
             env:
               DOWNLOAD_DIR: "/downloads"
               STATE_DIR: "/config"
