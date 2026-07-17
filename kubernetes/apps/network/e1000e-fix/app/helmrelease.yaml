@@ -67,7 +67,7 @@ spec:
               requests:
                 cpu: 10m
               limits:
-                memory: 10Mi
+                memory: 75Mi
     persistence:
       procfs:
         type: hostPath
