@@ -46,6 +46,8 @@ spec:
                 xargs -I% nsenter --mount=/host/proc/$(pidof /usr/local/bin/kubelet)/ns/mnt \
                                   --net=/host/proc/$(pidof /usr/local/bin/kubelet)/ns/net \
                                   -- sh -c "
+                                    echo 'Making sure ethtool is installed in namespace %' && \
+                                    which ethtool || { echo 'ethtool not found, installing...'; apt-get update && apt-get install -y ethtool; } && \
                                     echo '% - BEFORE' && \
                                     echo '==========' && \
                                     ethtool -k % && \
