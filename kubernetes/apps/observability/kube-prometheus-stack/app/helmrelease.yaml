@@ -174,7 +174,7 @@ spec:
           - memory-snapshot-on-shutdown
           - new-service-discovery-manager
         thanos:
-          image: quay.io/thanos/thanos:v0.42.0
+          image: quay.io/thanos/thanos:v0.42.2
           objectStorageConfig:
             existingSecret:
               name: kube-prometheus-stack
