@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/refs/heads/main/config/crd/bases/postgresql.cnpg.io_clusters.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: immich
+  annotations:
+    # required for seamless bootstrap: https://github.com/cloudnative-pg/cloudnative-pg/issues/5778#issuecomment-2783417464
+    cnpg.io/skipEmptyWalArchiveCheck: "enabled"
+spec:
+  # 1 replica is very difficult to drain the node where postgres is running
+  # 3 replicas increases write amplication issues when leveraging replicated storage like Rook Ceph.
+  instances: 1
+  # Immich v2.3.1 requires VectorChord >=0.3 <0.6
+  # renovate: datasource=docker depName=ghcr.io/tensorchord/cloudnative-vectorchord versioning=loose enabled=false
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:18.0-0.5.3@sha256:267f6cbb32af6e109e138a143c7e9dd5d44d68433ec2303f0c30e745c788d1a9
+  primaryUpdateStrategy: unsupervised
+
+  storage:
+    size: 15Gi
+    storageClass: openebs-hostpath
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: cloudnative-pg-secret
+
+  postgresql:
+    shared_preload_libraries: ["vchord.so"]
+    parameters:
+      max_connections: "500"
+      shared_buffers: 512MB
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
+
+  # https://github.com/cloudnative-pg/cloudnative-pg/issues/2570
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "4Gi"
+
+  monitoring:
+    enablePodMonitor: true
+
+  # pgBackRest Plugin for backups (B2 + R2 dual destination)
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: immich
+        serverName: &currentServer immich
+
+  bootstrap:
+    recovery:
+      source: &recoveryServer immich
+  externalClusters:
+    - name: *recoveryServer
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: immich
+          serverName: *recoveryServer
