@@ -6,6 +6,7 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
+  - ./barman-cloud/ks.yaml
   - ./cloudnative-pg/ks.yaml
   - ./meilisearch/ks.yaml
   - ./pgadmin/ks.yaml
