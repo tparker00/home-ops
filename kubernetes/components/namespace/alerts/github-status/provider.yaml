@@ -9,3 +9,4 @@ spec:
   address: https://github.com/tparker00/home-ops
   secretRef:
     name: github-status-token-secret
+    namespace: flux-system
