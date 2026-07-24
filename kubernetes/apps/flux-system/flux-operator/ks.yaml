@@ -9,13 +9,6 @@ spec:
   interval: 1h
   patches: []
   path: ./kubernetes/apps/flux-system/flux-operator
-  postBuild:
-    substitute:
-      SECRET_DOMAIN: "${SECRET_DOMAIN}"
-    substituteFrom:
-      - kind: Secret
-        name: flux-operator-oidc-credentials
-        optional: true
   prune: true
   sourceRef:
     kind: GitRepository
