@@ -71,7 +71,7 @@ data:
             description: Firewall
             widget:
               type: opnsense
-              url: https://opnsense.${SECRET_DOMAIN2}
+              url: https://opnsense.${SECRET_DOMAIN}
               username: {{HOMEPAGE_VAR_OPNSENSE_USER}}
               password: {{HOMEPAGE_VAR_OPNSENSE_PASS}}
     - Media:
