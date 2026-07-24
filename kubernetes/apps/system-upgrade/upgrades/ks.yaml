@@ -12,7 +12,7 @@ spec:
       namespace: system-upgrade
   interval: 1h
   patches: []
-  path: ./kubernetes/apps/system-upgrade/upgrades
+  path: ./kubernetes/apps/system-upgrade/upgrades/app
   prune: true
   sourceRef:
     kind: GitRepository
