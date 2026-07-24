@@ -8,19 +8,11 @@ metadata:
     # required for seamless bootstrap: https://github.com/cloudnative-pg/cloudnative-pg/issues/5778#issuecomment-2783417464
     cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
-  # 1 replica is very difficult to drain the node where postgres is running
-  # 3 replicas increases write amplication issues when leveraging replicated storage like Rook Ceph.
-  instances: 1
+  instances: 3
   # Immich v2.3.1 requires VectorChord >=0.3 <0.6
   # renovate: datasource=docker depName=ghcr.io/tensorchord/cloudnative-vectorchord versioning=loose enabled=false
-  #imageName: ghcr.io/tensorchord/cloudnative-vectorchord:18.0-0.5.3@sha256:267f6cbb32af6e109e138a143c7e9dd5d44d68433ec2303f0c30e745c788d1a9
-  #imageName: ghcr.io/ahinko/postgres-extended:16.3.9
-  imageName: ghcr.io/immich-app/postgres:16-vectorchord0.4.3-pgvector0.8.1-pgvectors0.3.0
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:16.14-1.1.1@sha256:4a26ca6aad2482289f4a3d3317ccbf1439ce3de140994598375a1f4c4e2e9f8d
   primaryUpdateStrategy: unsupervised
-
-  # The immich docker image uses UID/GID 0 so need to set this for it to start properly
-  postgresUID: 999
-  postgresGID: 999
 
   storage:
     size: 15Gi
@@ -32,7 +24,6 @@ spec:
 
   postgresql:
     shared_preload_libraries:
-      - "vectors.so"
       - "vchord.so"
     parameters:
       max_connections: "500"
@@ -51,37 +42,58 @@ spec:
   monitoring:
     enablePodMonitor: true
 
-  # pgBackRest Plugin for backups (B2 + R2 dual destination)
-  plugins:
-    - name: barman-cloud.cloudnative-pg.io
-      isWALArchiver: true
-      parameters:
-        barmanObjectName: immich
-        serverName: &currentServer immich
+  backup:
+    retentionPolicy: 60d
+    barmanObjectStore: &barmanObjectStore
+      data:
+        compression: bzip2
+      wal:
+        compression: bzip2
+        maxParallel: 8
+      destinationPath:  s3://immich/
+      endpointURL: https://s3.${SECRET_DOMAIN}
+      # Note: serverName version needs to be incremented or changed
+      # when recovering from an existing cnpg cluster
+      serverName: &currentCluster immich-v1
+      s3Credentials:
+        accessKeyId:
+          name: cloudnative-pg-secret
+          key: aws-access-key-id
+        secretAccessKey:
+          name: cloudnative-pg-secret
+          key: aws-secret-access-key
 
   bootstrap:
-    initdb:
-      database: immich
-      owner: immich
-      secret:
-        name: immich-pg-secret
-      import:
-        type: microservice
-        databases:
-          - immich
-        source:
-          externalCluster: postgres
-      postInitApplicationSQL:
-               - CREATE EXTENSION IF NOT EXISTS vchord CASCADE
-               - CREATE EXTENSION IF NOT EXISTS vector CASCADE
-               - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE
+    recovery:
+      source: &previousCluster immich-v1
   externalClusters:
-    - name: postgres
-      connectionParameters:
-        host: postgres-lb.database.svc
-        port: "5432"
-        user: immich
-        dbname: immich
-      password:
-        name: immich-pg-secret
-        key: password
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *barmanObjectStore
+        serverName: *previousCluster
+
+  #   initdb:
+  #     database: immich
+  #     owner: immich
+  #     secret:
+  #       name: immich-pg-secret
+  #     import:
+  #       type: microservice
+  #       databases:
+  #         - immich
+  #       source:
+  #         externalCluster: postgres
+  #     postInitApplicationSQL:
+  #              - CREATE EXTENSION IF NOT EXISTS vchord CASCADE
+  #              - CREATE EXTENSION IF NOT EXISTS vector CASCADE
+  #              - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE
+  # externalClusters:
+  #   - name: postgres
+  #     connectionParameters:
+  #       host: postgres-lb.database.svc
+  #       port: "5432"
+  #       user: immich
+  #       dbname: immich
+  #     password:
+  #       name: immich-pg-secret
+  #       key: password
