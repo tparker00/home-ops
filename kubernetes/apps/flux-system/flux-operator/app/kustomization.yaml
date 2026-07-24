@@ -7,6 +7,5 @@ resources:
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
   - ./ocirepository.yaml
-  - ./pocketidoidcclient.yaml
 generatorOptions:
   disableNameSuffixHash: true
