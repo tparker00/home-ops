@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://www.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./clusterrole.yaml
+  - ./helmrelease.yaml
+  - ./networkpolicy.yaml
+  - ./ocirepository.yaml
+  - ./pocketidoidcclient.yaml
+configMapGenerator:
+  - name: flux-operator-web-configmap
+    files:
+      - ./resources/config.yaml
+generatorOptions:
+  disableNameSuffixHash: true
