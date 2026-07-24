@@ -50,7 +50,7 @@ spec:
       httpRoute:
         enabled: true
         hostnames:
-          - "flux.${SECRET_DOMAIN}"
+          - flux.${SECRET_DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
