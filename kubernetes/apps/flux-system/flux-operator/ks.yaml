@@ -8,7 +8,7 @@ metadata:
 spec:
   interval: 1h
   patches: []
-  path: ./kubernetes/apps/flux-system/flux-operator
+  path: ./kubernetes/apps/flux-system/flux-operator/app
   prune: true
   sourceRef:
     kind: GitRepository
