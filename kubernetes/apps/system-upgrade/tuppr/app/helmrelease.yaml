@@ -15,7 +15,7 @@ spec:
       dashboards:
         enabled: true
         grafanaOperator:
-          enabled: true
+          enabled: false
           matchLabels:
             grafana.internal/instance: grafana
       prometheusRule:
@@ -30,11 +30,3 @@ spec:
       fsGroup: 65532
       seccompProfile:
         type: RuntimeDefault
-    volumeMounts:
-      - mountPath: /etc/ssl/certs
-        name: homelab-root-ca
-    volumes:
-      - name: homelab-root-ca
-        secret:
-          defaultMode: 420
-          secretName: "${SECRET_DOMAIN/./-}-production-tls"
