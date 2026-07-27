@@ -1,0 +1,60 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["github>home-operations/renovate-presets#2.2.0"],
+  // Fork overrides on top of the community preset.
+  schedule: ["every weekend"],
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ["every weekend"],
+  },
+  // Iron Law #2: no .sops.* file may be Renovate-scannable.
+  ignorePaths: ["**/*.sops.*"],
+  packageRules: [
+    {
+      description: "Talos Group",
+      groupName: "talos",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/siderolabs/talosctl/", "/siderolabs/installer/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      separateMinorPatch: true,
+    },
+    {
+      description: "Flux Group (bootstrap model until slice 6)",
+      groupName: "Flux",
+      matchDatasources: ["docker", "github-tags"],
+      versioning: "semver",
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      separateMinorPatch: true,
+      matchPackageNames: ["/fluxcd/"],
+    },
+    {
+      description: "Flux Operator Group (post slice-6)",
+      groupName: "flux-operator",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/flux-operator/", "/flux-instance/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+  ],
+  customManagers: [
+    {
+      // Fork-specific: bump inline `datasource= depName=` annotations in
+      // kubernetes manifests (covers versions not expressed via HelmRelease).
+      customType: "regex",
+      description: ["Process custom dependencies"],
+      managerFilePatterns: [
+        "/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/",
+      ],
+      matchStrings: [
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\\n.+: (&\\S+\\s)?(?<currentValue>\\S+)",
+      ],
+      datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}",
+    },
+  ],
+}

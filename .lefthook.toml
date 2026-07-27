@@ -1,0 +1,26 @@
+# Lefthook pre-commit hooks.
+# Slice 1 scope: oxfmt (YAML/JSON/Markdown) + kubeconform.
+# Slice 4 extends this with just/mise formatting once those tools are adopted.
+
+[pre-commit]
+parallel = true
+skip = ["merge", "rebase"]
+
+[pre-commit.commands.format-json]
+glob = ["*.json", "*.json5", "*.jsonc"]
+run = "oxfmt {staged_files}"
+stage_fixed = true
+
+[pre-commit.commands.format-yaml]
+glob = ["*.yaml", "*.yml"]
+run = "oxfmt {staged_files}"
+stage_fixed = true
+
+[pre-commit.commands.format-markdown]
+glob = ["*.md", "*.markdown", "*.mdx"]
+run = "oxfmt {staged_files}"
+stage_fixed = true
+
+[pre-commit.commands.kubeconform]
+glob = ["kubernetes/**/*.yaml", "kubernetes/**/*.yml"]
+run = "bash scripts/kubeconform.sh kubernetes"
