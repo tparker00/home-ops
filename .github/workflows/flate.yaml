@@ -45,12 +45,26 @@ jobs:
       - name: Run Flate
         id: flate
         # NOTE: path points at the fork's Flux cluster root (matches the
-        # previous flux-local --path). Verify on first PR run.
+        # previous flux-local --path).
         run: flate test all -p ./kubernetes/flux
+
+      - name: Diff Manifests
+        id: diff
+        run: |
+          flate diff all -p ./kubernetes/flux --output diff.patch || true
+          if [ -s diff.patch ]; then
+            echo "manifest-changes=true" >> "$GITHUB_OUTPUT"
+            echo "### Manifest Diff" >> "$GITHUB_STEP_SUMMARY"
+            echo '```diff' >> "$GITHUB_STEP_SUMMARY"
+            cat diff.patch >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "manifest-changes=false" >> "$GITHUB_OUTPUT"
+          fi
 
   success:
     if: ${{ !cancelled() }}
-    needs: flate
+    needs: [flate]
     name: Flate - Success
     runs-on: ubuntu-latest
     steps:

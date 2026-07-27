@@ -13,7 +13,6 @@ spec:
       sourceRef:
         name: democratic-csi
         kind: HelmRepository
-        namespace: flux-system
   install:
     remediation:
       retries: 3

@@ -6,3 +6,4 @@ namespace: kyverno
 resources:
   - ./helmrelease.yaml
   - ./rbac.yaml
+  - ./helmrepository.yaml

@@ -10,6 +10,7 @@ configMapGenerator:
     files:
       - ./resources/limiter.toml
       - ./resources/settings.yml
+  - ./helmrepository.yaml
 generatorOptions:
   disableNameSuffixHash: true
 components:

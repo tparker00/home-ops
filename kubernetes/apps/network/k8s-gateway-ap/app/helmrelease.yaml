@@ -5,8 +5,8 @@ metadata:
   name: k8s-gateway-ap
 spec:
   interval: 15m
-  chartRef:
-    kind: OCIRepository
+  sourceRef:
+    kind: HelmRepository
     name: k8s-gateway-ap
   install:
     createNamespace: true

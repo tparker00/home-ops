@@ -5,8 +5,8 @@ kind: HelmRelease
 metadata:
   name: tuppr
 spec:
-  chartRef:
-    kind: OCIRepository
+  sourceRef:
+    kind: HelmRepository
     name: tuppr
   interval: 1h
   values:
