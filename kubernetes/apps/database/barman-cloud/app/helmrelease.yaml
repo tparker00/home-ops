@@ -4,8 +4,8 @@ kind: HelmRelease
 metadata:
   name: barman-cloud
 spec:
-  chartRef:
-    kind: OCIRepository
+  sourceRef:
+    kind: HelmRepository
     name: barman-cloud
   interval: 1h
   # No values here :(

@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./helmrepository.yaml
 components:
   - ../../../../components/moosefs
   - ../../../../components/dragonfly

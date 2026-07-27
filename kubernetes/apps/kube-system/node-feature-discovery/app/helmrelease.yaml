@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: node-feature-discovery
-        namespace: flux-system
+
   interval: 5m0s
   values:
     master:

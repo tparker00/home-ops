@@ -6,6 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./prometheusrules
+  - ./ocirepository.yaml
 configMapGenerator:
   - name: kube-state-metrics-configmap
     files:

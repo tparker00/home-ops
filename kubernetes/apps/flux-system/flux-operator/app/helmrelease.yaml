@@ -5,8 +5,8 @@ kind: HelmRelease
 metadata:
   name: flux-operator
 spec:
-  chartRef:
-    kind: OCIRepository
+  sourceRef:
+    kind: HelmRepository
     name: flux-operator
   interval: 1h
   postRenderers:

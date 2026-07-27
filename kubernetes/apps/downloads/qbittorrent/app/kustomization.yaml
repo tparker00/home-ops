@@ -7,12 +7,14 @@ resources:
   - ./helmrelease.yaml
   - ./gluetun.sops.yaml
   - ./vpn.sops.yaml
+  - ./helmrepository.yaml
 components:
   - ../../../../components/moosefs
 configMapGenerator:
   - name: qbittorrent-dnsdist
     files:
       - ./resources/dnsdist.conf
+  - ./helmrepository.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

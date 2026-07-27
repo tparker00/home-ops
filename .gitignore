@@ -24,3 +24,6 @@ Brewfile.lock.json
 wiki
 # Bootstrap
 /config.yaml
+
+# Tenet live SQLite runtime state. Do not track this in Git.
+.tenet/.state/

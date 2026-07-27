@@ -4,5 +4,6 @@ kind: Kustomization
 namespace: media
 resources:
   - ./helmrelease.yaml
+  - ./helmrepository.yaml
 components:
   - ../../../../components/moosefs

@@ -7,6 +7,7 @@ labels:
       app.kubernetes.io/instance: immich
       app.kubernetes.io/part-of: immich
 resources:
+  - ./helmrepository.yaml
   - ./externalsecret.yaml
   - ./server
   - ./machine-learning

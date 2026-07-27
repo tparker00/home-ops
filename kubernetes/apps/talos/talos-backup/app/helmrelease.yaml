@@ -14,7 +14,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: sergelogvinov
-        namespace: flux-system
+
   dependsOn: []
   install:
     remediation:
