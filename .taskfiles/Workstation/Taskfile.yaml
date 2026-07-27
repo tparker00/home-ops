@@ -19,15 +19,14 @@ tasks:
   venv:
     desc: Set up virtual environment
     cmds:
-      - "{{.PYTHON_BIN}} -m venv {{.VIRTUAL_ENV}}"
-      - '{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade pip setuptools wheel'
-      - '{{.VIRTUAL_ENV}}/bin/python3 -m pip install --upgrade --requirement "{{.PIP_REQUIREMENTS_FILE}}"'
+      - "uv sync --frozen"
     sources:
-      - "{{.PIP_REQUIREMENTS_FILE}}"
+      - "{{.PYPROJECT_FILE}}"
+      - "{{.ROOT_DIR}}/uv.lock"
     generates:
       - "{{.VIRTUAL_ENV}}/pyvenv.cfg"
     preconditions:
-      - { msg: "Missing Pip requirements file", sh: "test -f {{.PIP_REQUIREMENTS_FILE}}" }
+      - { msg: "Missing pyproject.toml", sh: "test -f {{.PYPROJECT_FILE}}" }
 
   brew:
     desc: Install workstation dependencies with Brew

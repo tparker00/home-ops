@@ -6,8 +6,8 @@ metadata:
   name: &app smartctl-exporter
 spec:
   interval: 1h
-  chartRef:
-    kind: OCIRepository
+  sourceRef:
+    kind: HelmRepository
     name: smartctl-exporter
   install:
     remediation:
