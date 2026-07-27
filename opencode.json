@@ -1,0 +1,6 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "ALL modifications must be done in their own branches (e.g., slice-N). NEVER commit or push directly to main.\nALL merges are only to branches via PRs. NEVER automatically approve or merge PRs — user must review and approve all merges manually."
+  ]
+}
