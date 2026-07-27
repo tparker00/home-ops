@@ -1,0 +1,4 @@
+{
+  "$schema": "https://raw.githubusercontent.com/opencodeco/oxfmt/main/.oxfmtrc.schema.json",
+  "printWidth": 100
+}
