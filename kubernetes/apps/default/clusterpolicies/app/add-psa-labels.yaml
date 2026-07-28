@@ -27,9 +27,6 @@ spec:
               kinds:
                 - Namespace
               names:
-                - database
-                - default
-                - media
                 - downloads
                 - kyverno
                 - observability
