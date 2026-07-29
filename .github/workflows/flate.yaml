@@ -51,8 +51,7 @@ jobs:
       - name: Diff Manifests
         id: diff
         run: |
-          git worktree add ../baseline main || true
-          flate diff all -p ./kubernetes/flux --path-orig ../baseline/kubernetes/flux --output diff > diff.patch || true
+          flate diff all -p ./kubernetes/flux --output diff > diff.patch || true
           if [ -s diff.patch ]; then
             echo "manifest-changes=true" >> "$GITHUB_OUTPUT"
             echo "### Manifest Diff" >> "$GITHUB_STEP_SUMMARY"
