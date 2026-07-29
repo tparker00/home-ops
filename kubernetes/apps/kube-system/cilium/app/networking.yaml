@@ -25,7 +25,7 @@ spec:
       stop: "10.10.5.14"
   disabled: true
 ---
-# yaml-language-server: $schema=https://kube-schemas.pages.dev/cilium.io/ciliumloadbalancerippool_v2.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumloadbalancerippool_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumLoadBalancerIPPool
 metadata:
@@ -35,7 +35,7 @@ spec:
   blocks:
     - cidr: ${CILIUM_BGP_SVC_RANGE}
 ---
-# yaml-language-server: $schema=https://kube-schemas.pages.dev/cilium.io/ciliumbgpadvertisement_v2.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgpadvertisement_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumBGPAdvertisement
 metadata:
@@ -51,7 +51,7 @@ spec:
         matchExpressions:
           - { key: somekey, operator: NotIn, values: ["never-used-value"] }
 ---
-# yaml-language-server: $schema=https://kube-schemas.pages.dev/cilium.io/ciliumbgppeerconfig_v2.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgppeerconfig_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumBGPPeerConfig
 metadata:
@@ -71,7 +71,7 @@ spec:
         matchLabels:
           advertise: bgp
 ---
-# yaml-language-server: $schema=https://kube-schemas.pages.dev/cilium.io/ciliumbgpclusterconfig_v2.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumbgpclusterconfig_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumBGPClusterConfig
 metadata:
