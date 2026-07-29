@@ -35,7 +35,7 @@ Work is delivered in discrete slices. Each slice is its own branch with its own 
 
 ## Pending Slices
 
-### Slice 6: YAML Language Server Schema Audit (IN PROGRESS)
+### Slice 6: YAML Language Server Schema Audit (COMPLETED - PR #1959)
 - Audit all `# yaml-language-server: $schema=...` references across kubernetes/
 - Update broken/outdated schema URLs (e.g., v2beta2 → v2, dead links, wrong domains)
 - Standardize on consistent schema sources (kubernetes-schemas.pages.dev preferred)
