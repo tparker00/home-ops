@@ -47,7 +47,6 @@ Work is delivered in discrete slices. Each slice is its own branch with its own 
 - Add pod-security `restricted` labels to downloads namespace (tenant namespace)
 - Add pod-security `privileged` labels to infra namespaces (kube-system, kyverno, network, observability, openebs-system, storage, talos)
 - No duplicate SOPS decryption config found (apps.yaml patch propagates it correctly)
-- PR #1961 has flate CI timeout issue (17+ min) - may need workflow optimization
 
 ## Guardrails
 
