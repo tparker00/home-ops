@@ -35,16 +35,19 @@ Work is delivered in discrete slices. Each slice is its own branch with its own 
 
 ## Pending Slices
 
-### Future: YAML Language Server Schema Audit
-- Audit all `# yaml-language-server: $schema=...` references across kubernetes/
-- Update broken/outdated schema URLs (e.g., v2beta2 → v2, dead links, wrong domains)
-- Standardize on consistent schema sources (kubernetes-schemas.pages.dev preferred)
+### Slice 6: YAML Language Server Schema Audit (COMPLETED - PR #1960)
+- Standardized all schema URLs to `kubernetes-schemas.pages.dev`
+- Updated 48 `helmrelease_v2beta2` → `helmrelease_v2` references
+- Fixed broken schemas (kube-schemas, lds-schemas, ok8.sh, ajgon.casa, www.schemastore.org)
+- Replaced raw GitHub URLs with stable schema sources where possible
 - Zero-diff: only comment changes, no functional impact
 
-### Future: Namespace/SOPS Cleanup
-- Review namespace kustomizations for duplicate SOPS decryption config
-- Consolidate where defaults from apps.yaml make per-namespace config redundant
-- Align namespace patterns with upstream conventions
+### Slice 7: Namespace/SOPS Cleanup (COMPLETED - PR #1961)
+- Fix system-upgrade namespace: move `prune: disabled` from annotation to label, change pod-security to `privileged`
+- Add pod-security `restricted` labels to downloads namespace (tenant namespace)
+- Add pod-security `privileged` labels to infra namespaces (kube-system, kyverno, network, observability, openebs-system, storage, talos)
+- No duplicate SOPS decryption config found (apps.yaml patch propagates it correctly)
+- PR #1961 has flate CI timeout issue (17+ min) - may need workflow optimization
 
 ## Guardrails
 
