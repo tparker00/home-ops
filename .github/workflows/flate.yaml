@@ -54,12 +54,41 @@ jobs:
           flate diff all --allow-missing-secrets --skip-schema-validation -p ./kubernetes/flux --output diff > diff_output.txt || true
 
       - if: ${{ hashFiles('diff_output.txt') != '' }}
-        name: Show Manifest Diff
+        name: Load Secrets
+        id: load-secrets
+        uses: 1password/load-secrets-action@eb2efd0703da22a93c467f2d1ffbb6826c11e19c # v4.1.1
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          GITHUB_BOT_APP_CLIENT_ID: op://Kubernetes/github-jeeves/GITHUB_APP_CLIENT_ID
+          GITHUB_BOT_APP_PRIVATE_KEY: op://Kubernetes/github-jeeves/GITHUB_APP_PRIVATE_KEY
+
+      - if: ${{ hashFiles('diff_output.txt') != '' }}
+        name: Generate Token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: app-token
+        with:
+          client-id: ${{ steps.load-secrets.outputs.GITHUB_APP_CLIENT_ID }}
+          private-key: ${{ steps.load-secrets.outputs.GITHUB_APP_PRIVATE_KEY }}
+          permission-pull-requests: write
+
+      - if: ${{ hashFiles('diff_output.txt') != '' }}
+        name: Prepare Comment
         run: |
-          echo "### Manifest Diff" >> "$GITHUB_STEP_SUMMARY"
-          echo '```diff' >> "$GITHUB_STEP_SUMMARY"
-          cat diff_output.txt >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "### Manifest Diff"
+            echo ""
+            echo '```diff'
+            cat diff_output.txt
+            echo '```'
+          } > pr_comment.txt
+
+      - if: ${{ hashFiles('pr_comment.txt') != '' }}
+        name: Add PR Comment
+        uses: mshick/add-pr-comment@ec328af66588ab8f77cdeb2c264f14aba45bbf59 # v3.12.0
+        with:
+          repo-token: ${{ steps.app-token.outputs.token }}
+          message-id: ${{ github.event.pull_request.number }}/kubernetes/flux
+          message-path: pr_comment.txt
 
   success:
     if: ${{ !cancelled() }}
