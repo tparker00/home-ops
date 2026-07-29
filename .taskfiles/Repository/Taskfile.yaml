@@ -10,7 +10,6 @@ tasks:
       - mkdir -p {{.PRIVATE_DIR}}
       # Clean up CI
       - rm -rf {{.ROOT_DIR}}/.github/tests
-      - rm -rf {{.ROOT_DIR}}/.github/workflows/e2e.yaml
       # Clean up devcontainer
       - rm -rf {{.ROOT_DIR}}/.devcontainer/ci
       - rm -rf {{.ROOT_DIR}}/.github/workflows/devcontainer.yaml

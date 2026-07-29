@@ -10,6 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  suspend: true # disabled; queued for removal
   dependsOn:
     - name: external-secrets-bitwarden
   path: ./kubernetes/apps/default/searxng/app
