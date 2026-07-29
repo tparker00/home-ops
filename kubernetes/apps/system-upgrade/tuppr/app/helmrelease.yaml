@@ -1,13 +1,16 @@
 ---
-# yaml-language-server: $schema=https://schemas.ajgon.casa/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: tuppr
 spec:
-  sourceRef:
-    kind: HelmRepository
-    name: tuppr
+  chart:
+    spec:
+      chart: tuppr
+      sourceRef:
+        kind: HelmRepository
+        name: tuppr
   interval: 1h
   values:
     replicaCount: 2

@@ -5,9 +5,12 @@ metadata:
   name: k8s-gateway
 spec:
   interval: 15m
-  sourceRef:
-    kind: HelmRepository
-    name: k8s-gateway
+  chart:
+    spec:
+      chart: k8s-gateway
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-gateway
   install:
     createNamespace: true
     remediation:

@@ -1,11 +1,14 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: barman-cloud
 spec:
-  sourceRef:
-    kind: HelmRepository
-    name: barman-cloud
+  chart:
+    spec:
+      chart: barman-cloud
+      sourceRef:
+        kind: HelmRepository
+        name: barman-cloud
   interval: 1h
   # No values here :(
