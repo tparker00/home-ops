@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/kashalls/kromgo/main/config.schema.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kromgo.kashalls.com/config_v1.json
 badge:
   font: Verdana.ttf
   size: 12
