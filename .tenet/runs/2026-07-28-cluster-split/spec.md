@@ -42,10 +42,13 @@ Work is delivered in discrete slices. Each slice is its own branch with its own 
 - Replaced raw GitHub URLs with stable schema sources where possible
 - Zero-diff: only comment changes, no functional impact
 
-### Future: Namespace/SOPS Cleanup
-- Review namespace kustomizations for duplicate SOPS decryption config
-- Consolidate where defaults from apps.yaml make per-namespace config redundant
-- Align namespace patterns with upstream conventions
+### Slice 7: Namespace/SOPS Cleanup
+- Fix system-upgrade namespace: move `prune: disabled` from annotation to label
+- Fix system-upgrade namespace: change pod-security from `restricted` to `privileged` (infra namespace)
+- Add pod-security `restricted` labels to downloads namespace (tenant namespace)
+- Add pod-security `privileged` labels to infra namespaces (kube-system, kyverno, network, observability, openebs-system, storage, talos)
+- Verify no duplicate SOPS decryption config (apps.yaml patch propagates it correctly)
+- Align namespace label patterns with upstream conventions
 
 ## Guardrails
 
