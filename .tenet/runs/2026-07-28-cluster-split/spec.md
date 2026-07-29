@@ -35,7 +35,16 @@ Work is delivered in discrete slices. Each slice is its own branch with its own 
 
 ## Pending Slices
 
-TBD — to be defined based on remaining technical debt and operational priorities.
+### Future: YAML Language Server Schema Audit
+- Audit all `# yaml-language-server: $schema=...` references across kubernetes/
+- Update broken/outdated schema URLs (e.g., v2beta2 → v2, dead links, wrong domains)
+- Standardize on consistent schema sources (kubernetes-schemas.pages.dev preferred)
+- Zero-diff: only comment changes, no functional impact
+
+### Future: Namespace/SOPS Cleanup
+- Review namespace kustomizations for duplicate SOPS decryption config
+- Consolidate where defaults from apps.yaml make per-namespace config redundant
+- Align namespace patterns with upstream conventions
 
 ## Guardrails
 

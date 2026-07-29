@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: &app smartctl-exporter
 spec:
-  interval: 1h
-  sourceRef:
-    kind: HelmRepository
+  chartRef:
+    kind: OCIRepository
     name: smartctl-exporter
+  interval: 1h
   install:
     remediation:
       retries: -1
