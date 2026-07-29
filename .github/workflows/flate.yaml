@@ -51,18 +51,13 @@ jobs:
       - name: Diff Manifests
         id: diff
         run: |
-          {
-            echo 'diff<<EOF'
-            flate diff all --allow-missing-secrets --skip-schema-validation -p ./kubernetes/flux || true
-            echo 'EOF'
-          } >> "${GITHUB_OUTPUT}"
+          flate diff all --allow-missing-secrets --skip-schema-validation -p ./kubernetes/flux --output diff > diff_output.txt || true
 
-      - if: ${{ steps.diff.outputs.diff != '' }}
+      - if: ${{ hashFiles('diff_output.txt') != '' }}
         name: Show Manifest Diff
         run: |
           echo "### Manifest Diff" >> "$GITHUB_STEP_SUMMARY"
           echo '```diff' >> "$GITHUB_STEP_SUMMARY"
-          echo "${{ steps.diff.outputs.diff }}" >> diff_output.txt
           cat diff_output.txt >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
