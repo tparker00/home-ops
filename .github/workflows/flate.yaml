@@ -50,8 +50,6 @@ jobs:
 
       - name: Diff Manifests
         id: diff
-        env:
-          FLATE_OUTPUT: github
         run: |
           {
             echo 'diff<<EOF'
