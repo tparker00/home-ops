@@ -13,6 +13,7 @@ concurrency:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   filter:
@@ -51,16 +52,25 @@ jobs:
       - name: Diff Manifests
         id: diff
         run: |
-          flate diff all -p ./kubernetes/flux --output diff.patch || true
-          if [ -s diff.patch ]; then
-            echo "manifest-changes=true" >> "$GITHUB_OUTPUT"
-            echo "### Manifest Diff" >> "$GITHUB_STEP_SUMMARY"
-            echo '```diff' >> "$GITHUB_STEP_SUMMARY"
-            cat diff.patch >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "manifest-changes=false" >> "$GITHUB_OUTPUT"
-          fi
+          flate diff all --allow-missing-secrets --skip-schema-validation -p ./kubernetes/flux --output diff > diff_output.txt || true
+
+      - if: ${{ hashFiles('diff_output.txt') != '' }}
+        name: Prepare Comment
+        run: |
+          {
+            echo "### Manifest Diff"
+            echo ""
+            echo '```diff'
+            cat diff_output.txt
+            echo '```'
+          } > pr_comment.txt
+
+      - if: ${{ hashFiles('pr_comment.txt') != '' }}
+        name: Add PR Comment
+        uses: mshick/add-pr-comment@ec328af66588ab8f77cdeb2c264f14aba45bbf59 # v3.12.0
+        with:
+          message-id: ${{ github.event.pull_request.number }}/kubernetes/flux
+          message-path: pr_comment.txt
 
   success:
     if: ${{ !cancelled() }}
