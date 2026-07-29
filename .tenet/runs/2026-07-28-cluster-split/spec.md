@@ -35,10 +35,11 @@ Work is delivered in discrete slices. Each slice is its own branch with its own 
 
 ## Pending Slices
 
-### Future: YAML Language Server Schema Audit
-- Audit all `# yaml-language-server: $schema=...` references across kubernetes/
-- Update broken/outdated schema URLs (e.g., v2beta2 → v2, dead links, wrong domains)
-- Standardize on consistent schema sources (kubernetes-schemas.pages.dev preferred)
+### Slice 6: YAML Language Server Schema Audit (COMPLETED - PR #1960)
+- Standardized all schema URLs to `kubernetes-schemas.pages.dev`
+- Updated 48 `helmrelease_v2beta2` → `helmrelease_v2` references
+- Fixed broken schemas (kube-schemas, lds-schemas, ok8.sh, ajgon.casa, www.schemastore.org)
+- Replaced raw GitHub URLs with stable schema sources where possible
 - Zero-diff: only comment changes, no functional impact
 
 ### Future: Namespace/SOPS Cleanup
