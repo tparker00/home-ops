@@ -2,7 +2,9 @@
 
 ## Goal
 
-Restructure the home-ops Kubernetes cluster to improve security posture, reduce technical debt, and establish sustainable operational patterns.
+Reduce drift from upstream (onedr0p/cluster-template) in project layout, tooling, and methods. The fork was done a while ago and accumulated patterns that differ from community conventions, making it difficult to add new apps/components without translating between styles.
+
+This is an architectural cleanup — **zero-diff requirement**: what is rendered by Helm/kustomize after changes must match what is currently running on the cluster (aside from disabling/removing old unused apps). No functional changes, no service disruption.
 
 ## Phased Approach
 

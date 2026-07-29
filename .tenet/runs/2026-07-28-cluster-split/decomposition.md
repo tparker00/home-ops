@@ -28,4 +28,10 @@
 - Acceptance: kubeconform passes, no dangling references
 
 ## Slice 4: TBD
-- To be defined after reviewing remaining technical debt
+- To be defined based on remaining drift areas. Potential areas:
+  - HelmRelease schema alignment (v2beta2 → v2)
+  - Kustomization pattern alignment with upstream
+  - Outdated chart values structure
+  - Deprecated components or patterns
+  - Any other divergence from onedr0p/cluster-template conventions
+- All slices must maintain zero-diff: rendered output must match current cluster state
