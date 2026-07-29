@@ -62,7 +62,7 @@ jobs:
         run: |
           echo "### Manifest Diff" >> "$GITHUB_STEP_SUMMARY"
           echo '```diff' >> "$GITHUB_STEP_SUMMARY"
-          echo "${{ steps.diff.outputs.diff }}" >> "$GITHUB_STEP_SUMMARY"
+          printf '%s\n' "${{ steps.diff.outputs.diff }}" >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
   success:
