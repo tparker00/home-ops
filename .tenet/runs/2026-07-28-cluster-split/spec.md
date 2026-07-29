@@ -28,6 +28,11 @@ Work is delivered in discrete slices. Each slice is its own branch with its own 
 - Clean up empty `kubernetes/flux/repositories/git/` directory
 - Remove `./git` reference from `kubernetes/flux/repositories/kustomization.yaml`
 
+### Slice 4: HelmRelease Defaults Alignment
+- Add HelmRelease defaults patch to `kubernetes/flux/apps.yaml` (retryOnFailure, remediateOnFailure, cleanupOnFail, crds: CreateReplace)
+- Create `kubernetes/flux/cluster/ks.yaml.j2` as upstream reference
+- Aligns with upstream's cluster-level HelmRelease defaults pattern
+
 ## Pending Slices
 
 TBD — to be defined based on remaining technical debt and operational priorities.

@@ -27,11 +27,18 @@
 - Clean up empty `kubernetes/flux/repositories/git/` directory
 - Acceptance: kubeconform passes, no dangling references
 
-## Slice 4: TBD
-- To be defined based on remaining drift areas. Potential areas:
-  - HelmRelease schema alignment (v2beta2 → v2)
-  - Kustomization pattern alignment with upstream
-  - Outdated chart values structure
-  - Deprecated components or patterns
-  - Any other divergence from onedr0p/cluster-template conventions
-- All slices must maintain zero-diff: rendered output must match current cluster state
+## Slice 4: HelmRelease Defaults Alignment (COMPLETED)
+
+### slice-4-helmrelease-defaults
+- Add HelmRelease defaults patch to `kubernetes/flux/apps.yaml`:
+  - `install.crds: CreateReplace`
+  - `install.strategy: RetryOnFailure`
+  - `rollback.cleanupOnFail: true`
+  - `rollback.recreate: true`
+  - `upgrade.cleanupOnFail: true`
+  - `upgrade.crds: CreateReplace`
+  - `upgrade.strategy: RemediateOnFailure`
+  - `upgrade.remediation.remediateLastFailure: true`
+  - `upgrade.remediation.retries: 2`
+- Create `kubernetes/flux/cluster/ks.yaml.j2` as upstream reference
+- Acceptance: kubeconform passes; no change to rendered HelmRelease manifests (defaults are additive)
