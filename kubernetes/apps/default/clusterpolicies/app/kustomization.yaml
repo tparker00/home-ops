@@ -5,5 +5,4 @@ kind: Kustomization
 namespace: default
 resources:
   - ./add-goldilocks-labels.yaml
-  - ./add-psa-labels.yaml
   - ./delete-cpu-limits.yaml
