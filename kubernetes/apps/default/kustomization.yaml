@@ -6,7 +6,6 @@ resources:
   # Pre Flux-Kustomizations
   - ./additional-routes/ks.yaml
   - ./atuin/ks.yaml
- # - ./clusterpolicies/ks.yaml
   - ./hydra-server/ks.yaml
   - ./languagetool/ks.yaml
   - ./homepage/ks.yaml
