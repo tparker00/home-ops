@@ -1,6 +1,6 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["github>home-operations/renovate-presets#2.2.0"],
+  extends: ["github>home-operations/renovate-presets#3.0.0"],
   // Fork overrides on top of the community preset.
   schedule: ["every weekend"],
   lockFileMaintenance: {
