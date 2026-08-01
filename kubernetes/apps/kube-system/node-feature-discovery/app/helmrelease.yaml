@@ -19,22 +19,16 @@ spec:
       resources:
         requests:
           cpu: 200m
-        limits:
-          cpu: 800m
     gc:
       resources:
         requests:
           cpu: 20m
-        limits:
-          cpu: 800m
     worker:
       annotations:
         configmap.reloader.stakater.com/reload: "nfd-worker-conf"
       resources:
         requests:
           cpu: 20m
-        limits:
-          cpu: 800m
       tolerations:
         - key: node-role.kubernetes.io/master
           effect: NoSchedule
