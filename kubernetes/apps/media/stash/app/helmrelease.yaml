@@ -38,7 +38,7 @@ spec:
           main:
             image:
               repository: ghcr.io/feederbox826/stash-s6
-              tag: hwaccel@sha256:1f7f3a0924c5dc430cb972dc24509e7e8ebbe9f47c3a557281712643ac26a297
+              tag: hwaccel@sha256:ac74334270cc8ed79515c06812fa677d5d9780ba9e01c6b887165f6e3f8d35aa
               pullPolicy: IfNotPresent
             env:
               TZ: ${TIMEZONE}
