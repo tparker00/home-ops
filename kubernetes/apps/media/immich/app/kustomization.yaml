@@ -13,3 +13,8 @@ resources:
   - ./machine-learning
 components:
   - ../../../../components/dragonfly
+patches:
+  - path: dragonfly-patch.yaml
+    target:
+      kind: Dragonfly
+      name: ".*-dragonfly"
