@@ -1,0 +1,3 @@
+- op: add
+  path: /spec/args/-
+  value: --default_lua_flags=allow-undeclared-keys
