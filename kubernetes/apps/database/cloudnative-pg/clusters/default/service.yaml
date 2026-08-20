@@ -20,21 +20,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-r
-spec:
-  type: ClusterIP
-  ports:
-    - name: postgres
-      port: 5432
-      protocol: TCP
-      targetPort: 5432
-  selector:
-    cnpg.io/cluster: postgres
-    cnpg.io/podRole: instance
----
-apiVersion: v1
-kind: Service
-metadata:
   name: postgres-ro
 spec:
   type: ClusterIP
