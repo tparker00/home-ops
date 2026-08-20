@@ -63,9 +63,9 @@ spec:
 #        <<: *barmanObjectStore
 #        serverName: *previousCluster
 
-bootstrap:
-  initdb:
-    database: postgres
-    owner: postgres
-    sercret:
-      name: cloudnative-pg-secret
+  bootstrap:
+    initdb:
+      database: postgres
+      owner: postgres
+      sercret:
+        name: cloudnative-pg-secret
