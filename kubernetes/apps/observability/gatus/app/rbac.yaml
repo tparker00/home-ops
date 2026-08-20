@@ -29,7 +29,7 @@ metadata:
   name: gatus
 rules:
   - apiGroups: ["gateway.networking.k8s.io"]
-    resources: ["httproutes", "secrets"]
+    resources: ["httproutes", "services"]
     verbs: ["get", "watch", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
