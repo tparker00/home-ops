@@ -6,7 +6,7 @@ metadata:
   name: postgres
 spec:
   instances: 3
-  imageName: ghcr.io/ahinko/postgres-extended:16.3.9
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:18.4-1.1.1@sha256:9c9246cb8ba0332f7e1115def71329410657237db8ef104160a479a89c7e03a2
   primaryUpdateStrategy: unsupervised
   storage:
     size: 50Gi
@@ -54,11 +54,18 @@ spec:
           key: aws-secret-access-key
   # # Note: previousCluster needs to be set to the name of the previous
   # # cluster when recovering from an existing cnpg cluster
-  bootstrap:
-    recovery:
-      source: &previousCluster postgres-v8
-  externalClusters:
-    - name: *previousCluster
-      barmanObjectStore:
-        <<: *barmanObjectStore
-        serverName: *previousCluster
+#  bootstrap:
+#    recovery:
+#      source: &previousCluster postgres-v8
+#  externalClusters:
+#    - name: *previousCluster
+#      barmanObjectStore:
+#        <<: *barmanObjectStore
+#        serverName: *previousCluster
+
+bootstrap:
+  initdb:
+    database: postgres
+    owner: postgres
+    sercret:
+      name: cloudnative-pg-secret
