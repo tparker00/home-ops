@@ -67,5 +67,5 @@ spec:
     initdb:
       database: postgres
       owner: postgres
-      sercret:
+      secret:
         name: cloudnative-pg-secret
