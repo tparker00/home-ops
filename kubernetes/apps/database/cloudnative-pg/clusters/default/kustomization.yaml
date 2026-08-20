@@ -6,4 +6,4 @@ resources:
   - ./postgres.yaml
   - ./prometheusrule.yaml
   - ./scheduledbackup.yaml
-  - ./service.yaml
+#  - ./service.yaml
