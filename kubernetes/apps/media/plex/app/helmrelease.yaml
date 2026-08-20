@@ -34,8 +34,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/tparker00/plex
-              tag: 1.43.1.10611-1e34174b1
+              repository: ghcr.io/home-operations/plex
+              tag: 1.43.3.10896@sha256:4f1d88882a9883cc525e7c84b22c67c57416b7d3b35c3412329eeb07786433a7
             env:
               TZ: ${TIMEZONE}
             securityContext:
