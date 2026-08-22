@@ -29,14 +29,14 @@ spec:
   values:
     controllers:
       hydra-server:
-        strategy: RollingUpdate
+        strategy: Recreates
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           main:
             image:
-              repository: jpeg6/hydra-server
-              tag: latest@sha256:295745828113fad19bf7b4907eca4577a11e583fb4d3cd9e3394720b3875ac65
+              repository: tparker20/hydra-server
+              tag: latest@sha256:d15eec27a3e31c138373b40596e5971e43f280b35ade8ad3dde0e7792b3bfe53
               pullPolicy: IfNotPresent
             env:
               TZ: ${TIMEZONE}
