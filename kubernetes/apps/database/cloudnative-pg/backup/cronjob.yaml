@@ -42,6 +42,8 @@ spec:
                   value: postgres
                 - name: POSTGRES_CLUSTER
                   value: "TRUE"
+                - name: POSTGRES_EXTRA_OPTS
+                  value: ""
               volumeMounts:
                 - name: nas-backups
                   mountPath: /backups
@@ -94,6 +96,9 @@ spec:
                   value: postgres
                 - name: POSTGRES_CLUSTER
                   value: "TRUE"
+                - name: POSTGRES_EXTRA_OPTS
+                  value: ""
+
               volumeMounts:
                 - name: nas-backups
                   mountPath: /backups
