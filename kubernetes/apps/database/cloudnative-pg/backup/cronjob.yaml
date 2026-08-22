@@ -92,8 +92,10 @@ spec:
                     secretKeyRef:
                       name: cloudnative-pg-secret
                       key: password
+# Using immich rather than postgres for the db name since that is what the script uses to name the backup file.
+# Since we're backing up 2 clusters if we use the same db name the backup files will overwrite each other.
                 - name: POSTGRES_DB
-                  value: postgres
+                  value: immich
                 - name: POSTGRES_CLUSTER
                   value: "TRUE"
                 - name: POSTGRES_EXTRA_OPTS
