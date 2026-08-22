@@ -38,8 +38,8 @@ spec:
                     secretKeyRef:
                       name: cloudnative-pg-secret
                       key: password
-                - name: POSTGRES_DB
-                  value: "authentik,gatus,grafana,radarr_log,radarr_main,radarr4k_log,radarr4k_main,sonarr_log,sonarr_main,lidarr_main,lidarr_log,bazarr,prowlarr_main,prowlarr_log"
+                - name: POSTGRES_CLUSTER
+                  value: "TRUE"
               volumeMounts:
                 - name: nas-backups
                   mountPath: /backups
@@ -88,8 +88,8 @@ spec:
                     secretKeyRef:
                       name: cloudnative-pg-secret
                       key: password
-                - name: POSTGRES_DB
-                  value: "immich"
+                - name: POSTGRES_CLUSTER
+                  value: "TRUE"
               volumeMounts:
                 - name: nas-backups
                   mountPath: /backups
