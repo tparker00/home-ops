@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: cloudnative-pg-backup
+  name: cloudnative-pg-main-backup
 spec:
   schedule: "0 17 * * *"
   concurrencyPolicy: Forbid
@@ -39,7 +39,57 @@ spec:
                       name: cloudnative-pg-secret
                       key: password
                 - name: POSTGRES_DB
-                  value: "authentik,gatus,grafana,radarr_log,radarr_main,teslamate,sonarr_log,sonarr_main,lidarr_main,lidarr_log,bazarr,prowlarr_main,prowlarr_log,readarr_main,readarr_log,whisparr_main,whisparr_log"
+                  value: "authentik,gatus,grafana,radarr_log,radarr_main,radarr4k_log,radarr4k_main,sonarr_log,sonarr_main,lidarr_main,lidarr_log,bazarr,prowlarr_main,prowlarr_log"
+              volumeMounts:
+                - name: nas-backups
+                  mountPath: /backups
+          restartPolicy: OnFailure
+          volumes:
+            - name: nas-backups
+              persistentVolumeClaim:
+                claimName: postgres-backups-rw
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/master-standalone-strict/cronjob-batch-v1.json
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cloudnative-pg-immich-backup
+spec:
+  schedule: "0 18 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          securityContext:
+            runAsUser: 1031
+            runAsGroup: 1031
+            fsGroup: 1031
+            supplementalGroups:
+              - 65541
+          containers:
+            - name: postgres-backup
+              image: docker.io/prodrigestivill/postgres-backup-local:18@sha256:f70742ebe42b2277689b028d1fd15aa80f77cffa01da163cc9f85a6ff1866e7f
+              imagePullPolicy: IfNotPresent
+              command:
+                - "/backup.sh"
+              env:
+                - name: POSTGRES_HOST
+                  value: immich-ro.database.svc.cluster.local
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudnative-pg-secret
+                      key: username
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudnative-pg-secret
+                      key: password
+                - name: POSTGRES_DB
+                  value: "immich"
               volumeMounts:
                 - name: nas-backups
                   mountPath: /backups
