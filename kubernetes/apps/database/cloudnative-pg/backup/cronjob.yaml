@@ -5,7 +5,7 @@ kind: CronJob
 metadata:
   name: cloudnative-pg-main-backup
 spec:
-  schedule: "0 17 * * *"
+  schedule: "0 * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -55,7 +55,7 @@ kind: CronJob
 metadata:
   name: cloudnative-pg-immich-backup
 spec:
-  schedule: "0 18 * * *"
+  schedule: "0 17 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
