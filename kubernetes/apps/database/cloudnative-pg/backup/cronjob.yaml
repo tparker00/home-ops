@@ -38,6 +38,8 @@ spec:
                     secretKeyRef:
                       name: cloudnative-pg-secret
                       key: password
+                - name: POSTGRES_DB
+                  value: postgres
                 - name: POSTGRES_CLUSTER
                   value: "TRUE"
               volumeMounts:
@@ -88,6 +90,8 @@ spec:
                     secretKeyRef:
                       name: cloudnative-pg-secret
                       key: password
+                - name: POSTGRES_DB
+                  value: postgres
                 - name: POSTGRES_CLUSTER
                   value: "TRUE"
               volumeMounts:
