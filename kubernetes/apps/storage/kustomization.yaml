@@ -6,5 +6,6 @@ resources:
   - ./moosefs-csi/ks.yaml
   - ./restic/ks.yaml
   - ./rustfs/ks.yaml
+  - ./syncthing/ks.yaml
   - ./local-path-provisioner/ks.yaml
   - ./mounts/ks.yaml
