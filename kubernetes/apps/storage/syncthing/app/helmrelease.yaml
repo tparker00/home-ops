@@ -84,12 +84,12 @@ spec:
 
     service:
       app:
-        controller: syncthing
+        controller: *app
         ports:
           http:
             port: *port
       sync:
-        controller: syncthing
+        controller: *app
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: 10.10.2.14
@@ -111,12 +111,6 @@ spec:
             namespace: network
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-        rules:
-          - backendRefs:
-              - identifier: gateway
-                port: *port
-            timeouts:
-              backendRequest: 3600s
       analogpuddle:
         annotations:
           external-dns.alpha.kubernetes.io/external: "true"
@@ -125,12 +119,6 @@ spec:
         parentRefs:
           - name: envoy-external-ap
             namespace: network
-        rules:
-          - backendRefs:
-              - identifier: gateway
-                port: *port
-            timeouts:
-              backendRequest: 3600s
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}-config"
