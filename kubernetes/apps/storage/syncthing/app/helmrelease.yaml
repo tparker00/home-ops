@@ -111,6 +111,12 @@ spec:
             namespace: network
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+            timeouts:
+              backendRequest: 3600s
       analogpuddle:
         annotations:
           external-dns.alpha.kubernetes.io/external: "true"
@@ -119,6 +125,12 @@ spec:
         parentRefs:
           - name: envoy-external-ap
             namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+            timeouts:
+              backendRequest: 3600s
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}-config"
