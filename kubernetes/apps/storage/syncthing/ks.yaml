@@ -21,8 +21,8 @@ spec:
   timeout: 5m
   postBuild:
     substitute:
-      APP: syncthing-server-config
+      APP: syncthing-config
       MFS_CAPACITY: 2Gi
-      APP2: syncthing-server-data
+      APP2: syncthing-data
       MFS2_CAPACITY: 50Gi
       MFS2_ACCESSMODES: ReadWriteOnce
