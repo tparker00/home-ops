@@ -3,8 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: syncthing
-  namespace: storage
+  name: &app syncthing
 spec:
   interval: 30m
   chart:
@@ -13,8 +12,18 @@ spec:
       version: 5.0.1
       sourceRef:
         kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+        name: bjw-s-charts
+  dependsOn: []
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
   values:
     controllers:
       syncthing:
