@@ -66,10 +66,10 @@ spec:
               requests:
                 cpu: 100m
                 memory: 274M
-                nvidia.com/gpu: 1
+                gpu.intel.com/i915: 1
               limits:
                 memory: 3949M
-                nvidia.com/gpu: 1
+                gpu.intel.com/i915: 1
 
     service:
       app:
