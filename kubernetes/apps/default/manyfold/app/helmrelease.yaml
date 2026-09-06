@@ -40,7 +40,7 @@ spec:
           app:
             image:
               repository: ghcr.io/bjw-s-labs/manyfold
-              tag: 0.147.0@sha256:88fb41930cb725c910b7a43a792dfb5fe09e44024860782daeddb6ff66729d53
+              tag: 0.148.0@sha256:fbea8f12bb5bda588cb1e9d5f3fc5b8a72f4fbf857b545597adfbb5ca424feb2
             env:
               PID: &pid 1000
               GID: &gid 100
