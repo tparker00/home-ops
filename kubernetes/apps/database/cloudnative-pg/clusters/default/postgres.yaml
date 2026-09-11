@@ -10,7 +10,7 @@ spec:
   primaryUpdateStrategy: unsupervised
   storage:
     size: 50Gi
-    storageClass: local-hostpath
+    storageClass: openebs-hostpath
   superuserSecret:
     name: cloudnative-pg-secret
   enableSuperuserAccess: true
@@ -44,7 +44,7 @@ spec:
       endpointURL: https://s3.${SECRET_DOMAIN}
       # Note: serverName version needs to be incremented or changed
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres-v9
+      serverName: &currentCluster postgres-v10
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -54,18 +54,18 @@ spec:
           key: aws-secret-access-key
   # # Note: previousCluster needs to be set to the name of the previous
   # # cluster when recovering from an existing cnpg cluster
-#  bootstrap:
-#    recovery:
-#      source: &previousCluster postgres-v8
-#  externalClusters:
-#    - name: *previousCluster
-#      barmanObjectStore:
-#        <<: *barmanObjectStore
-#        serverName: *previousCluster
-
   bootstrap:
-    initdb:
-      database: postgres
-      owner: postgres
-      secret:
-        name: cloudnative-pg-secret
+    recovery:
+      source: &previousCluster postgres-v9
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *barmanObjectStore
+        serverName: *previousCluster
+
+#  bootstrap:
+#    initdb:
+#      database: postgres
+#      owner: postgres
+#      secret:
+#        name: cloudnative-pg-secret
