@@ -3,50 +3,50 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: tenchi
+  name: dns-server
 spec:
-  hostnames: ["tenchi.${SECRET_DOMAIN}"]
+  hostnames: ["dns.${SECRET_DOMAIN}"]
   parentRefs:
     - name: envoy-internal
       namespace: network
   rules:
     - backendRefs:
-        - name: tenchi
-          port: 8006
+        - name: dns-server
+          port: 5380
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/httproute_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: tenchi-analogpuddle
+  name: dns-server-analogpuddle
 spec:
-  hostnames: ["tenchi.analogpuddle.com"]
+  hostnames: ["dns.analogpuddle.com"]
   parentRefs:
     - name: envoy-internal-ap
       namespace: network
   rules:
     - backendRefs:
-        - name: tenchi
-          port: 8006
+        - name: dns-server
+          port: 5380
 ---
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: tenchi
+  name: dns-server
 subsets:
   - addresses:
-      - ip: ${TENCHI_IP}
+      - ip: 192.168.1.10
     ports:
       - name: https
-        port: 8006
+        port: 5380
         protocol: TCP
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: tenchi
+  name: dns-server
 spec:
   ports:
     - name: https
-      port: 8006
+      port: 5380
   type: ClusterIP
