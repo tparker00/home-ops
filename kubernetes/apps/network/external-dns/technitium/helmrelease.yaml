@@ -35,7 +35,7 @@ spec:
           pullPolicy: IfNotPresent
         env:
           - name: TECHNITIUM_URL
-            value: "dns.${SECRET_DOMAIN}"
+            value: "https://dns.${SECRET_DOMAIN}"
           - name: DOMAIN_FILTERS
             value: ${SECRET_DOMAIN}
           - name: ZONE
