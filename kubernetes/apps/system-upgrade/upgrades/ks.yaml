@@ -17,4 +17,4 @@ spec:
     kind: GitRepository
     name: home-kubernetes
   targetNamespace: system-upgrade
-  wait: true
+  wait: false
