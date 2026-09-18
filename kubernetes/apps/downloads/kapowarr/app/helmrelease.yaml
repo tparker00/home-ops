@@ -63,7 +63,7 @@ spec:
       config:
         existingClaim: *app
         globalMounts:
-          - path: /config
+          - path: /app/db
       data:
         enabled: true
         existingClaim: downloads-rw
