@@ -16,7 +16,9 @@ spec:
   args:
     - --maxmemory=$(MAX_MEMORY)Mi
     - --proactor_threads=2
-    - --cluster_mode=emulated
+    - --cache_mode=true
+  pdb:
+    minAvailable: 1
   resources:
     requests:
       cpu: 100m
