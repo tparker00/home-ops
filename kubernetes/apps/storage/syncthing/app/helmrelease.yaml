@@ -119,7 +119,7 @@ spec:
               backendRequest: 3600s
       analogpuddle:
         annotations:
-          external-dns.alpha.kubernetes.io/external: "true"
+          external-dns.kubernetes.io/external: "true"
         hostnames:
           - "{{ .Release.Name }}.analogpuddle.com"
         parentRefs:

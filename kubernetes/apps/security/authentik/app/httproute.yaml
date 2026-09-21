@@ -6,7 +6,7 @@ metadata:
   name: authentik
   namespace: security
   annotations:
-    external-dns.alpha.kubernetes.io/target: "sso.${SECRET_DOMAIN}"
+    external-dns.kubernetes.io/target: "sso.${SECRET_DOMAIN}"
 spec:
   hostnames:
     - "authentik.${SECRET_DOMAIN}"
@@ -27,7 +27,7 @@ metadata:
   name: authentik-analogpuddle
   namespace: security
   annotations:
-    external-dns.alpha.kubernetes.io/target: "sso.analogpuddle.com"
+    external-dns.kubernetes.io/target: "sso.analogpuddle.com"
 spec:
   hostnames:
     - "authentik.analogpuddle.com"

@@ -88,7 +88,7 @@ spec:
     route:
       app:
         annotations:
-          external-dns.alpha.kubernetes.io/external: "true"
+          external-dns.kubernetes.io/external: "true"
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 401"]
         hostnames:
@@ -104,7 +104,7 @@ spec:
               backendRequest: 3600s
       analogpuddle:
         annotations:
-          external-dns.alpha.kubernetes.io/external: "true"
+          external-dns.kubernetes.io/external: "true"
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 401"]
         hostnames:
@@ -120,7 +120,7 @@ spec:
               backendRequest: 3600s
       internal:
         annotations:
-          external-dns.alpha.kubernetes.io/internal: "true"
+          external-dns.kubernetes.io/internal: "true"
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 401"]
         parentRefs:
