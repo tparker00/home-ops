@@ -5,7 +5,7 @@ kind: Gateway
 metadata:
   name: envoy-internal-ap
   annotations:
-    external-dns.alpha.kubernetes.io/target: &hostname ${INTERNAL_DOMAIN}.analogpuddle.com
+    external-dns.kubernetes.io/target: &hostname ${INTERNAL_DOMAIN}.analogpuddle.com
     gatus.home-operations.com/endpoint: |
       group: ${CLUSTER}-internal
       guarded: true
@@ -16,7 +16,7 @@ spec:
   gatewayClassName: envoy
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: *hostname
+      external-dns.kubernetes.io/hostname: *hostname
       lbipam.cilium.io/ips: ${SVC_GATEWAY_INTERNAL2}
   listeners:
     - name: http
@@ -42,7 +42,7 @@ kind: HTTPRoute
 metadata:
   name: envoy-internal-ap
   annotations:
-    external-dns.alpha.kubernetes.io/controller: none
+    external-dns.kubernetes.io/controller: none
 spec:
   parentRefs:
     - name: envoy-internal-ap
