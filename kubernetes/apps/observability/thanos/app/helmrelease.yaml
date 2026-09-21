@@ -64,8 +64,7 @@ spec:
       config: &config |-
         type: REDIS
         config:
-          addr: >-
-            {{ .Release.Name }}-dragonfly:6379,
+          addr: "{{ .Release.Name }}-dragonfly:6379"
           db: 2
     query:
       enabled: true
