@@ -1,8 +1,0 @@
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: spegel
-spec:
-  interval: 1h
-  url: oci://ghcr.io/spegel-org/helm-charts
