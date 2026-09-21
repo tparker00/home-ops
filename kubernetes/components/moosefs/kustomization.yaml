@@ -13,5 +13,5 @@ patches:
       - op: add
         path: /spec/dependsOn/-
         value:
-          name: local-path-provisioner
-          namespace: storage
+          name: openebs
+          namespace: openebs-system
