@@ -3,17 +3,19 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./externalsecret.yaml
-  - ./helmrelease.yaml
-  - ./helmrepository.yaml
-  - ./httproute.yaml
+  - ./grafanadashboard-data.yaml
+  - ./grafanadashboard-flux.yaml
+  - ./grafanadashboard-kubernetes.yaml
+  - ./grafanadashboard-media.yaml
+  - ./grafanadashboard-network.yaml
+  - ./grafanadashboard-nginx.yaml
+  - ./grafanadashboard-system.yaml
+  - ./grafanadashboard-thanos.yaml
 configMapGenerator:
   - name: media-dashboard
     files:
-      - ./dashboards/media.json
+      - ./media/media.json
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
-  labels:
-    grafana_dashboard: "true"

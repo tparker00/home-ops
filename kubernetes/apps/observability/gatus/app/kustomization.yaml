@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./grafana-dashboard.yaml
+  - ./grafanadashboard.yaml
   - ./helmrelease.yaml
   - ./rbac.yaml
   - ./helmrepository.yaml
