@@ -9,6 +9,7 @@ resources:
   - ./grafanadashboard-media.yaml
   - ./grafanadashboard-network.yaml
   - ./grafanadashboard-nginx.yaml
+  - ./grafanadashboard-operator.yaml
   - ./grafanadashboard-system.yaml
   - ./grafanadashboard-thanos.yaml
 configMapGenerator:
