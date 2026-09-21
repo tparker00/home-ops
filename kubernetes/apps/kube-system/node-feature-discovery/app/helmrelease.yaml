@@ -41,8 +41,3 @@ spec:
             deviceLabelFields: ["class", "vendor", "device"]
           pci:
             deviceClassWhitelist: ["0300"]
-    tolerations:
-      - key: "kubernetes.io/arch"
-        operator: "Equal"
-        value: "arm64"
-        effect: "NoSchedule"
