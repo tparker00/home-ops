@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: nginx
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: Nginx
+  url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: nginx-request-handling-performance
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: Nginx
+  url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS

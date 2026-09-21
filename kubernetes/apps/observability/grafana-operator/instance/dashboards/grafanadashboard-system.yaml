@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: minio
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: System
+  grafanaCom:
+    # renovate: depName="MinIO Dashboard"
+    id: 13502
+    revision: 26
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: node-exporter-full
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: System
+  grafanaCom:
+    # renovate: depName="Node Exporter Full"
+    id: 1860
+    revision: 37
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: node-feature-discovery
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: System
+  url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: spegel
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: System
+  grafanaCom:
+    # renovate: depName="Spegel"
+    id: 18089
+    revision: 1
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS

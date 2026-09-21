@@ -1,0 +1,38 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: teslamate
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  datasource:
+    name: TeslaMate
+    type: postgres
+    access: proxy
+    url: postgres-ro.database.svc.cluster.local:5432
+    user: teslamate
+    database: teslamate
+    basicAuth: false
+    jsonData:
+      postgresVersion: 1000
+      sslmode: disable
+    secureJsonData:
+      # replaced at runtime by valuesFrom below
+      password: "$TESLAMATE_POSTGRES_PASSWORD"
+  valuesFrom:
+    - targetPath: secureJsonData.password
+      valueFrom:
+        secretKeyRef:
+          name: grafana-secret
+          key: TESLAMATE_POSTGRES_PASSWORD
+  plugins:
+    # panels used by the TeslaMate dashboards
+    - name: natel-discrete-panel
+      version: latest
+    - name: pr0ps-trackmap-panel
+      version: latest
+    - name: panodata-map-panel
+      version: latest

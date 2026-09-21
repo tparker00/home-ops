@@ -1,0 +1,150 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: blackbox-exporter
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: Network
+  grafanaCom:
+    # renovate: depName="Prometheus Blackbox Exporter"
+    id: 7587
+    revision: 3
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cert-manager
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: Network
+  url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: unifi-insights
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: Network
+  grafanaCom:
+    # renovate: depName="UniFi-Poller: Client Insights - Prometheus"
+    id: 11315
+    revision: 9
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+  plugins:
+    - name: grafana-worldmap-panel
+      version: latest
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: cloudflared
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: Network
+  grafanaCom:
+    # renovate: depName="Cloudflare Tunnels (cloudflared)"
+    id: 17457
+    revision: 6
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: external-dns
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: Network
+  grafanaCom:
+    # renovate: depName="External-dns"
+    id: 15038
+    revision: 3
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: speedtest-exporter-hub
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: Network
+  grafanaCom:
+    # renovate: depName="Speedtest Exporter"
+    id: 16541
+    revision: 1
+  datasources:
+    - datasourceName: Prometheus
+      inputName: datasource
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: unifi-network-sites
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: Network
+  grafanaCom:
+    # renovate: depName="UniFi-Poller: Network Sites - Prometheus"
+    id: 11311
+    revision: 5
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+  plugins:
+    - name: grafana-worldmap-panel
+      version: latest
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: unifi-uap
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  folder: Network
+  grafanaCom:
+    # renovate: depName="UniFi-Poller: UAP Insights - Prometheus"
+    id: 11314
+    revision: 10
+  datasources:
+    - datasourceName: Prometheus
+      inputName: DS_PROMETHEUS
+  plugins:
+    - name: grafana-worldmap-panel
+      version: latest
