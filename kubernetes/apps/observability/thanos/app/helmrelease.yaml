@@ -61,6 +61,15 @@ spec:
     queryFrontend:
       enabled: true
       replicaCount: 2
+      # (hairpin bug) keep off the nodes running the thanos-dragonfly redis cache
+      affinity: &redisAntiAffinity
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: dragonfly
+                  app: thanos-dragonfly
+              topologyKey: kubernetes.io/hostname
       config: &config |-
         type: REDIS
         config:
@@ -69,6 +78,7 @@ spec:
     query:
       enabled: true
       replicaCount: 2
+      affinity: *redisAntiAffinity
       replicaLabel: ["__replica__"]
       dnsDiscovery:
         sidecarsService: kube-prometheus-stack-thanos-discovery
@@ -76,8 +86,10 @@ spec:
     bucketweb:
       enabled: true
       replicaCount: 2
+      affinity: *redisAntiAffinity
     compactor:
       enabled: true
+      affinity: *redisAntiAffinity
       concurrency: 4
       extraFlags:
         - --delete-delay=30m
@@ -99,6 +111,7 @@ spec:
     storegateway:
       enabled: true
       replicaCount: 2
+      affinity: *redisAntiAffinity
       config: *config
       resources:
         requests:
@@ -113,6 +126,7 @@ spec:
     ruler:
       enabled: true
       replicaCount: 2
+      affinity: *redisAntiAffinity
       replicaLabel: __replica__
       alertmanagers: ["http://alertmanager-operated.observability.svc.cluster.local:9093"]
       extraFlags: ["--web.prefix-header=X-Forwarded-Prefix"]
