@@ -21,7 +21,7 @@ spec:
     feature_toggles:
       enable: publicDashboards
     plugins:
-      allow_loading_unsigned_plugins: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
+      allow_loading_unsigned_plugins: natel-discrete-panel,pr0ps-trackmap-panel
     log:
       mode: console
     metrics:
