@@ -61,26 +61,16 @@ spec:
     queryFrontend:
       enabled: true
       replicaCount: 2
-      # (hairpin bug) keep off the nodes running the thanos-dragonfly redis cache
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - &dragonflyAntiAffinity
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/name: dragonfly
-                  app: thanos-dragonfly
-              topologyKey: kubernetes.io/hostname
-          # chart default: softly spread replicas across nodes
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
+      networkPolicy:
+        extraIngress:
+          # cilium+netkit drops hairpinned ClusterIP replies (same-node backend,
+          # e.g. the thanos-dragonfly cache) as unsolicited; allow redis replies
+          - from:
+              - podSelector:
                   matchLabels:
-                    app.kubernetes.io/component: query-frontend
-                    app.kubernetes.io/instance: thanos
-                    app.kubernetes.io/name: thanos
-                topologyKey: kubernetes.io/hostname
+                    app: thanos-dragonfly
+                    app.kubernetes.io/name: dragonfly
+                    app.kubernetes.io/part-of: dragonfly
       config: &config |-
         type: REDIS
         config:
@@ -89,19 +79,6 @@ spec:
     query:
       enabled: true
       replicaCount: 2
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - *dragonflyAntiAffinity
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/component: query
-                    app.kubernetes.io/instance: thanos
-                    app.kubernetes.io/name: thanos
-                topologyKey: kubernetes.io/hostname
       replicaLabel: ["__replica__"]
       dnsDiscovery:
         sidecarsService: kube-prometheus-stack-thanos-discovery
@@ -109,34 +86,8 @@ spec:
     bucketweb:
       enabled: true
       replicaCount: 2
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - *dragonflyAntiAffinity
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/component: bucketweb
-                    app.kubernetes.io/instance: thanos
-                    app.kubernetes.io/name: thanos
-                topologyKey: kubernetes.io/hostname
     compactor:
       enabled: true
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - *dragonflyAntiAffinity
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/component: compactor
-                    app.kubernetes.io/instance: thanos
-                    app.kubernetes.io/name: thanos
-                topologyKey: kubernetes.io/hostname
       concurrency: 4
       extraFlags:
         - --delete-delay=30m
@@ -158,19 +109,16 @@ spec:
     storegateway:
       enabled: true
       replicaCount: 2
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - *dragonflyAntiAffinity
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
+      networkPolicy:
+        extraIngress:
+          # cilium+netkit drops hairpinned ClusterIP replies (same-node backend,
+          # e.g. the thanos-dragonfly cache) as unsolicited; allow redis replies
+          - from:
+              - podSelector:
                   matchLabels:
-                    app.kubernetes.io/component: storegateway
-                    app.kubernetes.io/instance: thanos
-                    app.kubernetes.io/name: thanos
-                topologyKey: kubernetes.io/hostname
+                    app: thanos-dragonfly
+                    app.kubernetes.io/name: dragonfly
+                    app.kubernetes.io/part-of: dragonfly
       config: *config
       resources:
         requests:
@@ -185,19 +133,6 @@ spec:
     ruler:
       enabled: true
       replicaCount: 2
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - *dragonflyAntiAffinity
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                labelSelector:
-                  matchLabels:
-                    app.kubernetes.io/component: ruler
-                    app.kubernetes.io/instance: thanos
-                    app.kubernetes.io/name: thanos
-                topologyKey: kubernetes.io/hostname
       replicaLabel: __replica__
       alertmanagers: ["http://alertmanager-operated.observability.svc.cluster.local:9093"]
       extraFlags: ["--web.prefix-header=X-Forwarded-Prefix"]
