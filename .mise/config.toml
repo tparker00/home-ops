@@ -16,7 +16,7 @@ _.path = [
 ]
 
 [tools]
-uv = "0.12.17"
+uv = "0.12.19"
 age = "1.3.2"
 cloudflared = "2026.9.1"
 flux2 = "2.9.5"
