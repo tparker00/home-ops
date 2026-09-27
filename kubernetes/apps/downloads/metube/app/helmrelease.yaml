@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.2.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -62,5 +62,5 @@ spec:
         enabled: true
         existingClaim: downloads-rw
         globalMounts:
-        - path: /downloads
-          subPath: metube
+          - path: /downloads
+            subPath: metube

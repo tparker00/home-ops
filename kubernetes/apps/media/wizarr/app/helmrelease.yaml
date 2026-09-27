@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.2.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -34,7 +34,7 @@ spec:
         containers:
           main:
             image:
-              repository:  ghcr.io/wizarrrr/wizarr
+              repository: ghcr.io/wizarrrr/wizarr
               tag: v2026.9.1
             env:
               TZ: ${TIMEZONE}

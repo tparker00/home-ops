@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.2.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -37,7 +37,7 @@ spec:
         pod:
           enableServiceLinks: false
           nodeSelector:
-                  feature.node.kubernetes.io/coral-tpu: "true"
+            feature.node.kubernetes.io/coral-tpu: "true"
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname
@@ -120,7 +120,6 @@ spec:
         ports:
           microservices-metrics:
             port: 8082
-
 
     serviceMonitor:
       main:
