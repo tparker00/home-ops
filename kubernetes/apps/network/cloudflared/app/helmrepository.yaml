@@ -2,8 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: bjw-s
+  name: bjw-s-charts
 spec:
-  type: oci
   interval: 1h
-  url: oci://ghcr.io/bjw-s/helm
+  url: https://bjw-s-labs.github.io/helm-charts/

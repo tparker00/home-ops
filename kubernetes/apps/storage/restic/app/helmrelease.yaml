@@ -9,10 +9,10 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.7.3
+      version: 5.2.1
       sourceRef:
         kind: HelmRepository
-        name: bjw-s
+        name: bjw-s-charts
 
   maxHistory: 2
   dependsOn: []
@@ -35,7 +35,7 @@ spec:
             image:
               repository: ghcr.io/lobaro/restic-backup-docker
               tag: v1.4.2
-            command: [ "/bin/sh", "-c", "while true; do sleep 36000; done" ]
+            command: ["/bin/sh", "-c", "while true; do sleep 36000; done"]
             env:
               TZ: ${TIMEZONE}
             envFrom:
@@ -55,10 +55,10 @@ spec:
               repository: ghcr.io/lobaro/restic-backup-docker
               tag: v1.4.2
             command:
-            - /bin/sh
+              - /bin/sh
             args:
-            - -c
-            - sed -i 's|/var/log/|/config/|g' /bin/backup && /bin/backup
+              - -c
+              - sed -i 's|/var/log/|/config/|g' /bin/backup && /bin/backup
             env:
               TZ: ${TIMEZONE}
             envFrom:
@@ -78,10 +78,10 @@ spec:
               repository: ghcr.io/lobaro/restic-backup-docker
               tag: v1.4.2
             command:
-            - /bin/sh
+              - /bin/sh
             args:
-            - -c
-            - sed -i 's|/var/log/|/config/|g' /bin/check && /bin/check
+              - -c
+              - sed -i 's|/var/log/|/config/|g' /bin/check && /bin/check
             env:
               TZ: ${TIMEZONE}
             envFrom:
