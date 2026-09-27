@@ -5,6 +5,6 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
-  - ./ocirepository.yaml
+  - ./helmrepository.yaml
 components:
   - ../../../../components/moosefs
