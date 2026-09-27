@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.2.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -43,7 +43,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
-              capabilities: {drop: ["ALL"]}
+              capabilities: { drop: ["ALL"] }
             probes:
               liveness:
                 enabled: true

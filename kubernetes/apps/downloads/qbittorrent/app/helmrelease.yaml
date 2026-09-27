@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.2.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -98,8 +98,6 @@ spec:
             securityContext:
               runAsUser: 568
               runAsGroup: 568
-              fsGroup: 568
-              fsGroupChangePolicy: OnRootMismatch
               supplementalGroups: [10000]
               capabilities: { drop: ["ALL"] }
             resources:

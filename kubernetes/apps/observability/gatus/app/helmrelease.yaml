@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.2.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -36,8 +36,8 @@ spec:
               repository: ghcr.io/home-operations/postgres-init
               tag: 18.6@sha256:b6d3af974df781c673d37e49bdddfa14a6f5be28b18d2cb7713f0449bea4057b
             envFrom: &envFrom
-            - secretRef:
-                name: gatus-secret
+              - secretRef:
+                  name: gatus-secret
           gatus-sidecar:
             image:
               repository: ghcr.io/home-operations/gatus-sidecar
@@ -79,13 +79,15 @@ spec:
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {add: ["NET_RAW"], drop: ["ALL"]}
+              capabilities: { add: ["NET_RAW"], drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
               limits:
                 memory: 256Mi
     defaultPodOptions:
+      # gatus + gatus-sidecar watch Gateway/HTTPRoute via the API, so the token must stay mounted
+      automountServiceAccountToken: true
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -149,6 +151,6 @@ spec:
         type: configMap
         name: gatus-configmap
         globalMounts:
-        - path: /config/config.yaml
-          subPath: config.yaml
-          readOnly: true
+          - path: /config/config.yaml
+            subPath: config.yaml
+            readOnly: true

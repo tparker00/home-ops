@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.2.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -58,10 +58,10 @@ spec:
               repository: registry.k8s.io/git-sync/git-sync
               tag: v4.7.1
             args:
-            - --repo=https://github.com/KBlixt/subcleaner
-            - --branch=master
-            - --wait=86400 # 1 day
-            - --root=/add-ons
+              - --repo=https://github.com/KBlixt/subcleaner
+              - --branch=master
+              - --wait=86400 # 1 day
+              - --root=/add-ons
             resources:
               requests:
                 cpu: 10m

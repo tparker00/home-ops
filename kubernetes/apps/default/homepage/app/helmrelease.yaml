@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.2.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -36,7 +36,7 @@ spec:
           main:
             image:
               repository: ghcr.io/gethomepage/homepage
-              tag:  v2.4.0@sha256:643bd0be730d40f69d58028a55d1a896739333e8815786df42bc97f109ecbe61
+              tag: v2.4.0@sha256:643bd0be730d40f69d58028a55d1a896739333e8815786df42bc97f109ecbe61
             env:
               TZ: ${TIMEZONE}
               HOMEPAGE_ALLOWED_HOSTS: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
@@ -59,6 +59,9 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 5
+    defaultPodOptions:
+      # homepage's kubernetes widgets read namespaces/pods/nodes/ingresses via the API
+      automountServiceAccountToken: true
     serviceAccount:
       homepage: {}
     service:
@@ -96,4 +99,3 @@ spec:
             path: /app/config/settings.yaml
           - subPath: widgets.yaml
             path: /app/config/widgets.yaml
-

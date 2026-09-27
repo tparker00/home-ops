@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 4.6.2
+      version: 5.2.1
       interval: 30m
       sourceRef:
         kind: HelmRepository
@@ -127,7 +127,7 @@ spec:
               - path: /unifi
       cert:
         type: secret
-        name: '${SECRET_DOMAIN/./-}-unifi'
+        name: "${SECRET_DOMAIN/./-}-unifi"
         advancedMounts:
           unifi-controller:
             app:
