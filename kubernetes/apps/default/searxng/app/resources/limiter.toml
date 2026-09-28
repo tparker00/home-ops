@@ -1,17 +1,28 @@
 # SearXNG rate limiter configuration
 # https://docs.searxng.org/src/searx.botdetection.html#limiter-toml
 
-[real_ip]
+[botdetection]
 ipv4_prefix = 32
 ipv6_prefix = 56
-x_for = 1
-ipv4_fallback = "127.0.0.1"
-ipv6_fallback = "::1"
+
+# SearXNG sits behind envoy-external; trust cluster/private ranges so the
+# client IP is taken from X-Forwarded-For
+trusted_proxies = [
+  '10.0.0.0/8',
+  '172.16.0.0/12',
+  '192.168.0.0/16',
+  '127.0.0.0/8',
+  '::1',
+  'fd00::/8',
+]
 
 [botdetection.ip_limit]
-# link_token / ip_limit filter requests
-filter_link_token = true
+# link-local addresses are not monitored by ip_limit
+filter_link_local = false
+# activate link_token method in the ip_limit method
+link_token = true
 
 [botdetection.ip_lists]
-pass_ip = []
 block_ip = []
+pass_ip = []
+pass_searxng_org = true

@@ -5,8 +5,8 @@ server:
   limiter: true
   image_proxy: true
   public_instance: false
-redis:
-  url: false # set via SEARXNG_REDIS_URL env var
+valkey: # url is set via SEARXNG_VALKEY_URL env var
+  url: false
 search:
   safe_search: 0
   autocomplete: "duckduckgo"
@@ -50,3 +50,7 @@ engines:
     disabled: false
   - name: marginalia
     disabled: false
+  - name: ahmia # requires tor, not deployed
+    disabled: true
+  - name: torch # requires tor, not deployed
+    disabled: true
