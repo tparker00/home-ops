@@ -60,12 +60,6 @@ spec:
               capabilities:
                 drop:
                   - ALL
-            volumeMounts:
-              - name: config
-                mountPath: /configmap
-                readOnly: true
-              - name: settings
-                mountPath: /searxng
         containers:
           main:
             image:
@@ -123,16 +117,26 @@ spec:
       config:
         type: configMap
         name: "{{ .Release.Name }}-configmap"
-        globalMounts:
-          - path: /etc/searxng/limiter.toml
-            subPath: limiter.toml
-            readOnly: true
+        advancedMounts:
+          searxng:
+            render-config:
+              - path: /configmap
+                readOnly: true
+            main:
+              - path: /etc/searxng/limiter.toml
+                subPath: limiter.toml
+                readOnly: true
       settings:
         type: emptyDir
-        globalMounts:
-          - path: /etc/searxng/settings.yml
-            subPath: settings.yml
-            readOnly: true
+        advancedMounts:
+          searxng:
+            render-config:
+              - path: /searxng
+                readOnly: false
+            main:
+              - path: /etc/searxng/settings.yml
+                subPath: settings.yml
+                readOnly: true
       tmpfs:
         enabled: true
         type: emptyDir
