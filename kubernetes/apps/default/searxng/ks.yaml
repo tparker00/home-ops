@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  suspend: true # disabled; queued for removal
+  suspend: false
   dependsOn:
     - name: external-secrets-bitwarden
   path: ./kubernetes/apps/default/searxng/app
@@ -19,6 +19,9 @@ spec:
     kind: GitRepository
     name: home-kubernetes
   wait: false # no flux ks dependents
+  postBuild:
+    substitute:
+      APP: *app
   interval: 30m
   retryInterval: 1m
   timeout: 5m

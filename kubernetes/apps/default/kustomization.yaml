@@ -12,3 +12,4 @@ resources:
   - ./manyfold/ks.yaml
   - ./namespace.yaml
   - ./rxresume/ks.yaml
+  - ./searxng/ks.yaml

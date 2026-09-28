@@ -1,0 +1,52 @@
+use_default_settings: true
+server:
+  # base_url is set via SEARXNG_BASE_URL env var
+  # secret_key is set via SEARXNG_SECRET env var
+  limiter: true
+  image_proxy: true
+  public_instance: false
+redis:
+  url: false # set via SEARXNG_REDIS_URL env var
+search:
+  safe_search: 0
+  autocomplete: "duckduckgo"
+  default_lang: "en"
+  formats:
+    - html
+    - json
+outgoing:
+  request_timeout: 3.0
+engines:
+  - name: kagi
+    engine: kagi
+    shortcut: kg
+    api_key: "__KAGI_API_KEY__" # rendered from KAGI_API_KEY env by init container
+    disabled: false
+  - name: kagi.news
+    engine: kagi
+    shortcut: kgn
+    kagi_categ: news
+    api_key: "__KAGI_API_KEY__"
+    disabled: false
+  - name: kagi.videos
+    engine: kagi
+    shortcut: kgv
+    kagi_categ: videos
+    api_key: "__KAGI_API_KEY__"
+    disabled: false
+  - name: google
+    disabled: false
+  - name: duckduckgo
+    disabled: false
+  - name: wikipedia
+    disabled: false
+  - name: bing
+    disabled: false
+  - name: brave
+    disabled: false
+  - name: mojeek
+    disabled: false
+  - name: qwant
+    disabled: false
+  - name: marginalia
+    disabled: false

@@ -33,6 +33,39 @@ spec:
           reloader.stakater.com/auto: "true"
         strategy: RollingUpdate
         replicas: 2
+        initContainers:
+          render-config:
+            image:
+              repository: public.ecr.aws/docker/library/busybox
+              tag: 1.37.0
+            command:
+              - sh
+              - -c
+              - |
+                if [ -z "${KAGI_API_KEY}" ]; then
+                  echo "ERROR: KAGI_API_KEY is not set - check the Bitwarden 'searxng' secret" >&2
+                  exit 1
+                fi
+                sed "s/__KAGI_API_KEY__/${KAGI_API_KEY}/g" /configmap/settings.yml > /searxng/settings.yml
+                if grep -q "__KAGI_API_KEY__" /searxng/settings.yml; then
+                  echo "ERROR: Kagi API key placeholder was not replaced" >&2
+                  exit 1
+                fi
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            volumeMounts:
+              - name: config
+                mountPath: /configmap
+                readOnly: true
+              - name: settings
+                mountPath: /searxng
         containers:
           main:
             image:
@@ -91,11 +124,14 @@ spec:
         type: configMap
         name: "{{ .Release.Name }}-configmap"
         globalMounts:
-          - path: /etc/searxng/settings.yml
-            subPath: settings.yml
-            readOnly: true
           - path: /etc/searxng/limiter.toml
             subPath: limiter.toml
+            readOnly: true
+      settings:
+        type: emptyDir
+        globalMounts:
+          - path: /etc/searxng/settings.yml
+            subPath: settings.yml
             readOnly: true
       tmpfs:
         enabled: true
