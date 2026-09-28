@@ -1,4 +1,9 @@
-use_default_settings: true
+use_default_settings:
+  engines:
+    remove:
+      # require tor, not deployed
+      - ahmia
+      - torch
 server:
   # base_url is set via SEARXNG_BASE_URL env var
   # secret_key is set via SEARXNG_SECRET env var
@@ -50,7 +55,3 @@ engines:
     disabled: false
   - name: marginalia
     disabled: false
-  - name: ahmia # requires tor, not deployed
-    disabled: true
-  - name: torch # requires tor, not deployed
-    disabled: true
