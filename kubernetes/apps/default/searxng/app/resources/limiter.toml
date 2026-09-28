@@ -1,0 +1,17 @@
+# SearXNG rate limiter configuration
+# https://docs.searxng.org/src/searx.botdetection.html#limiter-toml
+
+[real_ip]
+ipv4_prefix = 32
+ipv6_prefix = 56
+x_for = 1
+ipv4_fallback = "127.0.0.1"
+ipv6_fallback = "::1"
+
+[botdetection.ip_limit]
+# link_token / ip_limit filter requests
+filter_link_token = true
+
+[botdetection.ip_lists]
+pass_ip = []
+block_ip = []

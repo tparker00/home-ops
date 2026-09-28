@@ -5,12 +5,12 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./helmrepository.yaml
 configMapGenerator:
   - name: searxng-configmap
     files:
       - ./resources/limiter.toml
       - ./resources/settings.yml
-  - ./helmrepository.yaml
 generatorOptions:
   disableNameSuffixHash: true
 components:
