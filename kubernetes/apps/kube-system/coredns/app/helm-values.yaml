@@ -35,7 +35,7 @@ servers:
       - name: loop
       - name: reload
       - name: loadbalance
-replicas: 2
+replicaCount: 2
 affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
