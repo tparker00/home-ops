@@ -35,6 +35,7 @@ servers:
       - name: loop
       - name: reload
       - name: loadbalance
+replicas: 2
 affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
@@ -42,6 +43,14 @@ affinity:
         - matchExpressions:
             - key: node-role.kubernetes.io/control-plane
               operator: Exists
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              k8s-app: kube-dns
 tolerations:
   - key: CriticalAddonsOnly
     operator: Exists
