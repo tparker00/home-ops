@@ -1,0 +1,67 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: externaldns-technitium-watchdog
+  namespace: network
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 120
+      template:
+        spec:
+          serviceAccountName: externaldns-technitium-watchdog
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: watchdog
+              image: registry.k8s.io/kubectl:v1.37.1
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  NS=network
+                  DEPLOY=externaldns-internal-technitium
+                  kubectl -n "$NS" logs deploy/"$DEPLOY" -c external-dns --tail=10 > /tmp/log 2>/dev/null || true
+                  grep -o 'consecutive soft errors: [0-9]*' /tmp/log | tail -1 | awk '{print $4}' > /tmp/count || true
+                  printf 'watchdog: '
+                  if [ -s /tmp/count ]; then awk '{print "consecutive_soft_errors=" $1}' /tmp/count; else echo 'consecutive_soft_errors=0'; fi
+                  # "code 503" in the log means technitium itself answered (healthy server, wedged webhook session).
+                  # A real technitium outage logs connection errors instead, so it never matches here.
+                  if [ -s /tmp/count ] && awk '{exit !($1>=10)}' /tmp/count && grep -q 'code 503' /tmp/log; then
+                    echo "503 wedge detected - restarting $DEPLOY"
+                    kubectl -n "$NS" rollout restart deploy/"$DEPLOY"
+                  else
+                    echo 'no action'
+                  fi
+              env:
+                - name: HOME
+                  value: /tmp
+              securityContext:
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop: ["ALL"]
+                seccompProfile:
+                  type: RuntimeDefault
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 16Mi
+                limits:
+                  memory: 64Mi
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: tmp
+              emptyDir: {}
