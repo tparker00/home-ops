@@ -51,6 +51,10 @@ spec:
                   - matchExpressions:
                       - key: feature.node.kubernetes.io/cpu-cpuid.HYPERVISOR
                         operator: DoesNotExist
+                      - key: kubernetes.io/hostname
+                        operator: In
+                        values:
+                          - worker02
     service:
       metrics:
         enabled: true
