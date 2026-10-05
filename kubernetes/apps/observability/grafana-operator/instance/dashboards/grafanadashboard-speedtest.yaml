@@ -1178,6 +1178,26 @@ spec:
                     "value": "lengthmi"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Server ID"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "none"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.displayMode",
+                    "value": "auto"
+                  }
+                ]
               }
             ]
           },
@@ -1247,7 +1267,10 @@ spec:
               },
               "expr": "max by (job) (speedtest_server_id)",
               "hide": false,
-              "refId": "D"
+              "refId": "D",
+              "format": "table",
+              "legendFormat": "",
+              "instant": false
             }
           ],
           "title": "Test Results",
@@ -1298,7 +1321,9 @@ spec:
                   "user_ip": true,
                   "user_isp": false,
                   "user_lat": true,
-                  "user_lon": true
+                  "user_lon": true,
+                  "job 4": true,
+                  "__name__ 4": true
                 },
                 "indexByName": {
                   "Time": 0,
@@ -1318,7 +1343,8 @@ spec:
                   "user_ip": 11,
                   "user_isp": 12,
                   "user_lat": 13,
-                  "user_lon": 14
+                  "user_lon": 14,
+                  "Value #D": 18
                 },
                 "renameByName": {
                   "Value #A": "Download",
@@ -1326,13 +1352,12 @@ spec:
                   "Value #C": "Latency",
                   "distance": "Distance",
                   "instance": "",
-                  "server_id": "Server ID",
                   "server_lon": "",
                   "server_name": "Server Name",
-                  "speedtest_server_id{container=\"speedtest-exporter\", endpoint=\"metrics\", instance=\"10.42.0.252:9798\", job=\"speedtest-exporter\", namespace=\"monitoring\", pod=\"speedtest-exporter-bc6b4d644-tk4zq\", service=\"speedtest-exporter\"}": "ServerID",
                   "test_uuid": "",
                   "user_ip": "",
-                  "user_isp": "ISP"
+                  "user_isp": "ISP",
+                  "Value #D": "Server ID"
                 }
               }
             },
