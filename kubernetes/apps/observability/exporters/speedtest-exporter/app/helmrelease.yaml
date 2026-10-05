@@ -37,6 +37,7 @@ spec:
               tag: v3.5.4
             env:
               TZ: ${TIMEZONE}
+              SPEEDTEST_SERVER: "69477"  # Whitesky Newark - only nearby Ookla server with consistent multi-gig download (2026-10-05 investigation)
             resources:
               requests:
                 cpu: 15m
