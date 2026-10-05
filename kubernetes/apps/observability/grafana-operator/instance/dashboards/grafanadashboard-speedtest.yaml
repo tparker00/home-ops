@@ -11,7 +11,7 @@ spec:
   folder: Network
   datasources:
     - datasourceName: Prometheus
-      inputName: DS_PROMETHEUS
+      inputName: datasource
   json: |
     {
       "__inputs": [
@@ -74,7 +74,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -123,7 +123,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max(max_over_time(speedtest_download_bits_per_second[1w:5m]))",
@@ -134,7 +134,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "min(min_over_time(speedtest_download_bits_per_second[1w:5m]))",
@@ -146,7 +146,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "avg(avg_over_time(speedtest_download_bits_per_second[1w:5m]))",
@@ -163,7 +163,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -212,7 +212,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max(max_over_time(speedtest_upload_bits_per_second[1w:5m]))",
@@ -223,7 +223,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "min(min_over_time(speedtest_upload_bits_per_second[1w:5m]))",
@@ -235,7 +235,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "avg(avg_over_time(speedtest_upload_bits_per_second[1w:5m]))",
@@ -252,7 +252,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -301,7 +301,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "min(min_over_time(speedtest_jitter_latency_milliseconds[1w:5m]))",
@@ -312,7 +312,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max(max_over_time(speedtest_jitter_latency_milliseconds[1w:5m]))",
@@ -324,7 +324,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "avg(avg_over_time(speedtest_jitter_latency_milliseconds[1w:5m]))",
@@ -341,7 +341,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "description": "",
           "fieldConfig": {
@@ -410,7 +410,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_up{job=~\"$job\"})",
@@ -425,7 +425,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "description": "ServerID of the last test done",
           "fieldConfig": {
@@ -472,7 +472,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_server_id{job=~\"$job\"})",
@@ -504,7 +504,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -551,7 +551,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_download_bits_per_second{job=~\"$job\"})*10^-6",
@@ -566,7 +566,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -612,7 +612,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_upload_bits_per_second{job=~\"$job\"})*10^-6",
@@ -627,7 +627,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -673,7 +673,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_ping_latency_milliseconds{job=~\"$job\"})",
@@ -688,7 +688,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -734,7 +734,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_jitter_latency_milliseconds{job=~\"$job\"})",
@@ -766,7 +766,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "description": "",
           "fieldConfig": {
@@ -847,7 +847,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_download_bits_per_second{job=~\"$job\"})*10^-6",
@@ -862,7 +862,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -942,7 +942,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_upload_bits_per_second{job=~\"$job\"})*10^-6",
@@ -957,7 +957,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1037,7 +1037,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_ping_latency_milliseconds{job=~\"$job\"})",
@@ -1048,7 +1048,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_jitter_latency_milliseconds{job=~\"$job\"})",
@@ -1064,7 +1064,7 @@ spec:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${datasource}"
+            "uid": "Prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1204,7 +1204,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_download_bits_per_second)",
@@ -1217,7 +1217,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_upload_bits_per_second)",
@@ -1230,7 +1230,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "exemplar": true,
               "expr": "max by (job) (speedtest_jitter_latency_milliseconds)",
@@ -1243,7 +1243,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${datasource}"
+                "uid": "Prometheus"
               },
               "expr": "max by (job) (speedtest_server_id)",
               "hide": false,
@@ -1369,7 +1369,7 @@ spec:
             },
             "datasource": {
               "type": "prometheus",
-              "uid": "${datasource}"
+              "uid": "Prometheus"
             },
             "definition": "label_values(speedtest_up, job)",
             "hide": 0,
