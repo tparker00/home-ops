@@ -93,24 +93,6 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: speedtest-exporter-hub
-spec:
-  instanceSelector:
-    matchLabels:
-      dashboards: grafana
-  folder: Network
-  grafanaCom:
-    # renovate: depName="Speedtest Exporter"
-    id: 16541
-    revision: 1
-  datasources:
-    - datasourceName: Prometheus
-      inputName: datasource
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
-apiVersion: grafana.integreatly.org/v1beta1
-kind: GrafanaDashboard
-metadata:
   name: unifi-network-sites
 spec:
   instanceSelector:

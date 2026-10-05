@@ -10,6 +10,7 @@ resources:
   - ./grafanadashboard-network.yaml
   - ./grafanadashboard-nginx.yaml
   - ./grafanadashboard-operator.yaml
+  - ./grafanadashboard-speedtest.yaml
   - ./grafanadashboard-system.yaml
   - ./grafanadashboard-thanos.yaml
 configMapGenerator:
