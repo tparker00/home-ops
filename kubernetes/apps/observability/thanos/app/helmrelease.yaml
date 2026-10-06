@@ -61,6 +61,45 @@ spec:
     queryFrontend:
       enabled: true
       replicaCount: 2
+      # cilium netkit drops hairpinned ClusterIP flows (client and backend on the
+      # same node): readiness roundtrips to the thanos-query VIP timed out 7/10
+      # when a backend shared the node (2026-10-05). Keep the frontend off nodes
+      # hosting its VIP backends (thanos-query) and its cache (thanos-dragonfly).
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values: ["thanos"]
+                    - key: app.kubernetes.io/instance
+                      operator: In
+                      values: ["thanos"]
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values: ["query"]
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: thanos-dragonfly
+            # keep the two replicas spread (replaces the soft preset this override disables)
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: query-frontend
+                    app.kubernetes.io/instance: thanos
+                    app.kubernetes.io/name: thanos
+      # ride out short VIP blips without dropping endpoints (default 6 = 60s)
+      readinessProbe:
+        failureThreshold: 12
       networkPolicy:
         extraIngress:
           # cilium+netkit drops hairpinned ClusterIP replies (same-node backend,
@@ -86,6 +125,12 @@ spec:
     bucketweb:
       enabled: true
       replicaCount: 2
+      # chart default 192Mi limit OOMKilled it every ~34min (420 restarts/10d)
+      resources:
+        requests:
+          memory: 256Mi
+        limits:
+          memory: 512Mi
     compactor:
       enabled: true
       concurrency: 4
@@ -125,7 +170,8 @@ spec:
           cpu: 200m
           memory: 256Mi
         limits:
-          memory: 768Gi
+          # was 768Gi (typo for 768Mi); storegateway runs ~1.8Gi so give it 4Gi
+          memory: 4Gi
       persistence:
         enabled: true
         storageClass: openebs-hostpath
