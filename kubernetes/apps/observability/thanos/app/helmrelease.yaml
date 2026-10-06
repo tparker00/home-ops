@@ -125,12 +125,13 @@ spec:
     bucketweb:
       enabled: true
       replicaCount: 2
-      # chart default 192Mi limit OOMKilled it every ~34min (420 restarts/10d)
+      # bucket metadata sync spikes past 512Mi (OOMKilled 98s after start,
+      # 2026-10-06); the chart-default 192Mi OOMKilled it every ~34min before
       resources:
         requests:
           memory: 256Mi
         limits:
-          memory: 512Mi
+          memory: 1Gi
     compactor:
       enabled: true
       concurrency: 4
