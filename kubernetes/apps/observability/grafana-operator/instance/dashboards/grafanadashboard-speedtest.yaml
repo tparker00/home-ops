@@ -1227,9 +1227,9 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_download_bits_per_second)",
+              "expr": "max by (job) (max_over_time(speedtest_download_bits_per_second[1h]))",
               "format": "table",
-              "interval": "",
+              "interval": "1h",
               "legendFormat": "",
               "queryType": "randomWalk",
               "refId": "A"
@@ -1240,10 +1240,10 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_upload_bits_per_second)",
+              "expr": "max by (job) (max_over_time(speedtest_upload_bits_per_second[1h]))",
               "format": "table",
               "hide": false,
-              "interval": "",
+              "interval": "1h",
               "legendFormat": "",
               "refId": "B"
             },
@@ -1253,10 +1253,10 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_jitter_latency_milliseconds)",
+              "expr": "max by (job) (max_over_time(speedtest_jitter_latency_milliseconds[1h]))",
               "format": "table",
               "hide": false,
-              "interval": "",
+              "interval": "1h",
               "legendFormat": "Latency",
               "refId": "C"
             },
@@ -1265,8 +1265,9 @@ spec:
                 "type": "prometheus",
                 "uid": "Prometheus"
               },
-              "expr": "max by (job) (speedtest_server_id)",
+              "expr": "max by (job) (max_over_time(speedtest_server_id[1h]))",
               "hide": false,
+              "interval": "1h",
               "refId": "D",
               "format": "table",
               "legendFormat": "",
