@@ -111,12 +111,14 @@ spec:
       probes:
         readiness:
           failureThreshold: 12
-      # results cache on the shared dragonfly instance (tpl'd by the chart)
+      # results cache on the shared dragonfly instance (tpl'd by the chart);
+      # prefix keeps frontend keys apart from storegateway index keys in db 2
       cacheConfig: |
         type: REDIS
         config:
           addr: "{{ .Release.Name }}-dragonfly:6379"
           db: 2
+          prefix: thanos-frontend:
     bucket:
       bucketweb:
         enabled: true
@@ -155,7 +157,8 @@ spec:
       persistence:
         enabled: true
         storageClass: openebs-hostpath
-        size: 10Gi
+        # 60Gi: cold re-scan working set post-migration + growth headroom
+        size: 60Gi
     storegateway:
       enabled: true
       replicaCount: 2
