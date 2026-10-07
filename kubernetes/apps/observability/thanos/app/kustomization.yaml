@@ -7,5 +7,6 @@ resources:
   - ./httproute.yaml
   - ./externalsecret.yaml
   - ./ocirepository.yaml
+  - ./configmap-index-cache.yaml
 components:
   - ../../../../components/dragonfly
