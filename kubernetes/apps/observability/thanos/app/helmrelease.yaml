@@ -10,15 +10,21 @@ spec:
   chart:
     spec:
       chart: thanos
-      version: 17.3.1
+      version: 0.46.0
       sourceRef:
         kind: HelmRepository
-        name: bitnami
+        name: thanos-community
 
   install:
     remediation:
       retries: 3
   upgrade:
+    # one-time chart swap: the thanos-community chart changes the
+    # storegateway/ruler StatefulSet selectors + volumeClaimTemplates and makes
+    # thanos-storegateway headless, all immutable fields — force lets helm
+    # replace them (PVCs are retained and re-adopted by name).
+    # TODO: remove after the first successful reconcile.
+    force: true
     cleanupOnFail: true
     remediation:
       retries: 3
@@ -29,35 +35,39 @@ spec:
       namespace: openebs-system
     - name: dragonfly-operator
       namespace: database
-  valuesFrom:
-    - targetPath: objstoreConfig.config.bucket
-      kind: Secret
-      name: thanos-secret
-      valuesKey: BUCKET_NAME
-    - targetPath: objstoreConfig.config.endpoint
-      kind: Secret
-      name: thanos-secret
-      valuesKey: BUCKET_HOST
-    - targetPath: objstoreConfig.config.region
-      kind: Secret
-      name: thanos-secret
-      valuesKey: BUCKET_REGION
-    - targetPath: objstoreConfig.config.access_key
-      kind: Secret
-      name: thanos-secret
-      valuesKey: AWS_ACCESS_KEY_ID
-    - targetPath: objstoreConfig.config.secret_key
-      kind: Secret
-      name: thanos-secret
-      valuesKey: AWS_SECRET_ACCESS_KEY
   values:
     global:
-      security:
-        allowInsecureImages: true
-    objstoreConfig:
-      type: s3
-      config:
-        insecure: false
+      objstore:
+        # rendered by externalsecret.yaml (key: objstore.yml)
+        createSecret: false
+        secretName: thanos-secret
+        secretKey: objstore.yml
+      serviceMonitor:
+        enabled: true
+      # kept off: the chart's policies allow only service-port ingress with
+      # no per-source control, which cannot express the dragonfly-reply
+      # ingress the cilium+netkit hairpin workaround needed (the old
+      # queryFrontend/storegateway networkPolicy.extraIngress)
+      networkPolicies: false
+      thanosRules:
+        # bitnami deployed no PrometheusRule; keep this migration neutral
+        enabled: false
+      rbac:
+        # nothing needs cluster RBAC (no ruler rule auto-import, no receive)
+        create: false
+    receive:
+      enabled: false
+    query:
+      enabled: true
+      replicaCount: 2
+      replicaLabels:
+        - __replica__
+        # the chart hardcodes --label=ruler_replica on ruler pods
+        - ruler_replica
+      endpoints:
+        static:
+          # kube-prometheus-stack sidecars (was query.dnsDiscovery.sidecarsService)
+          - dnssrv+_grpc._tcp.kube-prometheus-stack-thanos-discovery.observability.svc.cluster.local
     queryFrontend:
       enabled: true
       replicaCount: 2
@@ -88,7 +98,7 @@ spec:
                 labelSelector:
                   matchLabels:
                     app: thanos-dragonfly
-            # keep the two replicas spread (replaces the soft preset this override disables)
+            # keep the two replicas spread
             - weight: 1
               podAffinityTerm:
                 topologyKey: kubernetes.io/hostname
@@ -97,46 +107,43 @@ spec:
                     app.kubernetes.io/component: query-frontend
                     app.kubernetes.io/instance: thanos
                     app.kubernetes.io/name: thanos
-      # ride out short VIP blips without dropping endpoints (default 6 = 60s)
-      readinessProbe:
-        failureThreshold: 12
-      networkPolicy:
-        extraIngress:
-          # cilium+netkit drops hairpinned ClusterIP replies (same-node backend,
-          # e.g. the thanos-dragonfly cache) as unsolicited; allow redis replies
-          - from:
-              - podSelector:
-                  matchLabels:
-                    app: thanos-dragonfly
-                    app.kubernetes.io/name: dragonfly
-                    app.kubernetes.io/part-of: dragonfly
-      config: &config |-
+      # ride out short VIP blips without dropping endpoints (chart default 6 = 60s)
+      probes:
+        readiness:
+          failureThreshold: 12
+      # results cache on the shared dragonfly instance (tpl'd by the chart)
+      cacheConfig: |
         type: REDIS
         config:
           addr: "{{ .Release.Name }}-dragonfly:6379"
           db: 2
-    query:
-      enabled: true
-      replicaCount: 2
-      replicaLabel: ["__replica__"]
-      dnsDiscovery:
-        sidecarsService: kube-prometheus-stack-thanos-discovery
-        sidecarsNamespace: observability
-    bucketweb:
-      enabled: true
-      replicaCount: 2
-      # bucket metadata sync spikes past 512Mi (OOMKilled 98s after start,
-      # 2026-10-06); the chart-default 192Mi OOMKilled it every ~34min before
-      resources:
-        requests:
-          memory: 256Mi
-        limits:
-          memory: 1Gi
+    bucket:
+      bucketweb:
+        enabled: true
+        replicaCount: 2
+        # bucket metadata sync spikes past 512Mi (OOMKilled 98s after start,
+        # 2026-10-06); the chart-default 192Mi OOMKilled it every ~34min before
+        resources:
+          requests:
+            memory: 256Mi
+          limits:
+            memory: 1Gi
     compactor:
       enabled: true
-      concurrency: 4
-      extraFlags:
+      # chart defaults + the previous delete-delay/concurrency tuning
+      extraArgs:
+        - --log.level=info
+        - --log.format=logfmt
+        - --consistency-delay=30m
         - --delete-delay=30m
+        - --compact.concurrency=4
+      retention:
+        resolutionRaw: 14d
+        resolution5m: 30d
+        resolution1h: 60d
+      vpa:
+        # no VPA CRD in this cluster
+        enabled: false
       resources:
         requests:
           cpu: 200m
@@ -145,9 +152,6 @@ spec:
         limits:
           memory: 1Gi
           ephemeral-storage: 10Gi
-      retentionResolutionRaw: 14d
-      retentionResolution5m: 30d
-      retentionResolution1h: 60d
       persistence:
         enabled: true
         storageClass: openebs-hostpath
@@ -155,17 +159,20 @@ spec:
     storegateway:
       enabled: true
       replicaCount: 2
-      networkPolicy:
-        extraIngress:
-          # cilium+netkit drops hairpinned ClusterIP replies (same-node backend,
-          # e.g. the thanos-dragonfly cache) as unsolicited; allow redis replies
-          - from:
-              - podSelector:
-                  matchLabels:
-                    app: thanos-dragonfly
-                    app.kubernetes.io/name: dragonfly
-                    app.kubernetes.io/part-of: dragonfly
-      config: *config
+      # REDIS index cache on dragonfly: the chart has no index-cache value, so
+      # mount configmap-index-cache.yaml and pass the flag directly (same
+      # config the bitnami chart rendered from storegateway.config)
+      extraArgs:
+        - --index-cache.config-file=/etc/thanos-index-cache/config.yml
+      extraVolumes:
+        - name: index-cache
+          configMap:
+            name: thanos-storegateway-index-cache
+      extraVolumeMounts:
+        - name: index-cache
+          mountPath: /etc/thanos-index-cache/config.yml
+          subPath: config.yml
+          readOnly: true
       resources:
         requests:
           cpu: 200m
@@ -180,25 +187,36 @@ spec:
     ruler:
       enabled: true
       replicaCount: 2
-      replicaLabel: __replica__
-      alertmanagers: ["http://alertmanager-operated.observability.svc.cluster.local:9093"]
-      extraFlags: ["--web.prefix-header=X-Forwarded-Prefix"]
-      config: |-
-        groups:
-          - name: PrometheusWatcher
-            rules:
-              - alert: PrometheusDown
-                annotations:
-                  summary: A Prometheus has disappeared from Prometheus target discovery
-                expr: absent(up{job="kube-prometheus-stack-prometheus"})
-                for: 5m
-                labels:
-                  severity: critical
+      # bitnami deployed only the PrometheusWatcher rule: do not also import
+      # every PrometheusRule CRD (chart default) — kube-prometheus-stack
+      # already evaluates those itself
+      autoImportPrometheusRules:
+        enabled: false
+      alertmanagers:
+        config: |
+          alertmanagers:
+            - static_configs:
+                - alertmanager-operated.observability.svc.cluster.local:9093
+              scheme: http
+              api_version: v2
+      extraArgs:
+        - --web.prefix-header=X-Forwarded-Prefix
+      rules:
+        # blank the chart's default example rule: the JSON schema makes this key
+        # required, but an empty file loads as zero rule groups
+        example-alerts.yaml: ""
+        prometheus-watcher.yaml: |
+          groups:
+            - name: PrometheusWatcher
+              rules:
+                - alert: PrometheusDown
+                  annotations:
+                    summary: A Prometheus has disappeared from Prometheus target discovery
+                  expr: absent(up{job="kube-prometheus-stack-prometheus"})
+                  for: 5m
+                  labels:
+                    severity: critical
       persistence:
         enabled: true
         storageClass: openebs-hostpath
         size: 10Gi
-    metrics:
-      enabled: true
-      serviceMonitor:
-        enabled: true

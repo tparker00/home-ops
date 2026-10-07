@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: thanos-storegateway-index-cache
+data:
+  # same REDIS index cache the bitnami chart rendered from storegateway.config;
+  # the thanos-community chart has no index-cache value, so it is mounted via
+  # storegateway.extraVolumes and passed with --index-cache.config-file
+  config.yml: |
+    type: REDIS
+    config:
+      addr: "thanos-dragonfly:6379"
+      db: 2
