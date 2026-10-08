@@ -55,6 +55,11 @@ spec:
       rbac:
         # nothing needs cluster RBAC (no ruler rule auto-import, no receive)
         create: false
+      serviceAccount:
+        # per-component SAs; workloads stop sharing the bare stopgap SA
+        # 'thanos-thanos' (delete it after merge — nothing references it)
+        create: true
+        perComponent: true
     receive:
       enabled: false
     query:
@@ -118,7 +123,7 @@ spec:
         config:
           addr: "{{ .Release.Name }}-dragonfly:6379"
           db: 2
-          prefix: thanos-frontend:
+          prefix: "thanos-frontend:"
     bucket:
       bucketweb:
         enabled: true
