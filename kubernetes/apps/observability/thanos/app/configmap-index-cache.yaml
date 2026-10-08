@@ -14,4 +14,4 @@ data:
     config:
       addr: "thanos-dragonfly:6379"
       db: 2
-      prefix: thanos-storegw:
+      prefix: "thanos-storegw:"
