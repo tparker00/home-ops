@@ -9,7 +9,8 @@
 ##   dead      ENOTCONN/ESTALE ("Transport endpoint is not connected" /
 ##            "Stale file handle") — kernel-certified dead FUSE. 5s recheck,
 ##            still dead -> delete pod + MountWatchdogRestart event.
-##   ambiguous anything else (timeout rc 124, EIO / "Input/output error", ...).
+##   ambiguous anything else (timeout rc 124/143 GNU/BusyBox, EIO /
+##            "Input/output error", ...).
 ##            No immediate delete: MountWatchdogSuspect event each cycle plus a
 ##            per-PV streak counter; AMBIGUOUS_LIMIT consecutive ambiguous
 ##            cycles (10 x 30s ~ 5 min) -> delete pod + MountWatchdogRestart
@@ -38,14 +39,23 @@ spec:
       priorityClassName: system-node-critical
       serviceAccountName: mount-watchdog
       terminationGracePeriodSeconds: 30
+      # /var/lib/kubelet/pods/** is 0750 root:root all the way down (verified
+      # live 2026-10-09 on control01). uid 1001 alone gets Permission denied;
+      # gid 0 (primary + supplemental) grants group traversal without running
+      # as root — a probe pod with exactly this securityContext stat'd the
+      # real qb-rw publish path rc=0. supplementalGroups is pod-scoped, hence
+      # here rather than on the container.
+      securityContext:
+        supplementalGroups: [0]
       containers:
         - name: watchdog
           # image choice: no kubectl-capable image is present on the nodes
           # (checked 2026-10-09), so a pull is unavoidable. ghcr.io/dtzar/
           # helm-kubectl:4.3.0 — pinned tag, ghcr-only supply chain, ~65MiB;
           # kubectl v1.37.0 = same minor as server v1.37.1, within kubectl
-          # skew policy. Userland verified live in-cluster 2026-10-09:
-          # kubectl, sh, GNU stat -f, timeout, date, printf all present.
+          # skew policy. Userland verified live in-cluster 2026-10-09 (Alpine
+          # BusyBox userland, not GNU): kubectl, sh, BusyBox stat -f, BusyBox
+          # timeout (kill passes through as rc 143), date, printf all present.
           # NB: that image's entrypoint is helm/kubectl-based — the explicit
           # command: below is required; an args-only spec would break.
           image: ghcr.io/dtzar/helm-kubectl:4.3.0
@@ -103,13 +113,20 @@ spec:
               # classify STAT_RC/STAT_ERR into STAT_CLASS:
               #   healthy   stat answered
               #   dead      kernel-certified dead FUSE (ENOTCONN / ESTALE)
-              #   ambiguous everything else (timeout rc 124, EIO, ...) — the
+              #   ambiguous everything else (timeout rc 124/143 GNU/BusyBox,
+              #             EIO, ...) — the
               #             master may come back; do not act immediately
               classify() {
                 if [ "$STAT_RC" -eq 0 ]; then
                   STAT_CLASS="healthy"
                   return
                 fi
+                # timeout kill: GNU timeout exits 124; BusyBox timeout (this
+                # image) passes the SIGTERM death through as 143. Both mean
+                # "no answer within STAT_TIMEOUT" — no kernel verdict: ambiguous.
+                case "$STAT_RC" in
+                  124|143) STAT_CLASS="ambiguous"; return ;;
+                esac
                 case "$STAT_ERR" in
                   *"Transport endpoint is not connected"*|*"Stale file handle"*|*"ENOTCONN"*|*"ESTALE"*)
                     STAT_CLASS="dead" ;;
@@ -129,10 +146,13 @@ spec:
               # refuse to act if preconditions are broken — idle visibly instead of crash-looping
               if [ -z "${NODE:-}" ]; then log "FATAL: NODE env is empty — idling"; while :; do sleep 3600; done; fi
               if ! command -v stat >/dev/null 2>&1; then log "FATAL: stat not in PATH — idling"; while :; do sleep 3600; done; fi
-              # probe timeout(1) once: it must kill a sleep (exit 124) or stat runs unguarded
+              # probe timeout(1) once: it must kill a sleep (GNU exit 124,
+              # BusyBox 143 — verified live 2026-10-09 in this image) or stat
+              # runs unguarded
               if [ -n "$STAT_TIMEOUT" ]; then
                 timeout 2 sleep 5 >/dev/null 2>&1
-                if [ "$?" -eq 124 ]; then :; else log "NOTE: timeout(1) unusable — stat runs unguarded"; STAT_TIMEOUT=""; fi
+                _trc=$?
+                if [ "$_trc" -eq 124 ] || [ "$_trc" -eq 143 ]; then :; else log "NOTE: timeout(1) unusable — stat runs unguarded"; STAT_TIMEOUT=""; fi
               fi
               
               log "started: interval=${INTERVAL}s statTimeout=${STAT_TIMEOUT:-off} maxActionsPerCycle=${MAX_ACTIONS} ambiguousLimit=${AMBIGUOUS_LIMIT} driver=${MOOSEFS_DRIVER}"
@@ -219,8 +239,10 @@ spec:
               memory: 128Mi
           securityContext:
             runAsNonRoot: true
+            # uid stays non-root (runAsNonRoot holds); primary gid 0 gives
+            # group r-x through the 0750 root:root kubelet pods tree
             runAsUser: 1001
-            runAsGroup: 1001
+            runAsGroup: 0
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             capabilities:
