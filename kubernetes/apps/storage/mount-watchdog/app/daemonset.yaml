@@ -41,11 +41,14 @@ spec:
       containers:
         - name: watchdog
           # image choice: no kubectl-capable image is present on the nodes
-          # (checked 2026-10-09), so a pull is unavoidable. bitnami/kubectl's
-          # free catalog is empty and alpine/kubectl has no 1.36 tag; rancher
-          # tracks upstream releases. v1.36.2 = the client this check was
-          # validated with (server 1.37, within kubectl skew policy).
-          image: docker.io/rancher/kubectl:v1.36.2
+          # (checked 2026-10-09), so a pull is unavoidable. ghcr.io/dtzar/
+          # helm-kubectl:4.3.0 — pinned tag, ghcr-only supply chain, ~65MiB;
+          # kubectl v1.37.0 = same minor as server v1.37.1, within kubectl
+          # skew policy. Userland verified live in-cluster 2026-10-09:
+          # kubectl, sh, GNU stat -f, timeout, date, printf all present.
+          # NB: that image's entrypoint is helm/kubectl-based — the explicit
+          # command: below is required; an args-only spec would break.
+          image: ghcr.io/dtzar/helm-kubectl:4.3.0
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh", "-c"]
           args:
