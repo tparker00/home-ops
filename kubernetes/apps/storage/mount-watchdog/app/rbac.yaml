@@ -5,7 +5,7 @@
 ##   pods             delete    -> force remount of dead mounts
 ##   persistentvolumeclaims get -> resolve PVC -> PV (cached)
 ##   persistentvolumes get      -> read PV spec.csi.driver (cached)
-##   events           create    -> MountWatchdogRestart audit trail
+##   events           create    -> MountWatchdogRestart / MountWatchdogSuspect audit trail
 ##   pods watch is granted for future informer-based versions (unused in v1).
 apiVersion: v1
 kind: ServiceAccount
