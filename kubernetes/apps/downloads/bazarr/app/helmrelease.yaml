@@ -49,6 +49,19 @@ spec:
             env:
               TZ: ${TIMEZONE}
             envFrom: *envFrom
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - stat -f /config && stat -f /data
+                  timeoutSeconds: 5
+                  periodSeconds: 30
+                  failureThreshold: 2
             resources:
               requests:
                 cpu: 10m
@@ -62,6 +75,19 @@ spec:
               - --branch=master
               - --wait=86400 # 1 day
               - --root=/add-ons
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - stat -f /config && stat -f /data
+                  timeoutSeconds: 5
+                  periodSeconds: 30
+                  failureThreshold: 2
             resources:
               requests:
                 cpu: 10m

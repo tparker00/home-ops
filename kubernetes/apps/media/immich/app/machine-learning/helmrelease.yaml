@@ -62,6 +62,19 @@ spec:
               # Machine learning
               MACHINE_LEARNING_CACHE_FOLDER: /cache
               TRANSFORMERS_CACHE: /cache
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - stat -f /usr/src/app/upload && stat -f /data/external
+                  timeoutSeconds: 5
+                  periodSeconds: 30
+                  failureThreshold: 2
             resources:
               requests:
                 cpu: 100m

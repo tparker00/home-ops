@@ -40,6 +40,19 @@ spec:
               TZ: America/New_York
             args: ["-c", "/data/checkrr.yaml"]
             workingDir: /data
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - stat -f /data && stat -f /mnt/tv && stat -f /mnt/movies
+                  timeoutSeconds: 5
+                  periodSeconds: 30
+                  failureThreshold: 2
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
