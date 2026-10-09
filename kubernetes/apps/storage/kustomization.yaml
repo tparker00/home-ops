@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./moosefs-csi/ks.yaml
+  - ./mount-watchdog/ks.yaml
   - ./restic/ks.yaml
   - ./rustfs/ks.yaml
   - ./syncthing/ks.yaml

@@ -1,0 +1,180 @@
+---
+## Central MooseFS mount watchdog.
+## Runs wherever csi-moosefs-node runs (same plain node set, no tolerations).
+## Each cycle: list this node's pods, resolve PVC-backed volumes to PVs, and
+## for csi.moosefs.com volumes stat the kubelet publish path
+##   /var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~csi/<pv>/mount
+## (mechanic validated 2026-10-09 against live consumer qbittorrent on
+## control01, PV qb-rw). A mount that cannot be stat'd is dead — the pod is
+## deleted so its controller recreates it with a fresh kubelet mount, and a
+## Warning event (MountWatchdogRestart) records every action.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: mount-watchdog
+  namespace: kube-system
+  labels:
+    app: mount-watchdog
+spec:
+  minReadySeconds: 30
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: mount-watchdog
+  template:
+    metadata:
+      labels:
+        app: mount-watchdog
+    spec:
+      # node infra, same class the csi-moosefs-node DS uses
+      priorityClassName: system-node-critical
+      serviceAccountName: mount-watchdog
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: watchdog
+          # image choice: no kubectl-capable image is present on the nodes
+          # (checked 2026-10-09), so a pull is unavoidable. bitnami/kubectl's
+          # free catalog is empty and alpine/kubectl has no 1.36 tag; rancher
+          # tracks upstream releases. v1.36.2 = the client this check was
+          # validated with (server 1.37, within kubectl skew policy).
+          image: docker.io/rancher/kubectl:v1.36.2
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -u
+              MOOSEFS_DRIVER="csi.moosefs.com"
+              KUBELET_PODS="/var/lib/kubelet/pods"
+              INTERVAL="${CHECK_INTERVAL:-30}"
+              STAT_TIMEOUT="${STAT_TIMEOUT:-20}"
+              MAX_ACTIONS="${MAX_ACTIONS_PER_CYCLE:-5}"
+              CACHE=/tmp/mw-cache
+              PODLIST=/tmp/mw-pods.txt
+              mkdir -p "$CACHE"
+              
+              log() { echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) node=${NODE} $*"; }
+              
+              # PVC -> PV, cached on the emptyDir across cycles
+              resolve_pv() {
+                _pv=""
+                if [ -f "$CACHE/pvc_$1_$2" ]; then
+                  _pv="$(cat "$CACHE/pvc_$1_$2")"
+                else
+                  _pv="$(kubectl get pvc "$2" -n "$1" -o jsonpath='{.spec.volumeName}' 2>/dev/null || true)"
+                  if [ -n "$_pv" ]; then printf '%s' "$_pv" > "$CACHE/pvc_$1_$2"; fi
+                fi
+                printf '%s' "$_pv"
+              }
+              
+              # PV -> spec.csi.driver, cached
+              driver_of() {
+                if [ -f "$CACHE/drv_$1" ]; then cat "$CACHE/drv_$1"; return; fi
+                _drv="$(kubectl get pv "$1" -o jsonpath='{.spec.csi.driver}' 2>/dev/null || true)"
+                if [ -n "$_drv" ]; then printf '%s' "$_drv" > "$CACHE/drv_$1"; fi
+                printf '%s' "$_drv"
+              }
+              
+              # true if the kubelet publish path answers stat -f within STAT_TIMEOUT seconds
+              stat_ok() {
+                if [ -n "$STAT_TIMEOUT" ]; then
+                  timeout "$STAT_TIMEOUT" stat -f "$1" >/dev/null 2>&1
+                else
+                  stat -f "$1" >/dev/null 2>&1
+                fi
+              }
+              
+              # Warning event on the pod we acted on (raw POST: kubectl has no create event)
+              emit_event() { # ns pod message
+                _now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+                _ename="mount-watchdog.$(date +%s).$$"
+                printf '{"apiVersion":"v1","kind":"Event","metadata":{"name":"%s","namespace":"%s"},"involvedObject":{"apiVersion":"v1","kind":"Pod","name":"%s","namespace":"%s"},"type":"Warning","reason":"MountWatchdogRestart","message":"%s","source":{"component":"mount-watchdog","host":"%s"},"firstTimestamp":"%s","lastTimestamp":"%s","count":1}' "$_ename" "$1" "$2" "$1" "$3" "$NODE" "$_now" "$_now" | kubectl create --raw "/api/v1/namespaces/$1/events" -f - >/dev/null 2>&1 || log "WARN: event create failed ns=$1 pod=$2"
+              }
+              
+              # refuse to act if preconditions are broken — idle visibly instead of crash-looping
+              if [ -z "${NODE:-}" ]; then log "FATAL: NODE env is empty — idling"; while :; do sleep 3600; done; fi
+              if ! command -v stat >/dev/null 2>&1; then log "FATAL: stat not in PATH — idling"; while :; do sleep 3600; done; fi
+              # probe timeout(1) once: it must kill a sleep (exit 124) or stat runs unguarded
+              if [ -n "$STAT_TIMEOUT" ]; then
+                timeout 2 sleep 5 >/dev/null 2>&1
+                if [ "$?" -eq 124 ]; then :; else log "NOTE: timeout(1) unusable — stat runs unguarded"; STAT_TIMEOUT=""; fi
+              fi
+              
+              log "started: interval=${INTERVAL}s statTimeout=${STAT_TIMEOUT:-off} maxActionsPerCycle=${MAX_ACTIONS} driver=${MOOSEFS_DRIVER}"
+              
+              while true; do
+                pods=0; checks=0; fails=0; acted=0
+                kubectl get pods -A --field-selector spec.nodeName="${NODE}" -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\t"}{.metadata.uid}{"\t"}{.status.phase}{"\t"}{range .spec.volumes[*]}{.persistentVolumeClaim.claimName}{" "}{end}{"\n"}{end}' > "$PODLIST" 2>/dev/null || { log "WARN: kubectl get pods failed"; sleep "$INTERVAL"; continue; }
+                while IFS="	" read -r ns name uid phase claims; do
+                  [ "$phase" = "Running" ] || continue
+                  pods=$((pods+1))
+                  for claim in $claims; do
+                    pv="$(resolve_pv "$ns" "$claim")"
+                    [ -n "$pv" ] || continue
+                    [ "$(driver_of "$pv")" = "$MOOSEFS_DRIVER" ] || continue
+                    path="${KUBELET_PODS}/${uid}/volumes/kubernetes.io~csi/${pv}/mount"
+                    checks=$((checks+1))
+                    if ! stat_ok "$path"; then
+                      sleep 5 # re-check once: ride out transient FUSE blips before acting
+                      if stat_ok "$path"; then continue; fi
+                      fails=$((fails+1))
+                      if [ "$acted" -ge "$MAX_ACTIONS" ]; then
+                        log "MOUNT FAIL ns=$ns pod=$name pv=$pv — action suppressed (max $MAX_ACTIONS/cycle)"
+                        continue
+                      fi
+                      acted=$((acted+1))
+                      log "MOUNT FAIL ns=$ns pod=$name pv=$pv path=$path — deleting pod to force remount"
+                      kubectl delete pod "$name" -n "$ns" --wait=false >/dev/null 2>&1 || log "WARN: pod delete failed ns=$ns pod=$name"
+                      emit_event "$ns" "$name" "mount-watchdog: stat -f failed for claim=$claim pv=$pv on node=$NODE; deleted pod=$name to force remount"
+                    fi
+                  done
+                done < "$PODLIST"
+                log "cycle done: pods=$pods moosefsChecks=$checks failures=$fails actions=$acted"
+                sleep "$INTERVAL"
+              done
+          env:
+            - name: NODE
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: CHECK_INTERVAL
+              value: "30"
+            - name: STAT_TIMEOUT
+              value: "20"
+            - name: MAX_ACTIONS_PER_CYCLE
+              value: "5"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            runAsGroup: 1001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: kubelet-pods
+              mountPath: /var/lib/kubelet/pods
+              readOnly: true
+              # see mounts kubelet publishes, including ones made after start
+              mountPropagation: HostToContainer
+            - name: cache
+              mountPath: /tmp
+      volumes:
+        - name: kubelet-pods
+          hostPath:
+            path: /var/lib/kubelet/pods
+            type: Directory
+        - name: cache
+          emptyDir: {}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1

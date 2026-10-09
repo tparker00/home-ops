@@ -1,0 +1,45 @@
+---
+## RBAC for the central MooseFS mount watchdog (see daemonset.yaml).
+## Verbs map 1:1 to the kubectl calls in the watchdog script:
+##   pods             get/list  -> pod scan per cycle
+##   pods             delete    -> force remount of dead mounts
+##   persistentvolumeclaims get -> resolve PVC -> PV (cached)
+##   persistentvolumes get      -> read PV spec.csi.driver (cached)
+##   events           create    -> MountWatchdogRestart audit trail
+##   pods watch is granted for future informer-based versions (unused in v1).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mount-watchdog
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: mount-watchdog
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: mount-watchdog
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: mount-watchdog
+subjects:
+  - kind: ServiceAccount
+    name: mount-watchdog
+    namespace: kube-system
