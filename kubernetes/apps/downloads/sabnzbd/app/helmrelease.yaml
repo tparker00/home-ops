@@ -52,7 +52,20 @@ spec:
               - secretRef:
                   name: sabnzbd-secret
             probes:
-              liveness: &probes
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - wget -q --spider "http://localhost:8080/api?mode=version" && stat -f /config && stat -f /downloads
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
                 enabled: true
                 custom: true
                 spec:
@@ -63,7 +76,6 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
-              readiness: *probes
               startup:
                 enabled: false
             resources:

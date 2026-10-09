@@ -80,7 +80,20 @@ spec:
                 gpu.intel.com/i915: 1
 
             probes:
-              liveness: &probes
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - curl -fsS http://localhost:3001/server-info/ping -o /dev/null && stat -f /usr/src/app/upload && stat -f /data/external
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 30
+              readiness:
                 enabled: true
                 custom: true
                 spec:
@@ -91,7 +104,6 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 30
-              readiness: *probes
               startup:
                 enabled: true
                 custom: true

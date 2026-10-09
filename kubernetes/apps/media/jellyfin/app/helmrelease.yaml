@@ -39,7 +39,20 @@ spec:
             env:
               TZ: America/New_York
             probes:
-              liveness: &probes
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - curl -fsS http://localhost:8096/health -o /dev/null && stat -f /config && stat -f /config/metadata && stat -f /mnt/tv && stat -f /mnt/movies
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
                 enabled: true
                 custom: true
                 spec:
@@ -50,7 +63,6 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
-              readiness: *probes
               startup:
                 enabled: true
                 spec:

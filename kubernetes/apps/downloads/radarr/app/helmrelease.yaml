@@ -55,7 +55,20 @@ spec:
               RADARR__LOG_LEVEL: info
             envFrom: *envFrom
             probes:
-              liveness: &probes
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - wget -q --spider "http://localhost:80/ping" && stat -f /config && stat -f /data
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
                 enabled: true
                 custom: true
                 spec:
@@ -66,7 +79,6 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
-              readiness: *probes
               startup:
                 enabled: false
             resources:

@@ -47,6 +47,16 @@ spec:
             probes:
               liveness:
                 enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - curl -fsS http://localhost:5000/api/health -o /dev/null && stat -f /kavita/config && stat -f /data
+                  timeoutSeconds: 5
+                  periodSeconds: 10
+                  failureThreshold: 3
               readiness:
                 enabled: true
               startup:

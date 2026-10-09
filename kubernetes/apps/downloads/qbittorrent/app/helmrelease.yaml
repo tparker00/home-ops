@@ -81,18 +81,20 @@ spec:
               QBT_Preferences__WebUI__LocalHostAuth: false
               TORRENTING_PORT: &torrentPort "51457"
             probes:
-              liveness: &probes
-                enabled: false
+              liveness:
+                enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /api/v2/app/version
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - stat -f /media/qbittorrent && stat -f /config
+                  timeoutSeconds: 5
+                  periodSeconds: 30
+                  failureThreshold: 2
+              readiness:
+                enabled: false
               startup:
                 enabled: false
             securityContext:

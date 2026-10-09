@@ -58,7 +58,20 @@ spec:
             args:
               - /data
             probes:
-              liveness: &probes
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - wget -q --spider http://localhost:9000${GATUS_PATH} && stat -f /data
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 6
+              readiness:
                 enabled: true
                 custom: true
                 spec:
@@ -69,7 +82,6 @@ spec:
                   periodSeconds: 30
                   timeoutSeconds: 10
                   failureThreshold: 6
-              readiness: *probes
               startup:
                 enabled: false
             securityContext:

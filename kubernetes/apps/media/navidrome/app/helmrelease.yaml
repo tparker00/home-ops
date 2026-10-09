@@ -59,6 +59,16 @@ spec:
             probes:
               liveness:
                 enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - wget -q --spider "http://localhost:4533/healthz" && stat -f /data && stat -f /music
+                  timeoutSeconds: 5
+                  periodSeconds: 10
+                  failureThreshold: 3
               readiness:
                 enabled: true
               startup:
