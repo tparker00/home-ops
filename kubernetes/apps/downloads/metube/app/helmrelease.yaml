@@ -38,19 +38,6 @@ spec:
               DOWNLOAD_DIR: "/downloads"
               STATE_DIR: "/config"
               YTDL_OPTIONS: '{"http_headers":{"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0"}}'
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command:
-                      - sh
-                      - -c
-                      - stat -f /config && stat -f /downloads
-                  timeoutSeconds: 5
-                  periodSeconds: 30
-                  failureThreshold: 2
     service:
       main:
         controller: *app

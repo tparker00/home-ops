@@ -47,15 +47,6 @@ spec:
               volumeMounts:
                 - name: nas-backups
                   mountPath: /backups
-              livenessProbe:
-                exec:
-                  command:
-                    - sh
-                    - -c
-                    - stat -f /backups
-                timeoutSeconds: 5
-                periodSeconds: 30
-                failureThreshold: 2
           restartPolicy: OnFailure
           volumes:
             - name: nas-backups
@@ -113,15 +104,6 @@ spec:
               volumeMounts:
                 - name: nas-backups
                   mountPath: /backups
-              livenessProbe:
-                exec:
-                  command:
-                    - sh
-                    - -c
-                    - stat -f /backups
-                timeoutSeconds: 5
-                periodSeconds: 30
-                failureThreshold: 2
           restartPolicy: OnFailure
           volumes:
             - name: nas-backups

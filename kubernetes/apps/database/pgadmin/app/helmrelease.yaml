@@ -48,19 +48,6 @@ spec:
             envFrom:
               - secretRef:
                   name: pgadmin-secret
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command:
-                      - sh
-                      - -c
-                      - stat -f /var/lib/pgadmin && stat -f /backups
-                  timeoutSeconds: 5
-                  periodSeconds: 30
-                  failureThreshold: 2
             resources:
               requests:
                 memory: 300Mi
