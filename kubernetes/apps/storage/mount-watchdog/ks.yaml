@@ -19,6 +19,8 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
-  postBuild:
-    substitute:
-      APP: *app
+  # No postBuild on purpose: the embedded watchdog script's $VARS are runtime
+  # container env (downward API), not Flux substitutions — strict envsubst
+  # fails the build on them (post-merge failure of #2269). Nothing here uses
+  # ${APP}; name/labels are literal. Do not re-add without $$-escaping the
+  # whole script.
