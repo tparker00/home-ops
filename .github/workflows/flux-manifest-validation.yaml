@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: "Flux Manifest Validation"
+
+# Validates the FULL Flux pipeline at PR time, not just the plain kustomize
+# build: the parent Kustomization (kubernetes/flux/apps.yaml) re-injects
+# postBuild/decryption into every child ks without the opt-out label, and
+# postBuild substitution runs in strict envsubst mode. Both layers were
+# missed by CI in #2269 and #2292; see .github/scripts/flux-manifest-validation.py.
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "kubernetes/**"
+      - ".github/workflows/flux-manifest-validation.yaml"
+      - ".github/scripts/flux-manifest-validation.py"
+      - ".github/scripts/flux-substitution-allowlist.txt"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Flux Manifest Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Ensure Python YAML
+        run: python3 -c 'import yaml' 2>/dev/null || python3 -m pip install --user --quiet pyyaml
+
+      - name: Ensure kustomize
+        run: |
+          command -v kustomize >/dev/null 2>&1 && exit 0
+          mkdir -p "$HOME/.local/bin"
+          curl -fsSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.8.1/kustomize_v5.8.1_linux_amd64.tar.gz" | tar -xz -C "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      # Layer 1: plain kustomize build of every touched app dir.
+      # Layer 2: parent-patched build (replicates the apps.yaml global patch
+      #          and asserts opt-out label semantics). #2292 class.
+      # Layer 3: strict envsubst emulation over the patched manifests.
+      #          #2269 class.
+      - name: Run Flux manifest validation gate
+        run: python3 .github/scripts/flux-manifest-validation.py --base "origin/${{ github.base_ref }}" --json-report /tmp/flux-gate-report.json
+
+      - name: Write job summary
+        if: always()
+        run: |
+          if [ -f /tmp/flux-gate-report.json ]; then
+            echo '### Flux manifest validation report' >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat /tmp/flux-gate-report.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
