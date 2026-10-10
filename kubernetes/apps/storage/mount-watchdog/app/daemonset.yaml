@@ -1,0 +1,270 @@
+---
+## Central MooseFS mount watchdog.
+## Runs wherever csi-moosefs-node runs (same plain node set, no tolerations).
+## Each cycle: list this node's pods, resolve PVC-backed volumes to PVs, and
+## for csi.moosefs.com volumes stat the kubelet publish path
+##   /var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~csi/<pv>/mount
+## (mechanic validated 2026-10-09 against live consumer qbittorrent on
+## control01, PV qb-rw). stat failures are classified, not lumped together:
+##   dead      ENOTCONN/ESTALE ("Transport endpoint is not connected" /
+##            "Stale file handle") — kernel-certified dead FUSE. 5s recheck,
+##            still dead -> delete pod + MountWatchdogRestart event.
+##   ambiguous anything else (timeout rc 124/143 GNU/BusyBox, EIO /
+##            "Input/output error", ...).
+##            No immediate delete: MountWatchdogSuspect event each cycle plus a
+##            per-PV streak counter; AMBIGUOUS_LIMIT consecutive ambiguous
+##            cycles (10 x 30s ~ 5 min) -> delete pod + MountWatchdogRestart
+##            ("sustained ambiguous failure xN"). A master blip recovers inside
+##            the window; a genuinely wedged mount still gets healed. Any
+##            healthy stat resets the streak.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: mount-watchdog
+  namespace: kube-system
+  labels:
+    app: mount-watchdog
+spec:
+  minReadySeconds: 30
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: mount-watchdog
+  template:
+    metadata:
+      labels:
+        app: mount-watchdog
+    spec:
+      # node infra, same class the csi-moosefs-node DS uses
+      priorityClassName: system-node-critical
+      serviceAccountName: mount-watchdog
+      terminationGracePeriodSeconds: 30
+      # /var/lib/kubelet/pods/** is 0750 root:root all the way down (verified
+      # live 2026-10-09 on control01). uid 1001 alone gets Permission denied;
+      # gid 0 (primary + supplemental) grants group traversal without running
+      # as root — a probe pod with exactly this securityContext stat'd the
+      # real qb-rw publish path rc=0. supplementalGroups is pod-scoped, hence
+      # here rather than on the container.
+      securityContext:
+        supplementalGroups: [0]
+      containers:
+        - name: watchdog
+          # image choice: no kubectl-capable image is present on the nodes
+          # (checked 2026-10-09), so a pull is unavoidable. ghcr.io/dtzar/
+          # helm-kubectl:4.3.0 — pinned tag, ghcr-only supply chain, ~65MiB;
+          # kubectl v1.37.0 = same minor as server v1.37.1, within kubectl
+          # skew policy. Userland verified live in-cluster 2026-10-09 (Alpine
+          # BusyBox userland, not GNU): kubectl, sh, BusyBox stat -f, BusyBox
+          # timeout (kill passes through as rc 143), date, printf all present.
+          # NB: that image's entrypoint is helm/kubectl-based — the explicit
+          # command: below is required; an args-only spec would break.
+          image: ghcr.io/dtzar/helm-kubectl:4.3.0
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -u
+              MOOSEFS_DRIVER="csi.moosefs.com"
+              KUBELET_PODS="/var/lib/kubelet/pods"
+              INTERVAL="${CHECK_INTERVAL:-30}"
+              STAT_TIMEOUT="${STAT_TIMEOUT:-20}"
+              MAX_ACTIONS="${MAX_ACTIONS_PER_CYCLE:-5}"
+              AMBIGUOUS_LIMIT="${AMBIGUOUS_LIMIT:-10}"
+              CACHE=/tmp/mw-cache
+              PODLIST=/tmp/mw-pods.txt
+              mkdir -p "$CACHE"
+              
+              log() { echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) node=${NODE} $*"; }
+              
+              # PVC -> PV, cached on the emptyDir across cycles
+              resolve_pv() {
+                _pv=""
+                if [ -f "$CACHE/pvc_$1_$2" ]; then
+                  _pv="$(cat "$CACHE/pvc_$1_$2")"
+                else
+                  _pv="$(kubectl get pvc "$2" -n "$1" -o jsonpath='{.spec.volumeName}' 2>/dev/null || true)"
+                  if [ -n "$_pv" ]; then printf '%s' "$_pv" > "$CACHE/pvc_$1_$2"; fi
+                fi
+                printf '%s' "$_pv"
+              }
+              
+              # PV -> spec.csi.driver, cached
+              driver_of() {
+                if [ -f "$CACHE/drv_$1" ]; then cat "$CACHE/drv_$1"; return; fi
+                _drv="$(kubectl get pv "$1" -o jsonpath='{.spec.csi.driver}' 2>/dev/null || true)"
+                if [ -n "$_drv" ]; then printf '%s' "$_drv" > "$CACHE/drv_$1"; fi
+                printf '%s' "$_drv"
+              }
+              
+              # stat the kubelet publish path within STAT_TIMEOUT seconds.
+              # stderr is captured, not discarded — the errno text drives
+              # classification. Sets STAT_RC and STAT_ERR.
+              probe() {
+                STAT_ERR=""
+                if [ -n "$STAT_TIMEOUT" ]; then
+                  STAT_ERR="$(timeout "$STAT_TIMEOUT" stat -f "$1" 2>&1 >/dev/null)"
+                  STAT_RC=$?
+                else
+                  STAT_ERR="$(stat -f "$1" 2>&1 >/dev/null)"
+                  STAT_RC=$?
+                fi
+              }
+              
+              # classify STAT_RC/STAT_ERR into STAT_CLASS:
+              #   healthy   stat answered
+              #   dead      kernel-certified dead FUSE (ENOTCONN / ESTALE)
+              #   ambiguous everything else (timeout rc 124/143 GNU/BusyBox,
+              #             EIO, ...) — the
+              #             master may come back; do not act immediately
+              classify() {
+                if [ "$STAT_RC" -eq 0 ]; then
+                  STAT_CLASS="healthy"
+                  return
+                fi
+                # timeout kill: GNU timeout exits 124; BusyBox timeout (this
+                # image) passes the SIGTERM death through as 143. Both mean
+                # "no answer within STAT_TIMEOUT" — no kernel verdict: ambiguous.
+                case "$STAT_RC" in
+                  124|143) STAT_CLASS="ambiguous"; return ;;
+                esac
+                case "$STAT_ERR" in
+                  *"Transport endpoint is not connected"*|*"Stale file handle"*|*"ENOTCONN"*|*"ESTALE"*)
+                    STAT_CLASS="dead" ;;
+                  *)
+                    STAT_CLASS="ambiguous" ;;
+                esac
+              }
+              
+              # Warning event on the pod we acted on or are watching
+              # (raw POST: kubectl has no create event)
+              emit_event() { # ns pod reason message
+                _now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+                _ename="mount-watchdog.$(date +%s).$$"
+                printf '{"apiVersion":"v1","kind":"Event","metadata":{"name":"%s","namespace":"%s"},"involvedObject":{"apiVersion":"v1","kind":"Pod","name":"%s","namespace":"%s"},"type":"Warning","reason":"%s","message":"%s","source":{"component":"mount-watchdog","host":"%s"},"firstTimestamp":"%s","lastTimestamp":"%s","count":1}' "$_ename" "$1" "$2" "$1" "$3" "$4" "$NODE" "$_now" "$_now" | kubectl create --raw "/api/v1/namespaces/$1/events" -f - >/dev/null 2>&1 || log "WARN: event create failed ns=$1 pod=$2"
+              }
+              
+              # refuse to act if preconditions are broken — idle visibly instead of crash-looping
+              if [ -z "${NODE:-}" ]; then log "FATAL: NODE env is empty — idling"; while :; do sleep 3600; done; fi
+              if ! command -v stat >/dev/null 2>&1; then log "FATAL: stat not in PATH — idling"; while :; do sleep 3600; done; fi
+              # probe timeout(1) once: it must kill a sleep (GNU exit 124,
+              # BusyBox 143 — verified live 2026-10-09 in this image) or stat
+              # runs unguarded
+              if [ -n "$STAT_TIMEOUT" ]; then
+                timeout 2 sleep 5 >/dev/null 2>&1
+                _trc=$?
+                if [ "$_trc" -eq 124 ] || [ "$_trc" -eq 143 ]; then :; else log "NOTE: timeout(1) unusable — stat runs unguarded"; STAT_TIMEOUT=""; fi
+              fi
+              
+              log "started: interval=${INTERVAL}s statTimeout=${STAT_TIMEOUT:-off} maxActionsPerCycle=${MAX_ACTIONS} ambiguousLimit=${AMBIGUOUS_LIMIT} driver=${MOOSEFS_DRIVER}"
+              
+              while true; do
+                pods=0; checks=0; fails=0; suspects=0; acted=0
+                kubectl get pods -A --field-selector spec.nodeName="${NODE}" -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\t"}{.metadata.uid}{"\t"}{.status.phase}{"\t"}{range .spec.volumes[*]}{.persistentVolumeClaim.claimName}{" "}{end}{"\n"}{end}' > "$PODLIST" 2>/dev/null || { log "WARN: kubectl get pods failed"; sleep "$INTERVAL"; continue; }
+                while IFS="	" read -r ns name uid phase claims; do
+                  [ "$phase" = "Running" ] || continue
+                  pods=$((pods+1))
+                  for claim in $claims; do
+                    pv="$(resolve_pv "$ns" "$claim")"
+                    [ -n "$pv" ] || continue
+                    [ "$(driver_of "$pv")" = "$MOOSEFS_DRIVER" ] || continue
+                    path="${KUBELET_PODS}/${uid}/volumes/kubernetes.io~csi/${pv}/mount"
+                    checks=$((checks+1))
+                    probe "$path"
+                    classify
+                    if [ "$STAT_CLASS" = "healthy" ]; then
+                      rm -f "$CACHE/ambiguous_$pv" # any healthy stat resets the ambiguous streak
+                      continue
+                    fi
+                    if [ "$STAT_CLASS" = "dead" ]; then
+                      sleep 5 # re-check once: ride out transient FUSE blips before acting
+                      probe "$path"
+                      if [ "$STAT_RC" -eq 0 ]; then rm -f "$CACHE/ambiguous_$pv"; continue; fi
+                      fails=$((fails+1))
+                      if [ "$acted" -ge "$MAX_ACTIONS" ]; then
+                        log "MOUNT DEAD ns=$ns pod=$name pv=$pv — action suppressed (max $MAX_ACTIONS/cycle)"
+                        continue
+                      fi
+                      acted=$((acted+1))
+                      log "MOUNT DEAD ns=$ns pod=$name pv=$pv path=$path err='$(echo "$STAT_ERR" | tr '\n' ' ' | cut -c1-100)' — deleting pod to force remount"
+                      kubectl delete pod "$name" -n "$ns" --wait=false >/dev/null 2>&1 || log "WARN: pod delete failed ns=$ns pod=$name"
+                      emit_event "$ns" "$name" "MountWatchdogRestart" "mount-watchdog: dead mount (ENOTCONN/ESTALE) for claim=$claim pv=$pv on node=$NODE; deleted pod=$name to force remount"
+                      rm -f "$CACHE/ambiguous_$pv"
+                      continue
+                    fi
+                    # ambiguous: suspect, don't act — escalate only on a sustained streak
+                    fails=$((fails+1))
+                    suspects=$((suspects+1))
+                    cnt=0
+                    [ -f "$CACHE/ambiguous_$pv" ] && cnt="$(cat "$CACHE/ambiguous_$pv")"
+                    case "$cnt" in ''|*[!0-9]*) cnt=0;; esac
+                    cnt=$((cnt+1))
+                    printf '%s' "$cnt" > "$CACHE/ambiguous_$pv"
+                    log "MOUNT SUSPECT ns=$ns pod=$name pv=$pv rc=$STAT_RC streak=$cnt/$AMBIGUOUS_LIMIT err='$(echo "$STAT_ERR" | tr '\n' ' ' | cut -c1-100)' — not deleting yet"
+                    emit_event "$ns" "$name" "MountWatchdogSuspect" "mount-watchdog: ambiguous stat failure (rc=$STAT_RC) for claim=$claim pv=$pv on node=$NODE; streak=$cnt/$AMBIGUOUS_LIMIT — not deleting yet"
+                    if [ "$cnt" -ge "$AMBIGUOUS_LIMIT" ]; then
+                      if [ "$acted" -ge "$MAX_ACTIONS" ]; then
+                        log "MOUNT SUSPECT ns=$ns pod=$name pv=$pv streak=$cnt — escalation suppressed (max $MAX_ACTIONS/cycle)"
+                        continue
+                      fi
+                      acted=$((acted+1))
+                      log "MOUNT SUSPECT ns=$ns pod=$name pv=$pv — sustained ambiguous failure x$cnt — deleting pod to force remount"
+                      kubectl delete pod "$name" -n "$ns" --wait=false >/dev/null 2>&1 || log "WARN: pod delete failed ns=$ns pod=$name"
+                      emit_event "$ns" "$name" "MountWatchdogRestart" "mount-watchdog: sustained ambiguous failure x$cnt (last rc=$STAT_RC) for claim=$claim pv=$pv on node=$NODE; deleted pod=$name to force remount"
+                      rm -f "$CACHE/ambiguous_$pv"
+                    fi
+                  done
+                done < "$PODLIST"
+                log "cycle done: pods=$pods moosefsChecks=$checks failures=$fails suspects=$suspects actions=$acted"
+                sleep "$INTERVAL"
+              done
+          env:
+            - name: NODE
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: CHECK_INTERVAL
+              value: "30"
+            - name: STAT_TIMEOUT
+              value: "20"
+            - name: MAX_ACTIONS_PER_CYCLE
+              value: "5"
+            - name: AMBIGUOUS_LIMIT
+              value: "10"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            runAsNonRoot: true
+            # uid stays non-root (runAsNonRoot holds); primary gid 0 gives
+            # group r-x through the 0750 root:root kubelet pods tree
+            runAsUser: 1001
+            runAsGroup: 0
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: kubelet-pods
+              mountPath: /var/lib/kubelet/pods
+              readOnly: true
+              # see mounts kubelet publishes, including ones made after start
+              mountPropagation: HostToContainer
+            - name: cache
+              mountPath: /tmp
+      volumes:
+        - name: kubelet-pods
+          hostPath:
+            path: /var/lib/kubelet/pods
+            type: Directory
+        - name: cache
+          emptyDir: {}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
