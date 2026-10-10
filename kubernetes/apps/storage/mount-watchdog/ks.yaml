@@ -5,6 +5,13 @@ kind: Kustomization
 metadata:
   name: &app mount-watchdog
   namespace: flux-system
+  labels:
+    # Opt out of the cluster-apps global patch (kubernetes/flux/apps.yaml,
+    # target labelSelector "substitution.flux.home.arpa/disabled notin (true)")
+    # which re-injects decryption + postBuild.substituteFrom into every child
+    # ks. The watchdog script's $VARS are runtime container env (e.g. NODE),
+    # not Flux substitutions — strict envsubst fails the build on them.
+    substitution.flux.home.arpa/disabled: "true"
 spec:
   targetNamespace: kube-system
   commonMetadata:
@@ -23,4 +30,5 @@ spec:
   # container env (downward API), not Flux substitutions — strict envsubst
   # fails the build on them (post-merge failure of #2269). Nothing here uses
   # ${APP}; name/labels are literal. Do not re-add without $$-escaping the
-  # whole script.
+  # whole script. The opt-out label in metadata.labels is what stops the
+  # cluster-apps global patch from re-injecting postBuild (#2292 follow-up).
