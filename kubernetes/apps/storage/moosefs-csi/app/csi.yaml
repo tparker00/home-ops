@@ -285,6 +285,7 @@ metadata:
   name: csi-moosefs-node
   namespace: kube-system
 spec:
+  minReadySeconds: 120
   selector:
     matchLabels:
       app: csi-moosefs-node
@@ -405,3 +406,7 @@ spec:
         - name: device-dir
           hostPath:
             path: /dev
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
