@@ -1,0 +1,28 @@
+# Variables intentionally not statically verifiable in CI.
+# Sourced at deploy time from external-secrets / per-app sops files /
+# substitute.from references that live only in the cluster.
+# Add a var here ONLY in the same PR that introduces its use, with a comment why.
+#
+# Consumed by .github/scripts/flux-manifest-validation.py (Layer 3) and kept
+# name-compatible with the ci-flux-substitution-check branch.
+
+# external-secrets provided
+KAGI_API_KEY
+JELLYFIN_TOKEN
+JELLYFIN_USER_1
+PLEX_TOKEN
+PLEX_USER_1
+
+# per-app init parameters (cluster-side)
+INIT_POSTGRES_DBNAME
+INIT_POSTGRES_HOST
+INIT_POSTGRES_PASS
+INIT_POSTGRES_USER
+CUSTOM_WEB_PORT
+
+# network inventory (keys of the sops-encrypted cluster-user-secrets Secret,
+# kubernetes/flux/vars/cluster-user-secrets.sops.yaml — CI cannot decrypt)
+NAS_IP
+NAS2_IP
+ROUTER_IP
+TENCHI_IP
