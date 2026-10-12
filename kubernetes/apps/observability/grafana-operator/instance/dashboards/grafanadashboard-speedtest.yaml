@@ -413,7 +413,7 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_up{job=~\"$job\"})",
+              "expr": "max by (job) (max_over_time(speedtest_up{job=~\"$job\"}[1h]))",
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -475,7 +475,7 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_server_id{job=~\"$job\"})",
+              "expr": "max by (job) (last_over_time(speedtest_server_id{job=~\"$job\"}[1h]))",
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -554,7 +554,7 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_download_bits_per_second{job=~\"$job\"})*10^-6",
+              "expr": "max by (job) (max_over_time(speedtest_download_bits_per_second{job=~\"$job\"}[1h]))*10^-6",
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -615,7 +615,7 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_upload_bits_per_second{job=~\"$job\"})*10^-6",
+              "expr": "max by (job) (max_over_time(speedtest_upload_bits_per_second{job=~\"$job\"}[1h]))*10^-6",
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -676,7 +676,7 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_ping_latency_milliseconds{job=~\"$job\"})",
+              "expr": "max by (job) (max_over_time(speedtest_ping_latency_milliseconds{job=~\"$job\"}[1h]))",
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -737,7 +737,7 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_jitter_latency_milliseconds{job=~\"$job\"})",
+              "expr": "max by (job) (max_over_time(speedtest_jitter_latency_milliseconds{job=~\"$job\"}[1h]))",
               "interval": "",
               "legendFormat": "",
               "refId": "A"
@@ -850,7 +850,7 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_download_bits_per_second{job=~\"$job\"})*10^-6",
+              "expr": "max by (job) (max_over_time(speedtest_download_bits_per_second{job=~\"$job\"}[1h]))*10^-6",
               "interval": "",
               "legendFormat": "Download Speed (Mbits/s)",
               "refId": "A"
@@ -945,7 +945,7 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_upload_bits_per_second{job=~\"$job\"})*10^-6",
+              "expr": "max by (job) (max_over_time(speedtest_upload_bits_per_second{job=~\"$job\"}[1h]))*10^-6",
               "interval": "",
               "legendFormat": "Upload Speed (Mbits/s)",
               "refId": "A"
@@ -1040,7 +1040,7 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_ping_latency_milliseconds{job=~\"$job\"})",
+              "expr": "max by (job) (max_over_time(speedtest_ping_latency_milliseconds{job=~\"$job\"}[1h]))",
               "interval": "",
               "legendFormat": "Ping (ms)",
               "refId": "A"
@@ -1051,7 +1051,7 @@ spec:
                 "uid": "Prometheus"
               },
               "exemplar": true,
-              "expr": "max by (job) (speedtest_jitter_latency_milliseconds{job=~\"$job\"})",
+              "expr": "max by (job) (max_over_time(speedtest_jitter_latency_milliseconds{job=~\"$job\"}[1h]))",
               "instant": false,
               "interval": "",
               "legendFormat": "Jitter (ms)",
