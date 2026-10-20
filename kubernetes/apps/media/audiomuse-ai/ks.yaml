@@ -17,8 +17,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
-    namespace: flux-system
+    name: home-kubernetes
   wait: false
   interval: 30m
   retryInterval: 2m
