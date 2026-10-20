@@ -6,6 +6,7 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
+  - ./audiomuse-ai/ks.yaml
   - ./checkrr/ks.yaml
   - ./immich/ks.yaml
   - ./seerr/ks.yaml
