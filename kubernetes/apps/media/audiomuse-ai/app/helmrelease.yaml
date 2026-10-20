@@ -78,6 +78,9 @@ spec:
             env:
               SERVICE_TYPE: worker
               TZ: ${TIMEZONE}
+              NVIDIA_VISIBLE_DEVICES: "0"
+              NVIDIA_DRIVER_CAPABILITIES: "compute,utility"
+              USE_GPU_CLUSTERING: "${USE_GPU_CLUSTERING:-true}"
             envFrom: *envFrom
             probes:
               liveness:
