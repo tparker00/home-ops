@@ -36,9 +36,9 @@ spec:
               BWS_CACHE_SECRET_TTL: 15m
               BWS_CACHE_LOG_LEVEL: "INFO"
               # Pushed secrets (PushSecret) land in this Bitwarden project.
-              # NOTE: pod-global — every push through this cache targets it.
-              # Revisit if a second pushing app ever appears.
-              BWS_CACHE_PROJECT_NAME: lucidmate
+              # Pod-global: every push through this cache targets it, so the
+              # name is intentionally generic (home-ops), not app-specific.
+              BWS_CACHE_PROJECT_NAME: home-ops
               BWS_CACHE_ORG_ID:
                 valueFrom:
                   secretKeyRef:
