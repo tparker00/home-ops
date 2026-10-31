@@ -31,10 +31,11 @@ spec:
           app:
             image:
               repository: ghcr.io/tparker00/bws-cache
-              tag: v0.1.8.2
+              tag: v0.2.0
             env:
               BWS_CACHE_SECRET_TTL: 15m
               BWS_CACHE_LOG_LEVEL: "INFO"
+              BWS_CACHE_PROJECT_NAME: Home
               BWS_CACHE_ORG_ID:
                 valueFrom:
                   secretKeyRef:
