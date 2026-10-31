@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./helmrelease.yaml
+  - ./externalsecret-ghcr.yaml
+  - ./externalsecret-app.yaml
+  - ./externalsecret-superuser.yaml
+  - ./externalsecret-db.yaml
+  - ./secretstore-bws-push.yaml
+  - ./pushsecret-db.yaml
+  - ./rbac-db-init.yaml
