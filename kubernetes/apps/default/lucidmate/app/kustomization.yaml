@@ -6,7 +6,6 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret-ghcr.yaml
   - ./externalsecret-app.yaml
-  - ./externalsecret-superuser.yaml
   - ./externalsecret-db.yaml
   - ./secretstore-bws-push.yaml
   - ./pushsecret-db.yaml
