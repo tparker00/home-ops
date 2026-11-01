@@ -6,4 +6,5 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  - ./pocket-id/ks.yaml
+  - ./pocket-id/operator/ks.yaml
+  - ./pocket-id/instance/ks.yaml
