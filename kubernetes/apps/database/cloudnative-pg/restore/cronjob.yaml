@@ -39,7 +39,7 @@ spec:
                       name: cloudnative-pg-secret
                       key: password
                 - name: POSTGRES_DB
-                  value: "authentik,gatus,grafana,radarr_log,radarr_main,radarr4k_log,radarr4k_main,sonarr_log,sonarr_main,lidarr_main,lidarr_log,bazarr,prowlarr_main,prowlarr_log,vymanager_auth"
+                  value: ",gatus,grafana,radarr_log,radarr_main,radarr4k_log,radarr4k_main,sonarr_log,sonarr_main,lidarr_main,lidarr_log,bazarr,prowlarr_main,prowlarr_log,vymanager_auth"
               volumeMounts:
                 - name: nas-backups
                   mountPath: /backups
