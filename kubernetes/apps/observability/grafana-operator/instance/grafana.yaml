@@ -69,9 +69,6 @@ spec:
                     name: &secret grafana-secret
           containers:
             - name: grafana
-              envFrom:
-                - secretRef:
-                    name: grafana-oidc-credentials
               env:
                 - name: GF_SECURITY_ADMIN_USER
                   valueFrom:
@@ -86,6 +83,8 @@ spec:
               envFrom:
                 - secretRef:
                     name: *secret
+                - secretRef:
+                    name: grafana-oidc-credentials
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname
