@@ -53,46 +53,23 @@ spec:
               repository: ghcr.io/tparker00/lucidmate
               tag: 0.1.0
             command: ["/usr/local/bin/lucidmate-migrate"]
-            env:
-              DATABASE_URL:
-                valueFrom:
-                  secretKeyRef:
-                    name: lucidmate-db
-                    key: DATABASE_URL
+            envFrom:
+              - secretRef:
+                  name: lucidmate-db
         containers:
           app:
             image:
               repository: ghcr.io/tparker00/lucidmate
               tag: 0.1.0
+            envFrom: &appEnvFrom
+              - secretRef:
+                  name: lucidmate-db
+              - secretRef:
+                  name: lucidmate-app
             env:
               API_PORT: 8080
               AUTH_MODE: oidc
               COOKIE_SECURE: "true"
-              DATABASE_URL:
-                valueFrom:
-                  secretKeyRef:
-                    name: lucidmate-db
-                    key: DATABASE_URL
-              LUCIDMATE_ENCRYPTION_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: lucidmate-app
-                    key: LUCIDMATE_ENCRYPTION_KEY
-              OIDC_ISSUER_URL:
-                valueFrom:
-                  secretKeyRef:
-                    name: lucidmate-app
-                    key: OIDC_ISSUER_URL
-              OIDC_CLIENT_ID:
-                valueFrom:
-                  secretKeyRef:
-                    name: lucidmate-app
-                    key: OIDC_CLIENT_ID
-              OIDC_CLIENT_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: lucidmate-app
-                    key: OIDC_CLIENT_SECRET
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -136,28 +113,15 @@ spec:
               repository: ghcr.io/tparker00/lucidmate
               tag: 0.1.0
             command: ["/usr/local/bin/lucidmate-migrate"]
-            env:
-              DATABASE_URL:
-                valueFrom:
-                  secretKeyRef:
-                    name: lucidmate-db
-                    key: DATABASE_URL
+            envFrom:
+              - secretRef:
+                  name: lucidmate-db
         containers:
           app:
             image:
               repository: ghcr.io/tparker00/lucidmate
               tag: 0.1.0
-            env:
-              DATABASE_URL:
-                valueFrom:
-                  secretKeyRef:
-                    name: lucidmate-db
-                    key: DATABASE_URL
-              LUCIDMATE_ENCRYPTION_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: lucidmate-app
-                    key: LUCIDMATE_ENCRYPTION_KEY
+            envFrom: *appEnvFrom
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
