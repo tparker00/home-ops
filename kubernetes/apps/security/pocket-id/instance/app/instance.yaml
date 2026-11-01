@@ -23,10 +23,19 @@ spec:
         name: pocket-id-secret
         key: DB_CONNECTION_STRING
 
+  # MooseFS CSI volumes come up root-owned and do not honor fsGroup
+  # chown; local hostpath matches how the postgres/immich volumes run.
   persistence:
     enabled: true
+    storageClass: openebs-hostpath
     size: 1Gi
     accessModes: ["ReadWriteOnce"]
+
+  # The operator runs the container as 65534; fsGroup makes the
+  # provisioned volume group-writable for the uploads dir.
+  podSecurityContext:
+    fsGroup: 1000
+    fsGroupChangePolicy: Always
 
   route:
     enabled: true
