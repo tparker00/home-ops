@@ -9,4 +9,4 @@ resources:
   - ./externalsecret-app.yaml
   - ./externalsecret-db.yaml
   - ./pushsecret-db.yaml
-  - ./rbac-db-init.yaml
+  - ./rbac.yaml
