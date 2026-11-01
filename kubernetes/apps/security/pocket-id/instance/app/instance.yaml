@@ -28,9 +28,14 @@ spec:
     size: 1Gi
     accessModes: ["ReadWriteOnce"]
 
-  # The operator runs the container as 65534; fsGroup makes the
-  # provisioned volume group-writable for the uploads dir.
+  # MooseFS write enforcement honors owner bits only (group bits are
+  # ignored for non-owner processes — under investigation upstream, see
+  # moosefs-csi PR #20/#17). Run the container as the volume owner:
+  # the one-time manual `chown 1000:1000` on the PVC makes owner-write
+  # work. fsGroup kept for when upstream fixes group enforcement.
   podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
     fsGroup: 1000
     fsGroupChangePolicy: Always
 
