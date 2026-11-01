@@ -1,0 +1,27 @@
+---
+# Provisions the pocket-id database + role on the shared CNPG cluster
+# using the house postgres-init image. Runs before/concurrently with the
+# instance; the instance restarts until the database exists.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pocket-id-db-init
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        fsGroup: 65532
+      containers:
+        - name: init-db
+          image: ghcr.io/home-operations/postgres-init:18.6@sha256:b6d3af974df781c673d37e49bdddfa14a6f5be28b18d2cb7713f0449bea4057b
+          envFrom:
+            - secretRef:
+                name: pocket-id-secret
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
