@@ -1,0 +1,203 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app lucidmate
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 5.3.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+
+  values:
+    global:
+      # Private GHCR image; credentials templated from the Bitwarden `ghcr` secret.
+      imagePullSecrets:
+        - name: lucidmate-ghcr
+
+    controllers:
+      # Stateless HTTP API + SPA server. 2 replicas; each rollout runs
+      # migrations first via the initContainer (golang-migrate holds a
+      # Postgres advisory lock, so concurrent migrators are safe).
+      api:
+        strategy: RollingUpdate
+        replicas: 2
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 18.6@sha256:b6d3af974df781c673d37e49bdddfa14a6f5be28b18d2cb7713f0449bea4057b
+              pullPolicy: IfNotPresent
+            envFrom:
+              - secretRef:
+                  name: lucidmate-db
+          migrate:
+            image:
+              repository: ghcr.io/tparker00/lucidmate
+              tag: 0.2.0
+            command: ["/usr/local/bin/lucidmate-migrate"]
+            envFrom:
+              - secretRef:
+                  name: lucidmate-db
+        containers:
+          app:
+            image:
+              repository: ghcr.io/tparker00/lucidmate
+              tag: 0.2.0
+            envFrom: &appEnvFrom
+              - secretRef:
+                  name: lucidmate-db
+              - secretRef:
+                  name: lucidmate-app
+            env:
+              API_PORT: 8080
+              AUTH_MODE: oidc
+              COOKIE_SECURE: "true"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+              runAsNonRoot: true
+              runAsUser: 65532
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: &apiPort 8080
+                  periodSeconds: 20
+                  timeoutSeconds: 2
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: *apiPort
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+
+      # The only writer of vehicle telemetry. Exactly one replica: it holds
+      # per-account gRPC sessions and the adaptive poll scheduler — two
+      # pollers would double-poll and race the snapshot observers.
+      # The api controller owns all migrations (single migrator); the
+      # poller self-checks its schema at startup.
+      poller:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        # No wait/migrate init here: the poller verifies its schema at
+        # startup (lucidmate v0.2.0+) and restarts until the api's migrate
+        # init container brings it current.
+        containers:
+          app:
+            image:
+              repository: ghcr.io/tparker00/lucidmate
+              tag: 0.2.0
+            envFrom: *appEnvFrom
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+              runAsNonRoot: true
+              runAsUser: 65532
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+
+      # One-shot: generates the database password and stores it in the
+      # lucidmate-db-generated Secret (PushSecret then persists it to
+      # Bitwarden). Role/database creation is handled by the postgres-init
+      # container on the api controller, consuming INIT_POSTGRES_* env.
+      db-init:
+        type: job
+        job:
+          backoffLimit: 3
+        serviceAccount:
+          name: lucidmate-db-init
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+        initContainers:
+          generate:
+            image:
+              repository: postgres
+              tag: "16"
+            command: ["/bin/sh", "-c"]
+            args:
+              - openssl rand -base64 32 | tr -d '\n' > /work/pw
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+        containers:
+          store:
+            image:
+              repository: ghcr.io/dtzar/helm-kubectl
+              tag: 4.3.0
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                set -eu
+                kubectl create secret generic lucidmate-db-generated \
+                  --from-literal=password="$$(cat /work/pw)" \
+                  --namespace lucidmate \
+                  --dry-run=client -o yaml | kubectl apply -f -
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+    service:
+      api:
+        controller: api
+        ports:
+          http:
+            port: 8080
+
+    persistence:
+      db-init-work:
+        type: emptyDir
+        advancedMounts:
+          db-init:
+            psql:
+              - path: /work
+            store:
+              - path: /work
+
+    route:
+      api:
+        hostnames: ["lucidmate.${SECRET_DOMAIN}"]
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: lucidmate-api
+                port: 8080

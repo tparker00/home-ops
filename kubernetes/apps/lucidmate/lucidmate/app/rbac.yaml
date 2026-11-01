@@ -1,0 +1,35 @@
+---
+# The db-init job's store container creates/updates lucidmate-db-generated.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: lucidmate-db-init
+  namespace: lucidmate
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: lucidmate-db-init
+  namespace: lucidmate
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["lucidmate-db-generated"]
+    verbs: ["get", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: lucidmate-db-init
+  namespace: lucidmate
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: lucidmate-db-init
+subjects:
+  - kind: ServiceAccount
+    name: lucidmate-db-init
+    namespace: lucidmate
