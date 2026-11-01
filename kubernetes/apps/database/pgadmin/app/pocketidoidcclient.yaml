@@ -1,0 +1,14 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: pgadmin
+spec:
+  name: pgAdmin
+  callbackUrls:
+    - "https://pgadmin.${SECRET_DOMAIN}/oauth2/authorize"
+    - "https://pgadmin.analogpuddle.com/oauth2/authorize"
+  secret:
+    keys:
+      client_id: OIDC_CLIENT_ID
+      client_secret: OIDC_CLIENT_SECRET
