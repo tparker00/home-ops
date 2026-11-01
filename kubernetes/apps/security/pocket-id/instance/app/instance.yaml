@@ -23,11 +23,8 @@ spec:
         name: pocket-id-secret
         key: DB_CONNECTION_STRING
 
-  # MooseFS CSI volumes come up root-owned and do not honor fsGroup
-  # chown; local hostpath matches how the postgres/immich volumes run.
   persistence:
     enabled: true
-    storageClass: openebs-hostpath
     size: 1Gi
     accessModes: ["ReadWriteOnce"]
 
