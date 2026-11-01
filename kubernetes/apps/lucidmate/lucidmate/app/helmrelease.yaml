@@ -102,19 +102,38 @@ spec:
       # The only writer of vehicle telemetry. Exactly one replica: it holds
       # per-account gRPC sessions and the adaptive poll scheduler — two
       # pollers would double-poll and race the snapshot observers.
+      # The api controller owns all migrations; the poller waits for the
+      # schema to reach SCHEMA_VERSION before starting (single migrator).
       poller:
         strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
-          migrate:
+          wait-for-schema:
             image:
-              repository: ghcr.io/tparker00/lucidmate
-              tag: 0.1.0
-            command: ["/usr/local/bin/lucidmate-migrate"]
+              repository: postgres
+              tag: "16"
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                set -eu
+                until [ "$$(psql "$${DATABASE_URL}" -tAc "select version >= $$SCHEMA_VERSION from schema_migrations" 2>/dev/null | tr -d '[:space:]')" = "t" ]; do
+                  echo "waiting for schema v$$SCHEMA_VERSION (api owns migrations)"
+                  sleep 2
+                done
+                echo "schema ready"
             envFrom:
               - secretRef:
                   name: lucidmate-db
+            env:
+              # Keep in sync with the migration count of the deployed image.
+              SCHEMA_VERSION: "16"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+              runAsNonRoot: true
+              runAsUser: 999
         containers:
           app:
             image:
