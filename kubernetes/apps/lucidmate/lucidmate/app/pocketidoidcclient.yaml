@@ -9,6 +9,6 @@ spec:
     - "https://lucidmate.${SECRET_DOMAIN}/auth/callback"
   secret:
     keys:
-      client_id: OIDC_CLIENT_ID
-      client_secret: OIDC_CLIENT_SECRET
-      issuer_url: OIDC_ISSUER_URL
+      clientID: OIDC_CLIENT_ID
+      clientSecret: OIDC_CLIENT_SECRET
+      issuerUrl: OIDC_ISSUER_URL
