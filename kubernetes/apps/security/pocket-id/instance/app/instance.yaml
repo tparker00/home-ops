@@ -39,6 +39,13 @@ spec:
     fsGroup: 1000
     fsGroupChangePolicy: Always
 
+  # PocketID users are admin-created (signups disabled), so the admin IS
+  # the source of truth for their emails. Downstream apps (Lucidmate)
+  # correctly reject ID tokens with email_verified=false without this.
+  env:
+    - name: EMAILS_VERIFIED
+      value: "true"
+
   route:
     enabled: true
     annotations:
