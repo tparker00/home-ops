@@ -9,5 +9,5 @@ spec:
     - "https://grafana.${SECRET_DOMAIN}/login/generic_oauth"
   secret:
     keys:
-      client_id: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
-      client_secret: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+      clientID: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+      clientSecret: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET

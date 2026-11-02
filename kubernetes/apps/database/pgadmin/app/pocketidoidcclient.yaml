@@ -10,5 +10,5 @@ spec:
     - "https://pgadmin.analogpuddle.com/oauth2/authorize"
   secret:
     keys:
-      client_id: OIDC_CLIENT_ID
-      client_secret: OIDC_CLIENT_SECRET
+      clientID: OIDC_CLIENT_ID
+      clientSecret: OIDC_CLIENT_SECRET
