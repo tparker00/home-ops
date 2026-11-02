@@ -67,6 +67,9 @@ spec:
                   name: lucidmate-oidc-credentials
             env:
               API_PORT: 8080
+              # OIDC subject allowlist for the owner role (authn.go); empty
+              # means every login is viewer-only. Tom's PocketID subject.
+              OIDC_OWNER_SUBS: c1ad039d-3185-4fff-bb2a-53021346c0fd
               AUTH_MODE: oidc
               COOKIE_SECURE: "true"
             securityContext:
