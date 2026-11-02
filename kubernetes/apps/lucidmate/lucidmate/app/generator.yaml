@@ -1,0 +1,28 @@
+---
+# Database password generation: ESO's Password generator creates the
+# credential (stable across reconciles, regenerated only on spec change
+# via GeneratorState); PushSecret exports it to Bitwarden for durability,
+# and the lucidmate-db ExternalSecret composes the connection strings.
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: lucidmate-db
+spec:
+  length: 40
+  digits: 4
+  symbols: 0 # alphanumeric only: the value is embedded in DATABASE_URL
+  allowRepeat: true
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: lucidmate-db-generated
+spec:
+  refreshInterval: 1h
+  target:
+    name: lucidmate-db-generated
+    deletionPolicy: Delete
+  generatorRef:
+    apiVersion: generators.external-secrets.io/v1alpha1
+    kind: Password
+    name: lucidmate-db

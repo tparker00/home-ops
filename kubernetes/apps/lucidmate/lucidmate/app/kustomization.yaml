@@ -9,5 +9,5 @@ resources:
   - ./externalsecret-app.yaml
   - ./pocketidoidcclient.yaml
   - ./externalsecret-db.yaml
+  - ./generator.yaml
   - ./pushsecret-db.yaml
-  - ./rbac.yaml

@@ -136,50 +136,6 @@ spec:
               limits:
                 memory: 512Mi
 
-      # One-shot: generates the database password and stores it in the
-      # lucidmate-db-generated Secret (PushSecret then persists it to
-      # Bitwarden). Role/database creation is handled by the postgres-init
-      # container on the api controller, consuming INIT_POSTGRES_* env.
-      db-init:
-        type: job
-        job:
-          backoffLimit: 3
-        serviceAccount:
-          name: lucidmate-db-init
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65532
-        initContainers:
-          generate:
-            image:
-              repository: postgres
-              tag: "16"
-            command: ["/bin/sh", "-c"]
-            args:
-              - openssl rand -base64 32 | tr -d '\n' > /work/pw
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-        containers:
-          store:
-            image:
-              repository: ghcr.io/dtzar/helm-kubectl
-              tag: 4.3.0
-            command: ["/bin/sh", "-c"]
-            args:
-              - |
-                set -eu
-                kubectl create secret generic lucidmate-db-generated \
-                  --from-literal=password="$$(cat /work/pw)" \
-                  --namespace lucidmate \
-                  --dry-run=client -o yaml | kubectl apply -f -
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-
     service:
       api:
         controller: api
@@ -187,15 +143,6 @@ spec:
           http:
             port: 8080
 
-    persistence:
-      db-init-work:
-        type: emptyDir
-        advancedMounts:
-          db-init:
-            psql:
-              - path: /work
-            store:
-              - path: /work
 
     route:
       api:
