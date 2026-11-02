@@ -118,6 +118,7 @@ spec:
             image:
               repository: ghcr.io/tparker00/lucidmate
               tag: 0.2.0
+            command: ["/usr/local/bin/lucidmate-poller"]
             envFrom:
               - secretRef:
                   name: lucidmate-db
