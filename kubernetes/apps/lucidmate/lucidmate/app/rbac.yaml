@@ -1,0 +1,10 @@
+---
+# ServiceAccount carrying the GHCR pull secret: app-template 5.3.0 has
+# no rendering imagePullSecrets placement (global/controller/pod all
+# probed — see PR notes), but pods inherit pull secrets from their SA.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: lucidmate
+imagePullSecrets:
+  - name: lucidmate-ghcr

@@ -24,11 +24,6 @@ spec:
       retries: 3
 
   values:
-    global:
-      # Private GHCR image; credentials templated from the Bitwarden `ghcr` secret.
-      imagePullSecrets:
-        - name: lucidmate-ghcr
-
     controllers:
       # Stateless HTTP API + SPA server. 2 replicas; each rollout runs
       # migrations first via the initContainer (golang-migrate holds a
@@ -36,6 +31,8 @@ spec:
       api:
         strategy: RollingUpdate
         replicas: 2
+        serviceAccount:
+          name: lucidmate
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
@@ -60,6 +57,7 @@ spec:
             image:
               repository: ghcr.io/tparker00/lucidmate
               tag: 0.2.0
+            command: ["/usr/local/bin/lucidmate-api"]
             envFrom:
               - secretRef:
                   name: lucidmate-db
@@ -108,6 +106,8 @@ spec:
       # poller self-checks its schema at startup.
       poller:
         strategy: Recreate
+        serviceAccount:
+          name: lucidmate
         annotations:
           reloader.stakater.com/auto: "true"
         # No wait/migrate init here: the poller verifies its schema at
@@ -118,6 +118,7 @@ spec:
             image:
               repository: ghcr.io/tparker00/lucidmate
               tag: 0.2.0
+            command: ["/usr/local/bin/lucidmate-poller"]
             envFrom:
               - secretRef:
                   name: lucidmate-db
