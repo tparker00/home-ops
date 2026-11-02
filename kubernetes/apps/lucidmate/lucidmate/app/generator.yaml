@@ -22,11 +22,8 @@ spec:
   target:
     name: lucidmate-db-generated
     deletionPolicy: Delete
-  data:
-    - secretKey: password
-      remoteRef:
-        key: password
-      sourceRef:
+  dataFrom:
+    - sourceRef:
         generatorRef:
           apiVersion: generators.external-secrets.io/v1alpha1
           kind: Password
