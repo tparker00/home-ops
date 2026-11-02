@@ -67,6 +67,9 @@ spec:
                   name: lucidmate-oidc-credentials
             env:
               API_PORT: 8080
+              # The image parks the built SPA here; the api serves it only
+              # when this is set (empty = SPA disabled -> 404 on /).
+              WEB_DIST_DIR: /app/web/dist
               AUTH_MODE: oidc
               COOKIE_SECURE: "true"
             securityContext:
