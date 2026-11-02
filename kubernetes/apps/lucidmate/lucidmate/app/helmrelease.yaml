@@ -153,5 +153,5 @@ spec:
             namespace: network
         rules:
           - backendRefs:
-              - name: lucidmate-api
+              - name: lucidmate
                 port: 8080
