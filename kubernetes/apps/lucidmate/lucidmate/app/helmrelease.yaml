@@ -47,7 +47,7 @@ spec:
           migrate:
             image:
               repository: ghcr.io/tparker00/lucidmate
-              tag: 0.2.0
+              tag: 0.2.1
             command: ["/usr/local/bin/lucidmate-migrate"]
             envFrom:
               - secretRef:
@@ -56,7 +56,7 @@ spec:
           app:
             image:
               repository: ghcr.io/tparker00/lucidmate
-              tag: 0.2.0
+              tag: 0.2.1
             command: ["/usr/local/bin/lucidmate-api"]
             envFrom:
               - secretRef:
@@ -117,7 +117,7 @@ spec:
           app:
             image:
               repository: ghcr.io/tparker00/lucidmate
-              tag: 0.2.0
+              tag: 0.2.1
             command: ["/usr/local/bin/lucidmate-poller"]
             envFrom:
               - secretRef:
