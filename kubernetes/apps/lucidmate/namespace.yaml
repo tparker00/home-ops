@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lucidmate
+  labels:
+    kubernetes.io/metadata.name: lucidmate
+    bws-push.home.arpa/allowed: "true"
