@@ -7,6 +7,7 @@ resources:
   - ./helmrepository.yaml
   - ./externalsecret-ghcr.yaml
   - ./externalsecret-app.yaml
+  - ./pocketidoidcclient.yaml
   - ./externalsecret-db.yaml
   - ./pushsecret-db.yaml
   - ./rbac.yaml

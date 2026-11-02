@@ -60,11 +60,13 @@ spec:
             image:
               repository: ghcr.io/tparker00/lucidmate
               tag: 0.2.0
-            envFrom: &appEnvFrom
+            envFrom:
               - secretRef:
                   name: lucidmate-db
               - secretRef:
                   name: lucidmate-app
+              - secretRef:
+                  name: lucidmate-oidc-credentials
             env:
               API_PORT: 8080
               AUTH_MODE: oidc
@@ -116,7 +118,11 @@ spec:
             image:
               repository: ghcr.io/tparker00/lucidmate
               tag: 0.2.0
-            envFrom: *appEnvFrom
+            envFrom:
+              - secretRef:
+                  name: lucidmate-db
+              - secretRef:
+                  name: lucidmate-app
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
