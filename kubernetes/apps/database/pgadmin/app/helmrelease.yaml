@@ -48,6 +48,8 @@ spec:
             envFrom:
               - secretRef:
                   name: pgadmin-secret
+              - secretRef:
+                  name: pgadmin-oidc-credentials
             resources:
               requests:
                 memory: 300Mi
