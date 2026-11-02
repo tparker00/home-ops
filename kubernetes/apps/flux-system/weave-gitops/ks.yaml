@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: authentik
+    - name: pocket-id
     - name: external-secrets-bitwarden
   path: ./kubernetes/apps/flux-system/weave-gitops/app
   postBuild:

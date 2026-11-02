@@ -7,5 +7,6 @@ resources:
   - ./datasources
   - ./externalsecret.yaml
   - ./grafana.yaml
+  - ./pocketidoidcclient.yaml
   - ./httproute.yaml
   - ./servicemonitor.yaml
