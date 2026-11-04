@@ -5,17 +5,20 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
-  name: lucidmate-pg
+  name: lucidmate
 spec:
   instanceSelector:
     matchLabels:
       dashboards: grafana
   datasource:
-    name: Lucidmate Postgres
+    name: Lucidmate
     type: postgres
-    uid: lucidmate-pg
+    uid: lucidmate
     access: proxy
-    url: postgres-rw.database.svc.cluster.local:5432
+    url: postgres-ro.database.svc.cluster.local:5432
+    user: "$GRAFANA_DATASOURCE_USER"
+    secureJsonData:
+      password: "${GRAFANA_DATASOURCE_PASS}"
     # Postgres datasources carry the db name in jsonData.database — a
     # top-level `database` key is the MySQL shape and Grafana's API
     # rejects it (400 on create).
