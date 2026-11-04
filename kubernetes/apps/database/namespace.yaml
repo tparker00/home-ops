@@ -4,6 +4,7 @@ kind: Namespace
 metadata:
   name: database
   labels:
+    bws-push.home.arpa/allowed: "true"
     kustomize.toolkit.fluxcd.io/prune: disabled
     pod-security.kubernetes.io/audit: restricted
     pod-security.kubernetes.io/warn: restricted

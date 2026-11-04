@@ -6,6 +6,7 @@ resources:
   - ./dashboards
   - ./datasources
   - ./externalsecret.yaml
+  - ./lucidmate-grafana-datasource.yaml
   - ./grafana.yaml
   - ./pocketidoidcclient.yaml
   - ./httproute.yaml

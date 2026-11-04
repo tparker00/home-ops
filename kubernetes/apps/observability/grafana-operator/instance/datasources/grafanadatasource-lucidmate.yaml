@@ -1,0 +1,36 @@
+---
+# Lucidmate Postgres datasource for the cluster Grafana.
+# SELECT-only grafana_reader role (created by Lucidmate migration 000010);
+# credentials injected from the generated secret — never inline.
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: lucidmate-pg
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  datasource:
+    name: Lucidmate Postgres
+    type: postgres
+    uid: lucidmate-pg
+    url: postgres-rw.database.svc.cluster.local:5432
+    database: lucidmate
+    jsonData:
+      sslmode: disable
+      postgresVersion: 1600
+      timescaledb: false
+  # This operator version injects via valuesFrom/targetPath (the #131
+  # example's secureValuesFrom is a newer-operator field — server dry-run
+  # caught the mismatch).
+  valuesFrom:
+    - targetPath: secureJsonData.user
+      valueFrom:
+        secretKeyRef:
+          name: lucidmate-grafana-datasource
+          key: GRAFANA_DATASOURCE_USER
+    - targetPath: secureJsonData.password
+      valueFrom:
+        secretKeyRef:
+          name: lucidmate-grafana-datasource
+          key: GRAFANA_DATASOURCE_PASS

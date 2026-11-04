@@ -54,6 +54,17 @@ spec:
           key: aws-secret-access-key
   # # Note: previousCluster needs to be set to the name of the previous
   # # cluster when recovering from an existing cnpg cluster
+  # Declarative role management (CNPG): the SELECT-only Grafana role for
+  # Lucidmate (grants applied by Lucidmate migration 000010; this manages
+  # existence + password only). CNPG reconciles the password from the
+  # basic-auth secret below — rotation = secret change, no jobs.
+  managed:
+    roles:
+      - name: grafana_reader
+        login: true
+        ensure: present
+        passwordSecret:
+          name: lucidmate-grafana-reader-creds
   bootstrap:
     recovery:
       source: &previousCluster postgres-v9
