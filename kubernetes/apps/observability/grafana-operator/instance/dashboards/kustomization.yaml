@@ -21,3 +21,21 @@ generatorOptions:
   disableNameSuffixHash: true
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
+  - ./grafanadashboard-lucidmate-battery-health.yaml
+  - ./grafanadashboard-lucidmate-charging-history.yaml
+  - ./grafanadashboard-lucidmate-drive-details.yaml
+  - ./grafanadashboard-lucidmate-drive-stats.yaml
+  - ./grafanadashboard-lucidmate-efficiency.yaml
+  - ./grafanadashboard-lucidmate-freshness-watchdog.yaml
+  - ./grafanadashboard-lucidmate-locations.yaml
+  - ./grafanadashboard-lucidmate-polling-cadence.yaml
+  - ./grafanadashboard-lucidmate-position-map.yaml
+  - ./grafanadashboard-lucidmate-software-updates.yaml
+  - ./grafanadashboard-lucidmate-state-breakdown.yaml
+  - ./grafanadashboard-lucidmate-statistics.yaml
+  - ./grafanadashboard-lucidmate-trip.yaml
+  - ./grafanadashboard-lucidmate-trips.yaml
+  - ./grafanadashboard-lucidmate-vampire-drain.yaml
+  - ./grafanadashboard-lucidmate-vehicle-comparison.yaml
+  - ./grafanadashboard-lucidmate-vehicle-overview.yaml
+  - ./grafanadashboard-lucidmate-visited.yaml
