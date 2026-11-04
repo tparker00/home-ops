@@ -1,0 +1,68 @@
+---
+# One-shot: set grafana_reader's password to the generated credential.
+# Idempotent (plain ALTER ROLE); re-run by deleting the Job after a
+# password regeneration. Superuser pass via ESO from the shared
+# cloudnative-pg Bitwarden key (bazarr/pocket-id pattern).
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: &name lucidmate-grafana-superuser
+spec:
+  secretStoreRef:
+    name: bitwarden-secrets-manager
+    kind: ClusterSecretStore
+  refreshInterval: 1h
+  target:
+    name: *name
+    deletionPolicy: Delete
+    template:
+      engineVersion: v2
+      data:
+        SUPER_PG_PASS: "{{ .super_pg_pass }}"
+  dataFrom:
+    - extract:
+        key: cloudnative-pg
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: lucidmate-grafana-reader-init
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        fsGroup: 999
+      containers:
+        - name: alter-role
+          image: postgres:16
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              psql -h postgres-rw.database.svc.cluster.local -U postgres \
+                -v pass="$$GRAFANA_DATASOURCE_PASS_VALUE" \
+                -c 'ALTER ROLE grafana_reader LOGIN PASSWORD :'pass'';
+          envFrom:
+            - secretRef:
+                name: lucidmate-grafana-superuser
+            - secretRef:
+                name: lucidmate-grafana-datasource
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: lucidmate-grafana-superuser
+                  key: SUPER_PG_PASS
+            - name: GRAFANA_DATASOURCE_PASS_VALUE
+              valueFrom:
+                secretKeyRef:
+                  name: lucidmate-grafana-datasource
+                  key: GRAFANA_DATASOURCE_PASS
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
