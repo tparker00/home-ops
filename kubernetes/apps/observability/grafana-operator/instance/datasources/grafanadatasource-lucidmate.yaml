@@ -27,7 +27,10 @@ spec:
   # example's secureValuesFrom is a newer-operator field — server dry-run
   # caught the mismatch).
   valuesFrom:
-    - targetPath: secureJsonData.user
+    # Postgres datasources take a top-level plaintext user; secureJsonData
+    # only holds password/TLS material — injecting the username there is
+    # what Grafana's API rejects with an empty 400.
+    - targetPath: user
       valueFrom:
         secretKeyRef:
           name: lucidmate-grafana-datasource
