@@ -13,14 +13,6 @@ resources:
   - ./grafanadashboard-speedtest.yaml
   - ./grafanadashboard-system.yaml
   - ./grafanadashboard-thanos.yaml
-configMapGenerator:
-  - name: media-dashboard
-    files:
-      - ./media/media.json
-generatorOptions:
-  disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled
   - ./grafanadashboard-lucidmate-battery-health.yaml
   - ./grafanadashboard-lucidmate-charging-history.yaml
   - ./grafanadashboard-lucidmate-drive-details.yaml
@@ -39,3 +31,11 @@ generatorOptions:
   - ./grafanadashboard-lucidmate-vehicle-comparison.yaml
   - ./grafanadashboard-lucidmate-vehicle-overview.yaml
   - ./grafanadashboard-lucidmate-visited.yaml
+configMapGenerator:
+  - name: media-dashboard
+    files:
+      - ./media/media.json
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
