@@ -6,3 +6,4 @@ resources:
   - ./grafanadatasource-alertmanager.yaml
   - ./grafanadatasource-loki.yaml
   - ./grafanadatasource-prometheus.yaml
+  - ./grafanadatasource-lucidmate.yaml
