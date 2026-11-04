@@ -15,8 +15,11 @@ spec:
     type: postgres
     uid: lucidmate-pg
     url: postgres-rw.database.svc.cluster.local:5432
-    database: lucidmate
+    # Postgres datasources carry the db name in jsonData.database — a
+    # top-level `database` key is the MySQL shape and Grafana's API
+    # rejects it (400 on create).
     jsonData:
+      database: lucidmate
       sslmode: disable
       postgresVersion: 1600
       timescaledb: false
