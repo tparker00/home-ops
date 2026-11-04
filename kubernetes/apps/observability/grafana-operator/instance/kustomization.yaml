@@ -5,9 +5,8 @@ kind: Kustomization
 resources:
   - ./dashboards
   - ./datasources
-  - ./lucidmate-grafana-generator.yaml
-  - ./lucidmate-grafana-reader-init.yaml
   - ./externalsecret.yaml
+  - ./lucidmate-grafana-datasource.yaml
   - ./grafana.yaml
   - ./pocketidoidcclient.yaml
   - ./httproute.yaml

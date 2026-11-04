@@ -1,0 +1,27 @@
+---
+# Pulls the CNPG-managed grafana_reader credential back from Bitwarden
+# (pushed by the database-ns PushSecret) into the observability namespace,
+# shaped for the GrafanaDatasource's valuesFrom injection. Same secret
+# feeds both sides of the chain: CNPG's passwordSecret (database ns) and
+# this one — one generator, one Bitwarden key, no drift.
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: &name lucidmate-grafana-datasource
+spec:
+  secretStoreRef:
+    name: bitwarden-secrets-manager
+    kind: ClusterSecretStore
+  refreshInterval: 15m
+  target:
+    name: *name
+    deletionPolicy: Delete
+    template:
+      engineVersion: v2
+      data:
+        GRAFANA_DATASOURCE_USER: grafana_reader
+        GRAFANA_DATASOURCE_PASS: "{{ .password }}"
+  data:
+    - secretKey: password
+      remoteRef:
+        key: lucidmate-grafana-reader

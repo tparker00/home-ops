@@ -1,0 +1,53 @@
+---
+# grafana_reader credential: ESO Password generator (basic-auth secret),
+# consumed declaratively by CNPG managed roles on the postgres Cluster CR
+# (passwordSecret). PushSecret mirrors it to Bitwarden so observability's
+# datasource ExternalSecret can pull the same value cross-namespace.
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: lucidmate-grafana-reader
+spec:
+  length: 40
+  digits: 4
+  symbols: 0 # alphanumeric only
+  allowRepeat: true
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: &name lucidmate-grafana-reader-creds
+spec:
+  refreshInterval: 1h
+  target:
+    name: *name
+    deletionPolicy: Delete
+    template:
+      engineVersion: v2
+      data:
+        username: grafana_reader
+        password: "{{ .password }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: lucidmate-grafana-reader
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: lucidmate-grafana-reader
+spec:
+  refreshInterval: 5m
+  secretStoreRefs:
+    - name: bitwarden-secrets-manager-push
+      kind: ClusterSecretStore
+  selector:
+    secret:
+      name: lucidmate-grafana-reader-creds
+  data:
+    - match:
+        secretKey: password
+        remoteRef:
+          remoteKey: lucidmate-grafana-reader
