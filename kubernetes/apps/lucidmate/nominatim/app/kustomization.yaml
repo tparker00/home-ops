@@ -18,5 +18,8 @@ configMapGenerator:
   - name: nominatim-nginx
     files:
       - nginx/default.conf
+generatorOptions:
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 configurations:
   - kustomizeconfig.yaml
