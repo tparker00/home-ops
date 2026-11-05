@@ -14,6 +14,8 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: bjw-s-charts
+
+  dependsOn: []
   install:
     disableWait: true
   upgrade:
@@ -188,7 +190,7 @@ spec:
             image:
               repository: registry.k8s.io/kubectl
               # renovate: datasource=docker depName=registry.k8s.io/kubectl
-              tag: v1.36.2
+              tag: v1.37.2
             args:
               - exec
               - deploy/nominatim
@@ -208,9 +210,6 @@ spec:
         serviceAccount:
           identifier: replication
 
-    defaultPodOptions:
-      priorityClassName: internal-only
-
     service:
       nominatim:
         controller: nominatim
@@ -227,7 +226,8 @@ spec:
 
     persistence:
       project:
-        existingClaim: nominatim-project
+        # Created by components/moosefs (claim name = ${APP} = nominatim).
+        existingClaim: nominatim
         advancedMounts:
           nominatim:
             nominatim:
@@ -236,6 +236,7 @@ spec:
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
         size: 250Gi
+        storageClass: openebs-hostpath
         advancedMounts:
           nominatim:
             nominatim:
