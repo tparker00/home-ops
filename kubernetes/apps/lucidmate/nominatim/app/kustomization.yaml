@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - vmprobe.yaml
+  - externalsecret.yaml
+  - helmrelease.yaml
+  - httproute.yaml
+configMapGenerator:
+  - name: nominatim-scripts
+    files:
+      - scripts/start.sh
+      - scripts/resume-import.sh
+      - scripts/env.defaults
+      - scripts/maintain-regions.sh
+      - scripts/init-ui.sh
+      - scripts/start-external.sh
+  - name: nominatim-nginx
+    files:
+      - nginx/default.conf
+configurations:
+  - kustomizeconfig.yaml

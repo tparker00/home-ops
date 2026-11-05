@@ -1,0 +1,285 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app nominatim
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 5.3.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+  install:
+    disableWait: true
+  upgrade:
+    disableWait: true
+  values:
+    serviceAccount:
+      app:
+        enabled: true
+      replication:
+        enabled: true
+    rbac:
+      roles:
+        replication:
+          type: Role
+          rules:
+            - apiGroups: ["apps"]
+              resources: ["deployments"]
+              verbs: ["get"]
+            - apiGroups: [""]
+              resources: ["pods"]
+              verbs: ["get", "list"]
+            - apiGroups: [""]
+              resources: ["pods/exec"]
+              verbs: ["create"]
+      bindings:
+        replication:
+          type: RoleBinding
+          roleRef:
+            apiGroup: rbac.authorization.k8s.io
+            kind: Role
+            identifier: replication
+          subjects:
+            - identifier: replication
+    controllers:
+      nominatim:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        serviceAccount:
+          identifier: app
+        containers:
+          nominatim:
+            image:
+              repository: mediagis/nominatim
+              # renovate: datasource=docker depName=mediagis/nominatim
+              tag: "5.3.2"
+            command: ["/bin/bash", "/scripts/start-external.sh"]
+            env:
+              # Geofabrik region paths (newline, space, or comma separated).
+              NOMINATIM_REGIONS: |-
+                north-america/us
+              NOMINATIM_DOWNURL: "https://download.geofabrik.de"
+              # Disable the image's built-in replication loop; updates are managed by CronJob.
+              UPDATE_MODE: "none"
+              REPLICATION_URL: ""
+              IMPORT_STYLE: extratags
+              IMPORT_WIKIPEDIA: "true"
+              IMPORT_SECONDARY_WIKIPEDIA: "true"
+              IMPORT_US_POSTCODES: "true"
+              PROJECT_DIR: /nominatim
+              # Required for North America / multi-region imports (created during bootstrap osm2pgsql).
+              NOMINATIM_FLATNODE_FILE: /nominatim/flatnode/flatnode.file
+              # In-cluster DB traffic is already plaintext; skip SSL/GSS negotiation
+              # so pg_isready and the worker pool stop logging "could not accept SSL
+              # connection: EOF" on the shared CNPG cluster.
+              PGSSLMODE: disable
+              PGGSSENCMODE: disable
+              GUNICORN_WORKERS: "4"
+              NOMINATIM_API_POOL_SIZE: "5"
+              # Daily cron only applies incremental OSC updates; full region PBF imports are opt-in.
+              NOMINATIM_ALLOW_REGION_IMPORT: "false"
+              NOMINATIM_IMPORT_MAX_REGIONS: "1"
+            envFrom:
+              - secretRef:
+                  name: nominatim-secret
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /status
+                    port: 8080
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  # ~60m for refresh + Gunicorn before /status answers.
+                  # Measure once after cutover and lower if it's consistently faster.
+                  failureThreshold: 120
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /status
+                    port: 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /status
+                    port: 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 500m
+                memory: 16Gi
+              limits:
+                memory: 24Gi
+      ui:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        serviceAccount:
+          identifier: app
+        initContainers:
+          ui-init:
+            image:
+              repository: docker.io/library/alpine
+              # renovate: datasource=docker depName=library/alpine
+              tag: 3.24.1
+            command: ["/bin/sh", "/scripts/init-ui.sh"]
+            env:
+              # renovate: datasource=github-releases depName=osm-search/nominatim-ui
+              NOMINATIM_UI_VERSION: "3.12.0"
+        containers:
+          ui:
+            image:
+              repository: docker.io/library/nginx
+              # renovate: datasource=docker depName=library/nginx
+              tag: 1.31.3-alpine
+            probes:
+              liveness: &uiProbe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /search.html
+                    port: 80
+                  initialDelaySeconds: 0
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *uiProbe
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 64Mi
+      update-osm-db:
+        type: cronjob
+        cronjob:
+          # Re-enable (suspend: false) after CNPG soak + first successful backup.
+          suspend: true
+          schedule: "@daily"
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 3
+          # Kill stuck kubectl exec sessions (e.g. multi-day add-data) after 12h.
+          activeDeadlineSeconds: 43200
+          ttlSecondsAfterFinished: 86400
+          backoffLimit: 0
+        containers:
+          kubectl:
+            image:
+              repository: registry.k8s.io/kubectl
+              # renovate: datasource=docker depName=registry.k8s.io/kubectl
+              tag: v1.36.2
+            args:
+              - exec
+              - deploy/nominatim
+              - -c
+              - nominatim
+              - --
+              - /bin/bash
+              - /scripts/maintain-regions.sh
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+        pod:
+          restartPolicy: Never
+        serviceAccount:
+          identifier: replication
+
+    defaultPodOptions:
+      priorityClassName: internal-only
+
+    service:
+      nominatim:
+        controller: nominatim
+        ports:
+          http:
+            port: 80
+            targetPort: 8080
+      ui:
+        controller: ui
+        forceRename: nominatim-ui
+        ports:
+          http:
+            port: 80
+
+    persistence:
+      project:
+        existingClaim: nominatim-project
+        advancedMounts:
+          nominatim:
+            nominatim:
+              - path: /nominatim
+      flatnode:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 250Gi
+        advancedMounts:
+          nominatim:
+            nominatim:
+              - path: /nominatim/flatnode
+                subPath: flatnode
+      scripts:
+        type: configMap
+        name: nominatim-scripts
+        defaultMode: 0755
+        advancedMounts:
+          nominatim:
+            nominatim:
+              - path: /scripts
+          ui:
+            ui-init:
+              - path: /scripts
+      ui-www:
+        type: emptyDir
+        advancedMounts:
+          ui:
+            ui-init:
+              - path: /ui-www
+            ui:
+              - path: /ui-www
+                readOnly: true
+      ui-nginx:
+        type: configMap
+        name: nominatim-nginx
+        advancedMounts:
+          ui:
+            ui:
+              - path: /etc/nginx/conf.d
+                readOnly: true
+      import-staging:
+        type: emptyDir
+        advancedMounts:
+          nominatim:
+            nominatim:
+              - path: /import-staging
+      dev-shm:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 4Gi
+        advancedMounts:
+          nominatim:
+            nominatim:
+              - path: /dev/shm
