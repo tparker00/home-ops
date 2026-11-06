@@ -45,8 +45,19 @@ spec:
       owner: nominatim
       secret:
         name: nominatim-pg-secret
-      # postgis is not a trusted extension: created here as superuser at
-      # bootstrap, inside the application database, before Nominatim's
-      # import ever connects.
-      postInitApplicationSQL:
+      # `nominatim import` creates its own database via createdb (fails if
+      # it exists, needs CREATEDB) and installs hstore/postgis/postgis_raster
+      # — all untrusted extensions. Prerequisites are provisioned here so the
+      # app role can bootstrap without superuser:
+      #   postInitSQL — web role (checked by the import) + CREATEDB grant
+      #   postInitTemplateSQL — extensions in template1, so every createdb
+      #     (incl. Nominatim's own) inherits them; its CREATE EXTENSION IF NOT
+      #     EXISTS then no-ops for any database owner.
+      # Re-runs on every cluster rebuild; idempotent by construction.
+      postInitSQL:
+        - CREATE ROLE "www-data" LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
+        - ALTER ROLE nominatim CREATEDB;
+      postInitTemplateSQL:
+        - CREATE EXTENSION IF NOT EXISTS hstore;
         - CREATE EXTENSION IF NOT EXISTS postgis;
+        - CREATE EXTENSION IF NOT EXISTS postgis_raster;
