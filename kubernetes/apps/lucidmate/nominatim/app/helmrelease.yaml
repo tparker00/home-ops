@@ -64,8 +64,27 @@ spec:
             command: ["/bin/bash", "/scripts/start-external.sh"]
             env:
               # Geofabrik region paths (newline, space, or comma separated).
+              # Eastern seaboard (NJ -> ME -> FL corridor), ~3.9 GiB of PBF
+              # total. Geofabrik has no new-england aggregate — the six NE
+              # states are listed individually.
               NOMINATIM_REGIONS: |-
-                north-america/us
+                north-america/us/maine
+                north-america/us/new-hampshire
+                north-america/us/vermont
+                north-america/us/massachusetts
+                north-america/us/rhode-island
+                north-america/us/connecticut
+                north-america/us/new-york
+                north-america/us/new-jersey
+                north-america/us/pennsylvania
+                north-america/us/delaware
+                north-america/us/district-of-columbia
+                north-america/us/maryland
+                north-america/us/virginia
+                north-america/us/north-carolina
+                north-america/us/south-carolina
+                north-america/us/georgia
+                north-america/us/florida
               NOMINATIM_DOWNURL: "https://download.geofabrik.de"
               # Disable the image's built-in replication loop; updates are managed by CronJob.
               UPDATE_MODE: "none"
@@ -75,8 +94,10 @@ spec:
               IMPORT_SECONDARY_WIKIPEDIA: "true"
               IMPORT_US_POSTCODES: "true"
               PROJECT_DIR: /nominatim
-              # Required for North America / multi-region imports (created during bootstrap osm2pgsql).
-              NOMINATIM_FLATNODE_FILE: /nominatim/flatnode/flatnode.file
+              # No flatnode file: extracts this small (~4 GiB of PBF) keep the
+              # osm2pgsql middle index in RAM; flatnode files for US extracts
+              # are ~80-90 GiB regardless of state count and would pin the pod
+              # to a single node via a node-local PV.
               # In-cluster DB traffic is already plaintext; skip SSL/GSS negotiation
               # so pg_isready and the worker pool stop logging "could not accept SSL
               # connection: EOF" on the shared CNPG cluster.
@@ -129,9 +150,9 @@ spec:
             resources:
               requests:
                 cpu: 500m
-                memory: 16Gi
+                memory: 4Gi
               limits:
-                memory: 24Gi
+                memory: 8Gi
       ui:
         annotations:
           reloader.stakater.com/auto: "true"
@@ -232,16 +253,6 @@ spec:
           nominatim:
             nominatim:
               - path: /nominatim
-      flatnode:
-        type: persistentVolumeClaim
-        accessMode: ReadWriteOnce
-        size: 250Gi
-        storageClass: openebs-hostpath
-        advancedMounts:
-          nominatim:
-            nominatim:
-              - path: /nominatim/flatnode
-                subPath: flatnode
       scripts:
         type: configMap
         name: nominatim-scripts

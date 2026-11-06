@@ -11,6 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: nominatim-pg-cluster
     - name: cloudnative-pg-cluster
     - name: external-secrets-bitwarden
   path: ./kubernetes/apps/lucidmate/nominatim/app

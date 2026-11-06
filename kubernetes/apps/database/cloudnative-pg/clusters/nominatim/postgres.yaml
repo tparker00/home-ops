@@ -1,0 +1,72 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/refs/heads/main/config/crd/bases/postgresql.cnpg.io_clusters.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: nominatim
+spec:
+  instances: 1
+  # Nominatim requires PostGIS (not present in the shared cluster's
+  # vectorchord image). Single instance: one consumer (Lucidmate),
+  # restores via barman backup instead of replicas.
+  # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgis
+  imageName: ghcr.io/cloudnative-pg/postgis:16-3.4@sha256:bb5a8590a8c934767482e34e1d103253f412aec703b77bbc52ad9044bf6e56f9
+
+  storage:
+    size: 50Gi
+    storageClass: openebs-hostpath
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: cloudnative-pg-secret
+
+  postgresql:
+    parameters:
+      max_connections: "100"
+      shared_buffers: 512MB
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
+
+  # https://github.com/cloudnative-pg/cloudnative-pg/issues/2570
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "250m"
+    limits:
+      memory: "2Gi"
+
+  monitoring:
+    enablePodMonitor: true
+
+  backup:
+    retentionPolicy: 60d
+    barmanObjectStore:
+      data:
+        compression: bzip2
+      wal:
+        compression: bzip2
+        maxParallel: 8
+      # Shares the existing `postgresql` bucket with the shared cluster;
+      # serverName keeps the backup trees separate (postgresql/nominatim-v1).
+      destinationPath: s3://postgresql/
+      endpointURL: https://s3.${SECRET_DOMAIN}
+      serverName: nominatim-v1
+      s3Credentials:
+        accessKeyId:
+          name: cloudnative-pg-secret
+          key: aws-access-key-id
+        secretAccessKey:
+          name: cloudnative-pg-secret
+          key: aws-secret-access-key
+
+  bootstrap:
+    initdb:
+      database: nominatim
+      owner: nominatim
+      secret:
+        name: nominatim-pg-secret
+      # postgis is not a trusted extension: created here as superuser at
+      # bootstrap, inside the application database, before Nominatim's
+      # import ever connects.
+      postInitApplicationSQL:
+        - CREATE EXTENSION IF NOT EXISTS postgis;
