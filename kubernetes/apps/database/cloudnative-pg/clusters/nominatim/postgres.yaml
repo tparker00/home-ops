@@ -39,6 +39,22 @@ spec:
   monitoring:
     enablePodMonitor: true
 
+  # CNPG's initdb.secret only sets the role password ONCE, at first
+  # bootstrap — it is never reconciled again on its own. managed.roles
+  # makes CNPG continuously sync the role password from the secret on every
+  # reconcile, so a later secret rotation (or any drift) self-heals instead
+  # of silently leaving the role with a stale password (root cause of a
+  # live auth failure: secret, ES, and generator all agreed on a value the
+  # role itself had never been given).
+  managed:
+    roles:
+      - name: nominatim
+        ensure: present
+        login: true
+        createdb: true
+        passwordSecret:
+          name: nominatim-pg-secret
+
   bootstrap:
     initdb:
       database: nominatim
