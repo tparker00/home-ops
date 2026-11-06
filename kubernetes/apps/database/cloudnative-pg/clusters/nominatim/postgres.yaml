@@ -7,8 +7,9 @@ metadata:
 spec:
   instances: 1
   # Nominatim requires PostGIS (not present in the shared cluster's
-  # vectorchord image). Single instance: one consumer (Lucidmate),
-  # restores via barman backup instead of replicas.
+  # vectorchord image). Single instance: one consumer (Lucidmate), and the
+  # data is fully reproducible from public Geofabrik extracts — disaster
+  # recovery is a re-import, not a barman restore.
   # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgis
   imageName: ghcr.io/cloudnative-pg/postgis:16-3.4@sha256:bb5a8590a8c934767482e34e1d103253f412aec703b77bbc52ad9044bf6e56f9
 
@@ -37,27 +38,6 @@ spec:
 
   monitoring:
     enablePodMonitor: true
-
-  backup:
-    retentionPolicy: 60d
-    barmanObjectStore:
-      data:
-        compression: bzip2
-      wal:
-        compression: bzip2
-        maxParallel: 8
-      # Shares the existing `postgresql` bucket with the shared cluster;
-      # serverName keeps the backup trees separate (postgresql/nominatim-v1).
-      destinationPath: s3://postgresql/
-      endpointURL: https://s3.${SECRET_DOMAIN}
-      serverName: nominatim-v1
-      s3Credentials:
-        accessKeyId:
-          name: cloudnative-pg-secret
-          key: aws-access-key-id
-        secretAccessKey:
-          name: cloudnative-pg-secret
-          key: aws-secret-access-key
 
   bootstrap:
     initdb:

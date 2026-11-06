@@ -110,7 +110,6 @@ spec:
   dependsOn:
     - name: cloudnative-pg
     - name: external-secrets-bitwarden
-    - name: rustfs
   path: ./kubernetes/apps/database/cloudnative-pg/clusters/nominatim
   prune: true
   sourceRef:
