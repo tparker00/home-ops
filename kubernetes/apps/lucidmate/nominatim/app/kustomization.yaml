@@ -7,13 +7,11 @@ resources:
   - pushsecret-db.yaml
   - externalsecret.yaml
   - helmrelease.yaml
-  - httproute.yaml
 components:
   - ../../../../components/moosefs
 configMapGenerator:
   - name: nominatim-scripts
     files:
-      - scripts/start.sh
       - scripts/resume-import.sh
       - scripts/env.defaults
       - scripts/maintain-regions.sh
