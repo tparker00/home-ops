@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/refs/heads/main/config/crd/bases/postgresql.cnpg.io_clusters.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: nominatim
+spec:
+  instances: 1
+  # Nominatim requires PostGIS (not present in the shared cluster's
+  # vectorchord image). Single instance: one consumer (Lucidmate), and the
+  # data is fully reproducible from public Geofabrik extracts — disaster
+  # recovery is a re-import, not a barman restore.
+  # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgis
+  imageName: ghcr.io/cloudnative-pg/postgis:16-3.4@sha256:bb5a8590a8c934767482e34e1d103253f412aec703b77bbc52ad9044bf6e56f9
+
+  storage:
+    size: 50Gi
+    storageClass: openebs-hostpath
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: cloudnative-pg-secret
+
+  postgresql:
+    parameters:
+      max_connections: "100"
+      shared_buffers: 512MB
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
+
+  # https://github.com/cloudnative-pg/cloudnative-pg/issues/2570
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "250m"
+    limits:
+      memory: "2Gi"
+
+  monitoring:
+    enablePodMonitor: true
+
+  bootstrap:
+    initdb:
+      database: nominatim
+      owner: nominatim
+      secret:
+        name: nominatim-pg-secret
+      # postgis is not a trusted extension: created here as superuser at
+      # bootstrap, inside the application database, before Nominatim's
+      # import ever connects.
+      postInitApplicationSQL:
+        - CREATE EXTENSION IF NOT EXISTS postgis;
