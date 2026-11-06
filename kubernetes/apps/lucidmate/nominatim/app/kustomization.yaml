@@ -13,6 +13,7 @@ configMapGenerator:
   - name: nominatim-scripts
     files:
       - scripts/bootstrap.sh
+      - scripts/wait-for-schema.sh
       - scripts/resume-import.sh
       - scripts/env.defaults
       - scripts/maintain-regions.sh
