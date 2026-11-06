@@ -1,0 +1,30 @@
+---
+# Nominatim DB password: ESO Password generator -> k8s secret -> PushSecret
+# (Bitwarden key `nominatim-db`) -> externalsecret.yaml composes the app's
+# connection env. Same chain as lucidmate-db; no human-typed credential and
+# no pre-existing Bitwarden key required.
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: nominatim-db
+spec:
+  length: 40
+  digits: 4
+  symbols: 0 # alphanumeric only: embedded in NOMINATIM_DATABASE_DSN / PG DSNs
+  allowRepeat: true
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: nominatim-db-generated
+spec:
+  refreshInterval: 1h
+  target:
+    name: nominatim-db-generated
+    deletionPolicy: Delete
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: nominatim-db
