@@ -43,7 +43,7 @@ spec:
           app:
             image: &image
               repository: ghcr.io/neptunehub/audiomuse-ai
-              tag: 3.7.0-nvidia@sha256:1aa145f2e1f4a389143920a9b8c1e180e90417bfe06a4ce197456b432ab77d43
+              tag: 3.7.1-nvidia@sha256:3eea43291e95efb64db00dd6e2b0e41a65cc4e92a95b05ac6c0d15ace38bef81
             env:
               SERVICE_TYPE: flask
               TZ: ${TIMEZONE}
