@@ -39,14 +39,41 @@ spec:
   monitoring:
     enablePodMonitor: true
 
+  # CNPG's initdb.secret only sets the role password ONCE, at first
+  # bootstrap — it is never reconciled again on its own. managed.roles
+  # makes CNPG continuously sync the role password from the secret on every
+  # reconcile, so a later secret rotation (or any drift) self-heals instead
+  # of silently leaving the role with a stale password (root cause of a
+  # live auth failure: secret, ES, and generator all agreed on a value the
+  # role itself had never been given).
+  managed:
+    roles:
+      - name: nominatim
+        ensure: present
+        login: true
+        createdb: true
+        passwordSecret:
+          name: nominatim-pg-secret
+
   bootstrap:
     initdb:
       database: nominatim
       owner: nominatim
       secret:
         name: nominatim-pg-secret
-      # postgis is not a trusted extension: created here as superuser at
-      # bootstrap, inside the application database, before Nominatim's
-      # import ever connects.
-      postInitApplicationSQL:
+      # `nominatim import` creates its own database via createdb (fails if
+      # it exists, needs CREATEDB) and installs hstore/postgis/postgis_raster
+      # — all untrusted extensions. Prerequisites are provisioned here so the
+      # app role can bootstrap without superuser:
+      #   postInitSQL — web role (checked by the import) + CREATEDB grant
+      #   postInitTemplateSQL — extensions in template1, so every createdb
+      #     (incl. Nominatim's own) inherits them; its CREATE EXTENSION IF NOT
+      #     EXISTS then no-ops for any database owner.
+      # Re-runs on every cluster rebuild; idempotent by construction.
+      postInitSQL:
+        - CREATE ROLE "www-data" LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
+        - ALTER ROLE nominatim CREATEDB;
+      postInitTemplateSQL:
+        - CREATE EXTENSION IF NOT EXISTS hstore;
         - CREATE EXTENSION IF NOT EXISTS postgis;
+        - CREATE EXTENSION IF NOT EXISTS postgis_raster;

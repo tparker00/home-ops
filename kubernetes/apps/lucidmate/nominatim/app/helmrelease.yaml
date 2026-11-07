@@ -55,6 +55,22 @@ spec:
           reloader.stakater.com/auto: "true"
         serviceAccount:
           identifier: app
+        initContainers:
+          wait-for-schema:
+            image:
+              repository: mediagis/nominatim
+              # renovate: datasource=docker depName=mediagis/nominatim
+              tag: "5.3.2"
+            command: ["/bin/bash", "/scripts/wait-for-schema.sh"]
+            envFrom:
+              - secretRef:
+                  name: nominatim-secret
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
         containers:
           nominatim:
             image:
@@ -231,6 +247,44 @@ spec:
         serviceAccount:
           identifier: replication
 
+      # Self-guarding fresh-cluster bootstrap: checks placex, exits 0 when
+      # data exists; otherwise drops the empty initdb DB and imports the seed
+      # region. Fires on apply; on a cluster redeploy it re-imports without
+      # manual intervention. Prerequisites come from the CNPG cluster's
+      # postInit* hooks (see clusters/nominatim/postgres.yaml).
+      bootstrap:
+        type: job
+        job:
+          backoffLimit: 3
+          ttlSecondsAfterFinished: 86400
+        pod:
+          restartPolicy: Never
+        serviceAccount:
+          identifier: app
+        containers:
+          bootstrap:
+            image:
+              repository: mediagis/nominatim
+              # renovate: datasource=docker depName=mediagis/nominatim
+              tag: "5.3.2"
+            command: ["/bin/bash", "/scripts/bootstrap.sh"]
+            env:
+              NOMINATIM_BOOTSTRAP_REGION: north-america/us/new-jersey
+              NOMINATIM_DOWNURL: "https://download.geofabrik.de"
+              NOMINATIM_IMPORT_THREADS: "8"
+              IMPORT_STYLE: extratags
+              PGSSLMODE: disable
+              PGGSSENCMODE: disable
+            envFrom:
+              - secretRef:
+                  name: nominatim-secret
+            resources:
+              requests:
+                cpu: 500m
+                memory: 2Gi
+              limits:
+                memory: 6Gi
+
     service:
       nominatim:
         controller: nominatim
@@ -254,13 +308,21 @@ spec:
           nominatim:
             nominatim:
               - path: /nominatim
+          bootstrap:
+            bootstrap:
+              - path: /nominatim
       scripts:
         type: configMap
         name: nominatim-scripts
         defaultMode: 0755
         advancedMounts:
           nominatim:
+            wait-for-schema:
+              - path: /scripts
             nominatim:
+              - path: /scripts
+          bootstrap:
+            bootstrap:
               - path: /scripts
           ui:
             ui-init:
@@ -288,6 +350,9 @@ spec:
           nominatim:
             nominatim:
               - path: /import-staging
+          bootstrap:
+            bootstrap:
+              - path: /import-staging
       dev-shm:
         type: emptyDir
         medium: Memory
@@ -295,6 +360,9 @@ spec:
         advancedMounts:
           nominatim:
             nominatim:
+              - path: /dev/shm
+          bootstrap:
+            bootstrap:
               - path: /dev/shm
 
     route:
