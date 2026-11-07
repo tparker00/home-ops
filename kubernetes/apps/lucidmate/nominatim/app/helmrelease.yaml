@@ -60,7 +60,7 @@ spec:
             image:
               repository: mediagis/nominatim
               # renovate: datasource=docker depName=mediagis/nominatim
-              tag: "5.3.2"
+              tag: "5.3.3"
             command: ["/bin/bash", "/scripts/wait-for-schema.sh"]
             envFrom:
               - secretRef:
@@ -76,7 +76,7 @@ spec:
             image:
               repository: mediagis/nominatim
               # renovate: datasource=docker depName=mediagis/nominatim
-              tag: "5.3.2"
+              tag: "5.3.3"
             command: ["/bin/bash", "/scripts/start-external.sh"]
             env:
               # Geofabrik region paths (newline, space, or comma separated).
@@ -266,7 +266,7 @@ spec:
             image:
               repository: mediagis/nominatim
               # renovate: datasource=docker depName=mediagis/nominatim
-              tag: "5.3.2"
+              tag: "5.3.3"
             command: ["/bin/bash", "/scripts/bootstrap.sh"]
             env:
               NOMINATIM_BOOTSTRAP_REGION: north-america/us/new-jersey
