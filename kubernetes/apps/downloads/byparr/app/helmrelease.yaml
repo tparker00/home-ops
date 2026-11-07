@@ -33,7 +33,7 @@ spec:
           main:
             image:
               repository: ghcr.io/thephaseless/byparr
-              tag: 3.0.4
+              tag: 3.1.1
             env:
               TZ: America/New_York
               PORT: &port 8191
