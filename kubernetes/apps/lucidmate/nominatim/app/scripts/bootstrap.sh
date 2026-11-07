@@ -35,8 +35,17 @@ done
 
 # Idempotency guard: a previous import already built the schema -> no-op.
 # A missing database (dropped by an interrupted prior run) counts as "not
-# imported": psql cannot connect and we fall through to the import.
+# imported" -- but an AUTH failure must never be mistaken for "no schema":
+# that once let this job try DROP DATABASE against a fully populated DB
+# (2026-11-07: CNPG managed-role password drifted from the secret; the
+# guard's psql failed auth, was read as "no placex", and only the DROP's
+# own auth failure saved the data). Distinguish the two: connect to
+# 'postgres' (always exists) first; if that fails, die loudly.
 GUARD_SQL="SELECT EXISTS (SELECT 1 FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relname = 'placex' AND c.relkind = 'r')"
+if ! psql -h "${PGHOST}" -d postgres -U "${PGUSER}" -Atqc "SELECT 1" >/dev/null 2>&1; then
+  log "FATAL: cannot authenticate/connect to ${PGHOST} as ${PGUSER}; refusing to proceed (this is NOT a missing-schema condition)"
+  exit 1
+fi
 has_placex="$(psql -h "${PGHOST}" -d "${PGDATABASE}" -U "${PGUSER}" -Atqc "${GUARD_SQL}" 2>/dev/null || echo f)"
 if [ "${has_placex}" = "t" ]; then
   log "placex already present; nothing to do"
