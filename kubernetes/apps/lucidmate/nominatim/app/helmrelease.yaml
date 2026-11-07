@@ -303,11 +303,21 @@ spec:
     persistence:
       project:
         # Created by components/moosefs (claim name = ${APP} = nominatim).
+        # Mounted ONLY by the long-lived deployment: the claim is RWO, so
+        # co-scheduling the bootstrap job on a different node deadlocks on
+        # volume attach (confirmed live 2026-11-07: job stuck
+        # ContainerCreating with "Volume is already used by pod(s)
+        # nominatim-..."). The job's project dir is scratch (.env +
+        # settings + PBF downloads; all geodata lands in Postgres), so it
+        # gets its own emptyDir instead.
         existingClaim: nominatim
         advancedMounts:
           nominatim:
             nominatim:
               - path: /nominatim
+      bootstrap-project:
+        type: emptyDir
+        advancedMounts:
           bootstrap:
             bootstrap:
               - path: /nominatim

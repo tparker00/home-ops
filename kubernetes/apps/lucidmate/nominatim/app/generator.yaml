@@ -3,6 +3,11 @@
 # (Bitwarden key `nominatim-db`) -> externalsecret.yaml composes the app's
 # connection env. Same chain as lucidmate-db; no human-typed credential and
 # no pre-existing Bitwarden key required.
+#
+# NOTE: the generator regenerates on every refresh; the PushSecret's
+# updatePolicy: IfNotExists is what keeps the regenerated value from
+# overwriting the pinned Bitwarden key (see pushsecret-db.yaml). Consumers
+# read Bitwarden directly, never this generated secret.
 apiVersion: generators.external-secrets.io/v1alpha1
 kind: Password
 metadata:
