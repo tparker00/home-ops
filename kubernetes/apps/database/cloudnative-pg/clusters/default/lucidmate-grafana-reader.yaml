@@ -1,8 +1,19 @@
 ---
-# grafana_reader credential: ESO Password generator (basic-auth secret),
-# consumed declaratively by CNPG managed roles on the postgres Cluster CR
-# (passwordSecret). PushSecret mirrors it to Bitwarden so observability's
-# datasource ExternalSecret can pull the same value cross-namespace.
+# grafana_reader credential: consumed by CNPG managed roles on the postgres
+# Cluster CR (passwordSecret: lucidmate-grafana-reader-creds) and, via the
+# same Bitwarden key, by observability's GrafanaDatasource ExternalSecret.
+#
+# Was: Password generator -> ES(1h, generatorRef) -> CNPG passwordSecret,
+# with PushSecret(Replace) mirroring each regeneration into Bitwarden. The
+# generator produced a FRESH password every hour and Replace overwrote the
+# Bitwarden key with it, so CNPG's managed-role apply permanently raced a
+# moving target and the Grafana datasource raced too -- the same churn that
+# broke Nominatim auth on 2026-11-07 (#2480). ESO v2.14 has no state/mutable
+# pin on Password generators, so the fix is to stop consuming the generator
+# directly: the creds ES now reads the Bitwarden key (pinned), exactly like
+# the datasource ES does. The generator+PushSecret remain ONLY to seed a
+# fresh Bitwarden store, and IfNotExists means the key is never overwritten
+# afterwards. Rotate deliberately via Bitwarden, not hourly by accident.
 apiVersion: generators.external-secrets.io/v1alpha1
 kind: Password
 metadata:
@@ -13,12 +24,36 @@ spec:
   symbols: 0 # alphanumeric only
   allowRepeat: true
 ---
+# Seed-only: generates a candidate value for a fresh Bitwarden store.
+# Nothing consumes this Secret once the key exists.
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: lucidmate-grafana-reader-generated
+spec:
+  refreshInterval: 1h
+  target:
+    name: lucidmate-grafana-reader-generated
+    deletionPolicy: Delete
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: lucidmate-grafana-reader
+---
+# The credential CNPG reconciles the role from: stable, sourced from the
+# pinned Bitwarden key (same key the datasource ES reads -- one value, no
+# drift between the two sides of the chain).
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: &name lucidmate-grafana-reader-creds
 spec:
-  refreshInterval: 1h
+  secretStoreRef:
+    name: bitwarden-secrets-manager
+    kind: ClusterSecretStore
+  refreshInterval: 15m
   target:
     name: *name
     deletionPolicy: Delete
@@ -27,25 +62,25 @@ spec:
       data:
         username: grafana_reader
         password: "{{ .password }}"
-  dataFrom:
-    - sourceRef:
-        generatorRef:
-          apiVersion: generators.external-secrets.io/v1alpha1
-          kind: Password
-          name: lucidmate-grafana-reader
+  data:
+    - secretKey: password
+      remoteRef:
+        key: lucidmate-grafana-reader
 ---
 apiVersion: external-secrets.io/v1alpha1
 kind: PushSecret
 metadata:
   name: lucidmate-grafana-reader
 spec:
+  # IfNotExists: seed the key on a fresh store, never overwrite it after.
+  updatePolicy: IfNotExists
   refreshInterval: 5m
   secretStoreRefs:
     - name: bitwarden-secrets-manager-push
       kind: ClusterSecretStore
   selector:
     secret:
-      name: lucidmate-grafana-reader-creds
+      name: lucidmate-grafana-reader-generated
   data:
     - match:
         secretKey: password
