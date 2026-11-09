@@ -127,6 +127,8 @@ spec:
                   name: lucidmate-db
               - secretRef:
                   name: lucidmate-app
+            env:
+              NOMINATIM_URL: http://nominatim
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
