@@ -27,6 +27,11 @@ spec:
       sslmode: disable
       postgresVersion: 1600
       timescaledb: false
+      # Backend query caching served stale empty result frames for this
+      # datasource (dashboards showed "No data" while the DB had rows).
+      # Postgres traffic is light — skip the cache entirely.
+      caching:
+        enabled: false
   # This operator version injects via valuesFrom/targetPath (the #131
   # example's secureValuesFrom is a newer-operator field — server dry-run
   # caught the mismatch).
