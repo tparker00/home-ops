@@ -13,7 +13,7 @@ spec:
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s-charts
+        name: radarr-4k-bjw-s-charts
 
   dependsOn: []
   maxHistory: 2

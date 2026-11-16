@@ -19,7 +19,7 @@ spec:
 
   enableSuperuserAccess: true
   superuserSecret:
-    name: cloudnative-pg-secret
+    name: cloudnative-pg-cloudnative-pg-secret
 
   postgresql:
     parameters:

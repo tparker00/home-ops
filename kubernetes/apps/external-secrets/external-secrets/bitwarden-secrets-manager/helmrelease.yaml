@@ -12,7 +12,7 @@ spec:
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s-charts
+        name: bitwarden-secrets-manager-bjw-s-charts
 
   install:
     remediation:

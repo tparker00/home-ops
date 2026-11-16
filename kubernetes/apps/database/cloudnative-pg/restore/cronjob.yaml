@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: cloudnative-pg-backup
+  name: cloudnative-pg-cloudnative-pg-backup
 spec:
   schedule: "0 17 * * *"
   concurrencyPolicy: Forbid
@@ -31,12 +31,12 @@ spec:
                 - name: POSTGRES_USER
                   valueFrom:
                     secretKeyRef:
-                      name: cloudnative-pg-secret
+                      name: cloudnative-pg-cloudnative-pg-secret
                       key: username
                 - name: POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: cloudnative-pg-secret
+                      name: cloudnative-pg-cloudnative-pg-secret
                       key: password
                 - name: POSTGRES_DB
                   value: ",gatus,grafana,radarr_log,radarr_main,radarr4k_log,radarr4k_main,sonarr_log,sonarr_main,lidarr_main,lidarr_log,bazarr,prowlarr_main,prowlarr_log,vymanager_auth"
@@ -53,7 +53,7 @@ spec:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: cloudnative-pg-backup
+  name: cloudnative-pg-cloudnative-pg-backup
 spec:
   schedule: "0 17 * * *"
   concurrencyPolicy: Forbid
@@ -81,12 +81,12 @@ spec:
                 - name: POSTGRES_USER
                   valueFrom:
                     secretKeyRef:
-                      name: cloudnative-pg-secret
+                      name: cloudnative-pg-cloudnative-pg-secret
                       key: username
                 - name: POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: cloudnative-pg-secret
+                      name: cloudnative-pg-cloudnative-pg-secret
                       key: password
                 - name: POSTGRES_DB
                   value: "immich"

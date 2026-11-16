@@ -12,7 +12,7 @@ spec:
     size: 50Gi
     storageClass: openebs-hostpath
   superuserSecret:
-    name: cloudnative-pg-secret
+    name: cloudnative-pg-cloudnative-pg-secret
   enableSuperuserAccess: true
   postgresql:
     shared_preload_libraries:
@@ -47,10 +47,10 @@ spec:
       serverName: &currentCluster postgres-v10
       s3Credentials:
         accessKeyId:
-          name: cloudnative-pg-secret
+          name: cloudnative-pg-cloudnative-pg-secret
           key: aws-access-key-id
         secretAccessKey:
-          name: cloudnative-pg-secret
+          name: cloudnative-pg-cloudnative-pg-secret
           key: aws-secret-access-key
   # # Note: previousCluster needs to be set to the name of the previous
   # # cluster when recovering from an existing cnpg cluster
@@ -79,4 +79,4 @@ spec:
 #      database: postgres
 #      owner: postgres
 #      secret:
-#        name: cloudnative-pg-secret
+#        name: cloudnative-pg-cloudnative-pg-secret

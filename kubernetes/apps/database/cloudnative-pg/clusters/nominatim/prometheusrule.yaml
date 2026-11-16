@@ -9,7 +9,7 @@ metadata:
     role: alert-rules
 spec:
   groups:
-    - name: cloudnative-pg.rules
+    - name: cloudnative-pg-cloudnative-pg.rules
       rules:
         - alert: LongRunningTransaction
           annotations:

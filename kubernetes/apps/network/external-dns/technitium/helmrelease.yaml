@@ -12,7 +12,7 @@ spec:
       version: 1.21.1
       sourceRef:
         kind: HelmRepository
-        name: external-dns
+        name: cloudflare-ap-external-dns
 
       interval: 30m
   install:
@@ -43,12 +43,12 @@ spec:
           - name: TECHNITIUM_USERNAME
             valueFrom:
               secretKeyRef:
-                name: external-dns-technitium-secret
+                name: cloudflare-ap-external-dns-technitium-secret
                 key: technitium_username
           - name: TECHNITIUM_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: external-dns-technitium-secret
+                name: cloudflare-ap-external-dns-technitium-secret
                 key: technitium_password
       livenessProbe:
         httpGet:

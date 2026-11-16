@@ -13,7 +13,7 @@ spec:
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s-charts
+        name: tautulli-bjw-s-charts
 
   maxHistory: 2
   dependsOn: []

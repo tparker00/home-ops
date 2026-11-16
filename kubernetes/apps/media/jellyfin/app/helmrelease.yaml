@@ -16,7 +16,7 @@ spec:
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s-charts
+        name: jellyfin-bjw-s-charts
 
   dependsOn: []
   install:

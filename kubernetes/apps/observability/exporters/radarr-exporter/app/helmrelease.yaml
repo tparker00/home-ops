@@ -15,7 +15,7 @@ spec:
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s-charts
+        name: radarr-exporter-bjw-s-charts
 
   driftDetection:
     mode: enabled

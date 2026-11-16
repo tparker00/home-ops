@@ -81,7 +81,7 @@ spec:
     matchLabels:
       kubernetes.io/os: linux
   bgpInstances:
-    - name: cilium
+    - name: cilium-cilium
       localASN: 64513
       peers:
         - name: vyos

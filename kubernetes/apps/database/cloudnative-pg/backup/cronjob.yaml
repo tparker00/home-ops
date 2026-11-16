@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: cloudnative-pg-main-backup
+  name: cloudnative-pg-cloudnative-pg-main-backup
 spec:
   schedule: "0 * * * *"
   concurrencyPolicy: Forbid
@@ -31,12 +31,12 @@ spec:
                 - name: POSTGRES_USER
                   valueFrom:
                     secretKeyRef:
-                      name: cloudnative-pg-secret
+                      name: cloudnative-pg-cloudnative-pg-secret
                       key: username
                 - name: POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: cloudnative-pg-secret
+                      name: cloudnative-pg-cloudnative-pg-secret
                       key: password
                 - name: POSTGRES_DB
                   value: postgres
@@ -57,7 +57,7 @@ spec:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: cloudnative-pg-immich-backup
+  name: cloudnative-pg-cloudnative-pg-immich-backup
 spec:
   schedule: "0 17 * * *"
   concurrencyPolicy: Forbid
@@ -85,12 +85,12 @@ spec:
                 - name: POSTGRES_USER
                   valueFrom:
                     secretKeyRef:
-                      name: cloudnative-pg-secret
+                      name: cloudnative-pg-cloudnative-pg-secret
                       key: username
                 - name: POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: cloudnative-pg-secret
+                      name: cloudnative-pg-cloudnative-pg-secret
                       key: password
 # Using immich rather than postgres for the db name since that is what the script uses to name the backup file.
 # Since we're backing up 2 clusters if we use the same db name the backup files will overwrite each other.

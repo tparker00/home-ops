@@ -3,13 +3,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: cloudnative-pg-rules
+  name: cloudnative-pg-cloudnative-pg-rules
   labels:
     prometheus: k8s
     role: alert-rules
 spec:
   groups:
-    - name: cloudnative-pg.rules
+    - name: cloudnative-pg-cloudnative-pg.rules
       rules:
         - alert: LongRunningTransaction
           annotations:

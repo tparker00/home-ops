@@ -19,7 +19,7 @@ spec:
 
   enableSuperuserAccess: true
   superuserSecret:
-    name: cloudnative-pg-secret
+    name: cloudnative-pg-cloudnative-pg-secret
 
   postgresql:
     shared_preload_libraries:
@@ -56,10 +56,10 @@ spec:
       serverName: &currentCluster immich-v1
       s3Credentials:
         accessKeyId:
-          name: cloudnative-pg-secret
+          name: cloudnative-pg-cloudnative-pg-secret
           key: aws-access-key-id
         secretAccessKey:
-          name: cloudnative-pg-secret
+          name: cloudnative-pg-cloudnative-pg-secret
           key: aws-secret-access-key
 
   bootstrap:

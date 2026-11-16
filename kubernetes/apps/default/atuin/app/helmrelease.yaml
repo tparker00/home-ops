@@ -15,7 +15,7 @@ spec:
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s-charts
+        name: atuin-bjw-s-charts
 
   dependsOn: []
   install:

@@ -13,7 +13,7 @@ spec:
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: bjw-s-charts
+        name: hydra-server-bjw-s-charts
 
   dependsOn: []
   maxHistory: 2

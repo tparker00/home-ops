@@ -34,7 +34,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: cloudnative-pg
+    - name: cloudnative-pg-cloudnative-pg
     - name: external-secrets-bitwarden
     - name: rustfs
   path: ./kubernetes/apps/database/cloudnative-pg/clusters/default
@@ -59,7 +59,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: cloudnative-pg
+    - name: cloudnative-pg-cloudnative-pg
     - name: external-secrets-bitwarden
     - name: rustfs
   path: ./kubernetes/apps/database/cloudnative-pg/clusters/immich
@@ -84,7 +84,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: cloudnative-pg-cluster
+    - name: cloudnative-pg-cloudnative-pg-cluster
     - name: external-secrets
   path: ./kubernetes/apps/database/cloudnative-pg/backup
   prune: true
@@ -108,7 +108,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: cloudnative-pg
+    - name: cloudnative-pg-cloudnative-pg
     - name: external-secrets-bitwarden
   path: ./kubernetes/apps/database/cloudnative-pg/clusters/nominatim
   prune: true
