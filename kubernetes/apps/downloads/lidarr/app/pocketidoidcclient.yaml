@@ -1,0 +1,22 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: lidarr
+spec:
+  name: Lidarr
+  callbackUrls:
+    - "https://lidarr.${SECRET_DOMAIN}/signin-oidc"
+  clientID: lidarr
+  launchUrl: "https://lidarr.${SECRET_DOMAIN}/"
+  logo:
+    autoGenerate: false
+  logoutCallbackUrls:
+    - "https://lidarr.${SECRET_DOMAIN}/signout-callback-oidc"
+  pkceEnabled: true
+  secret:
+    storeClientSecret: true
+    keys:
+      clientID: OIDC_CLIENT_ID
+      clientSecret: OIDC_CLIENT_SECRET
+      issuerUrl: OIDC_ISSUER_URL
