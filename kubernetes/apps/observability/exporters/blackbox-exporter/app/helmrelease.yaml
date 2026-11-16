@@ -12,7 +12,7 @@ spec:
       version: 11.21.3
       sourceRef:
         kind: HelmRepository
-        name: prometheus-community
+        name: blackbox-exporter-prometheus-community
 
   install:
     remediation:

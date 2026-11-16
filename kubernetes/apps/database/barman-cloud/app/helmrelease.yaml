@@ -2,10 +2,10 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: barman-cloud
+  name: barman-cloud-barman-cloud
 spec:
   chartRef:
     kind: OCIRepository
-    name: barman-cloud
+    name: barman-cloud-barman-cloud
   interval: 1h
   # No values here :(

@@ -3,7 +3,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: grafana-operator
+  name: grafana-operator-grafana-operator
 spec:
   interval: 15m
   layerSelector:

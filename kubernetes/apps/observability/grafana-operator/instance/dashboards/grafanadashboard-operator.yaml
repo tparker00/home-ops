@@ -3,7 +3,7 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: grafana-operator
+  name: grafana-operator-grafana-operator
 spec:
   instanceSelector:
     matchLabels:
@@ -13,5 +13,5 @@ spec:
     - datasourceName: Prometheus
       inputName: DS_PROMETHEUS
   configMapRef:
-    name: grafana-operator-dashboard
+    name: grafana-operator-grafana-operator-dashboard
     key: grafana-operator.json

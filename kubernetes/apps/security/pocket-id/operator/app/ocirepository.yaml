@@ -3,7 +3,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: pocket-id-operator
+  name: operator-pocket-id-operator
 spec:
   interval: 1h
   ref:

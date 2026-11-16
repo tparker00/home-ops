@@ -3,10 +3,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: smartctl-exporter-rules
+  name: smartctl-exporter-smartctl-exporter-rules
 spec:
   groups:
-    - name: smartctl-exporter.rules
+    - name: smartctl-exporter-smartctl-exporter.rules
       rules:
         - alert: SmartDeviceHighTemperature
           expr: |-

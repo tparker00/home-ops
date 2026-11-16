@@ -34,7 +34,7 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster
     - name: external-secrets-bitwarden
-    - name: grafana-operator
+    - name: grafana-operator-grafana-operator
   path: ./kubernetes/apps/observability/grafana-operator/instance
   prune: true
   sourceRef:

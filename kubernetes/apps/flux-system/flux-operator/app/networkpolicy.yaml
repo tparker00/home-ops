@@ -3,7 +3,7 @@
 apiVersion: "cilium.io/v2"
 kind: CiliumNetworkPolicy
 metadata:
-  name: flux-operator-egress-external
+  name: flux-operator-flux-operator-egress-external
 specs:
   - endpointSelector:
       matchLabels:

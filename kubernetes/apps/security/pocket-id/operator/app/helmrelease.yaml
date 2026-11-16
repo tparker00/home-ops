@@ -8,7 +8,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: pocket-id-operator
+    name: operator-pocket-id-operator
   install:
     remediation:
       retries: 3
