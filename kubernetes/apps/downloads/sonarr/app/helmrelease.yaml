@@ -55,6 +55,7 @@ spec:
               SONARR__AUTH__METHOD: Oidc
               SONARR__AUTH__OIDCAUTHORITY: https://id.${SECRET_DOMAIN}
               SONARR__AUTH__OIDCCLIENTID: sonarr
+              SONARR__AUTH__OIDCSCOPES: openid email profile
               SONARR__AUTH__OIDCCLIENTSECRET:
                 valueFrom:
                   secretKeyRef:
