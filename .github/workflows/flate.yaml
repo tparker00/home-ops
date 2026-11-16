@@ -52,7 +52,7 @@ jobs:
       - name: Diff Manifests
         id: diff
         run: |
-          flate diff all --allow-missing-secrets --skip-schema-validation -p ./kubernetes/flux --output diff > diff_output.txt || true
+          flate diff all -p ./kubernetes/flux --output diff > diff_output.txt || true
 
       - if: ${{ hashFiles('diff_output.txt') != '' }}
         name: Prepare Comment
