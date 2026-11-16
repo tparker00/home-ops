@@ -52,7 +52,23 @@ jobs:
       - name: Diff Manifests
         id: diff
         run: |
-          flate diff all -p ./kubernetes/flux --output diff > diff_output.txt || true
+          # Supply a GitRepository override pinning ref.commit to the PR head:
+          # flate otherwise resolves home-kubernetes (ref.branch main) against
+          # the local main ref, rendering main vs main (empty diff).
+          SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          cat > supply-gitrepository.yaml <<EOF
+          apiVersion: source.toolkit.fluxcd.io/v1
+          kind: GitRepository
+          metadata:
+            name: home-kubernetes
+            namespace: flux-system
+          spec:
+            interval: 30m
+            url: "https://github.com/tparker00/home-ops"
+            ref:
+              commit: ${SHA}
+          EOF
+          flate diff all -p ./kubernetes/flux --supply supply-gitrepository.yaml --output diff > diff_output.txt || true
 
       - if: ${{ hashFiles('diff_output.txt') != '' }}
         name: Prepare Comment
