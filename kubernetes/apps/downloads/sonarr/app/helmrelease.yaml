@@ -58,7 +58,7 @@ spec:
               SONARR__AUTH__OIDCCLIENTSECRET:
                 valueFrom:
                   secretKeyRef:
-                    key: client_secret
+                    key: OIDC_CLIENT_SECRET
                     name: sonarr-oidc-credentials
               SONARR__INSTANCE_NAME: Sonarr
               SONARR__SERVER__ALLOWEDHOSTS: "*"
