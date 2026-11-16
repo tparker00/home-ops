@@ -1,0 +1,22 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: sonarr
+spec:
+  name: Sonarr
+  callbackUrls:
+    - "https://sonarr.${SECRET_DOMAIN}/signin-oidc"
+  clientID: sonarr
+  launchUrl: "https://sonarr.${SECRET_DOMAIN}/"
+  logo:
+    autoGenerate: false
+  logoutCallbackUrls:
+    - "https://sonarr.${SECRET_DOMAIN}/signout-callback-oidc"
+  pkceEnabled: true
+  secret:
+    storeClientSecret: true
+    keys:
+      clientID: OIDC_CLIENT_ID
+      clientSecret: OIDC_CLIENT_SECRET
+      issuerUrl: OIDC_ISSUER_URL
