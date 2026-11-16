@@ -15,7 +15,7 @@ spec:
       interval: 30m
       sourceRef:
         kind: HelmRepository
-        name: sabnzbd-exporter-bjw-s-charts
+        name: bjw-s-charts
 
   driftDetection:
     mode: enabled

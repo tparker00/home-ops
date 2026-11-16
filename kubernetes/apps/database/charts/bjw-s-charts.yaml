@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: prowlarr-exporter-bjw-s-charts
+  name: bjw-s-charts
 spec:
   interval: 1h
   url: https://bjw-s-labs.github.io/helm-charts/

@@ -11,6 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: observability-charts
     - name: lidarr
     - name: external-secrets-bitwarden
   path: ./kubernetes/apps/observability/exporters/lidarr-exporter/app
