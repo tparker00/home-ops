@@ -49,7 +49,7 @@ spec:
             env:
               TZ: ${TIMEZONE}
               RADARR__AUTH__METHOD: Oidc
-              RADARR__AUTHENTICATION_REQUIRED: Enabled
+              RADARR__AUTH__REQUIRED: Enabled
               RADARR__AUTH__OIDCAUTHORITY: https://id.${SECRET_DOMAIN}
               RADARR__AUTH__OIDCCLIENTID: radarr
               RADARR__AUTH__OIDCSCOPES: openid email profile
