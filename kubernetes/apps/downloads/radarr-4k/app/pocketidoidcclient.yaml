@@ -1,0 +1,22 @@
+---
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: radarr-4k
+spec:
+  name: Radarr-4k
+  callbackUrls:
+    - "https://radarr-4k.${SECRET_DOMAIN}/signin-oidc"
+  clientID: radarr-4k
+  launchUrl: "https://radarr-4k.${SECRET_DOMAIN}/"
+  logo:
+    autoGenerate: false
+  logoutCallbackUrls:
+    - "https://radarr-4k.${SECRET_DOMAIN}/signout-callback-oidc"
+  pkceEnabled: true
+  secret:
+    storeClientSecret: true
+    keys:
+      clientID: OIDC_CLIENT_ID
+      clientSecret: OIDC_CLIENT_SECRET
+      issuerUrl: OIDC_ISSUER_URL

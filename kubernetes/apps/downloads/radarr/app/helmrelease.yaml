@@ -48,9 +48,19 @@ spec:
               tag: 7.0.2.10888@sha256:69ea515df6e2a3ea1490cfa127ffaaf9597a9db84fffa2fa150a6fae98fe04cb
             env:
               TZ: ${TIMEZONE}
-              RADARR__AUTHENTICATION_METHOD: External
-              RADARR__AUTHENTICATION_REQUIRED: DisabledForLocalAddresses
+              RADARR__AUTH__METHOD: Oidc
+              RADARR__AUTHENTICATION_REQUIRED: Enabled
+              RADARR__AUTH__OIDCAUTHORITY: https://id.${SECRET_DOMAIN}
+              RADARR__AUTH__OIDCCLIENTID: radarr
+              RADARR__AUTH__OIDCSCOPES: openid email profile
+              RADARR__AUTH__OIDCCLIENTSECRET:
+                valueFrom:
+                  secretKeyRef:
+                    key: OIDC_CLIENT_SECRET
+                    name: radarr-oidc-credentials
               RADARR__INSTANCE_NAME: Radarr
+              RADARR__SERVER__ALLOWEDHOSTS: "*"
+              RADARR__SERVER__TRUSTEDNETWORKS: 10.0.0.0/8
               RADARR__PORT: &port 80
               RADARR__LOG_LEVEL: info
             envFrom: *envFrom
