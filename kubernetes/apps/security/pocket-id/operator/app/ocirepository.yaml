@@ -7,5 +7,5 @@ metadata:
 spec:
   interval: 1h
   ref:
-    tag: 0.16.2
+    tag: 0.16.3
   url: oci://ghcr.io/aclerici38/charts/pocket-id-operator
