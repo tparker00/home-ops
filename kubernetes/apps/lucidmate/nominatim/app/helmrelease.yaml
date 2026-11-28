@@ -227,7 +227,7 @@ spec:
             image:
               repository: registry.k8s.io/kubectl
               # renovate: datasource=docker depName=registry.k8s.io/kubectl
-              tag: v1.37.2
+              tag: v1.37.3
             args:
               - exec
               - deploy/nominatim
